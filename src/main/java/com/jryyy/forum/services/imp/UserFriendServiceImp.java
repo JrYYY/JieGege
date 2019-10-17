@@ -66,13 +66,17 @@ public class UserFriendServiceImp implements UserFriendService {
     @Override
     public Response takeOff(int userId, int id) throws Exception {
         UserFriend userFriend = userFriendMapper.findFriendsBasedOnId(id);
-        if (userFriend.getUserId().equals(userId))
+        if (userFriend == null)
+            throw new EntityNotFoundException("异常访问");
+        if (!userFriend.getUserId().equals(userId))
             throw new EntityNotFoundException("没有关注，无法取消！");
         try {
             userFriendMapper.unsubscribe(userId, id);
+            return new Response();
         } catch (Exception e) {
             throw new RuntimeException("取消失败");
         }
-        return null;
+
     }
+
 }

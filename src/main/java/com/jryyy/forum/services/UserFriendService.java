@@ -42,5 +42,17 @@ public interface UserFriendService {
      */
     Response takeOff(int userId, int id) throws Exception;
 
-
+//    /**
+//     * 粉丝数
+//     * @return  {@link Response}
+//     * @throws Exception
+//     */
+//    public Response followersNumber(Integer userId) throws Exception;
+//
+//    /**
+//     * 关注数
+//     * @return  {@link Response}
+//     * @throws Exception
+//     */
+//    Response followingNumber(Integer fanId)throws Exception;
 }

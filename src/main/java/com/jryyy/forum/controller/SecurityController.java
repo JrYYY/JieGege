@@ -56,13 +56,25 @@ public class SecurityController {
         return userService.userRegistration(request);
     }
 
+    /**
+     * 更新token
+     *
+     * @param token   jwt加密码
+     * @param session {@link HttpSession}
+     * @return {@link Response}
+     * @throws Exception
+     */
     @PutMapping("/token")
-    public String PutJWT(String token, HttpSession session) {
-
+    public Response PutJWT(String token, HttpSession session) throws Exception {
         User user = tokenUtils.decodeJwtToken(token);
+        Response response = userService.
+                userLogin(UserRequest.builder().
+                        name(user.getEmailName()).
+                        pass(user.getPassword()).
+                        build());
         session.setAttribute(Constants.USER_ID_STRING, user.getId());
         log.info(user.toString() + "---更新token");
-        return tokenUtils.createJwtToken(user);
+        return response;
     }
 
     /**

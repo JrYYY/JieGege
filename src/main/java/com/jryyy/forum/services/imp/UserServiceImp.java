@@ -1,5 +1,6 @@
 package com.jryyy.forum.services.imp;
 
+import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.models.Response;
@@ -23,14 +24,24 @@ public class UserServiceImp implements UserService {
     UserInfoMapper userInfoMapper;
 
     @Autowired
+    UserFriendMapper userFriendMapper;
+
+    @Autowired
     TokenUtils tokenUtils;
 
     @Override
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
+        Integer followers = userFriendMapper.followersNumByUId(user.getId());
+        Integer following = userFriendMapper.followingTotalByFId(user.getId());
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
-        return new Response<UserResponse>(new UserResponse(tokenUtils.createJwtToken(user), user.getRole()));
+        return new Response<UserResponse>(UserResponse.builder().
+                token(tokenUtils.createJwtToken(user)).
+                power(user.getRole()).
+                followersNumber(followers).
+                followingNumber(following).
+                build());
     }
 
     @Override

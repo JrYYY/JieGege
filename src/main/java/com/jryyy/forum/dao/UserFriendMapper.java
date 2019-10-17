@@ -12,6 +12,25 @@ import java.util.List;
 @Mapper
 public interface UserFriendMapper {
 
+    /**
+     * 粉丝数
+     *
+     * @param friendId FanId
+     * @return FanCount
+     * @throws Exception
+     */
+    @Select("select count(*) from user_friend where friendId = #{friendId}")
+    int followersNumByUId(@Param("friendId") int friendId) throws Exception;
+
+    /**
+     * 关注数
+     *
+     * @param userId 用户id
+     * @return
+     * @throws Exception
+     */
+    @Select("select count(*) from user_friend where userId = #{userId}")
+    int followingTotalByFId(@Param("userId") int userId) throws Exception;
 
     /**
      * 查询关注列表

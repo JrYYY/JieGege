@@ -6,6 +6,7 @@ import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.BadCredentialsException;
 import com.jryyy.forum.models.User;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -23,6 +24,7 @@ import javax.validation.constraints.Size;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Builder
 public class UserRequest {
 
 
