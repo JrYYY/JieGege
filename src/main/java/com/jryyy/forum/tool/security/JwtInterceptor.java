@@ -1,12 +1,11 @@
-package com.jryyy.forum.config;
+package com.jryyy.forum.tool.security;
 
-
-import com.jryyy.forum.annotation.UserLoginToken;
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.constant.RoleCode;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.BadCredentialsException;
 import com.jryyy.forum.models.User;
-import com.jryyy.forum.tool.security.TokenUtils;
+import com.jryyy.forum.tool.annotation.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;
@@ -16,6 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
+import java.nio.file.AccessDeniedException;
 
 //import org.springframework.security.authentication.BadCredentialsException;
 
@@ -39,6 +39,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         }
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
+
         //检查有没有需要用户权限的注解
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
@@ -58,10 +59,19 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     throw new BadCredentialsException("无token，请重新登录");
                 User user = tokenUtils.decodeJwtToken(token);
 
-                session.setAttribute(Constants.USER_ID_STRING, user.getId());
-
 //                if(user.getId() != userId)
 //                    throw new BadCredentialsException("非法访问");
+
+                session.setAttribute(Constants.USER_ID_STRING, user.getId());
+
+                //管理员端口访问权限
+                if (userLoginToken.role().equals(RoleCode.ADMIN)) {
+                    if (!user.getRole().equals(RoleCode.ADMIN)) {
+                        log.error(user.getId() + ":权限不足");
+                        throw new AccessDeniedException("权限不足");
+                    }
+                }
+
 
                 return true;
             }

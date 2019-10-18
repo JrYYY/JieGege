@@ -8,11 +8,14 @@ import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
+import com.jryyy.forum.models.response.AdminFindUserResponse;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
 import com.jryyy.forum.tool.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 
 @Service
@@ -33,14 +36,10 @@ public class UserServiceImp implements UserService {
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
-        Integer followers = userFriendMapper.followersNumByUId(user.getId());
-        Integer following = userFriendMapper.followingTotalByFId(user.getId());
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
         return new Response<UserResponse>(UserResponse.builder().
                 token(tokenUtils.createJwtToken(user)).
                 power(user.getRole()).
-                followersNumber(followers).
-                followingNumber(following).
                 build());
     }
 
@@ -67,6 +66,17 @@ public class UserServiceImp implements UserService {
             return new Response();
         } catch (Exception e) {
             throw new RuntimeException("修改密码失败");
+        }
+    }
+
+    @Override
+    public Response findAllUsers() throws Exception {
+        try {
+            List<AdminFindUserResponse> allUsers = userMapper.findAllUsers();
+            return new Response<List<AdminFindUserResponse>>(allUsers);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("查看用户列表失败");
         }
     }
 

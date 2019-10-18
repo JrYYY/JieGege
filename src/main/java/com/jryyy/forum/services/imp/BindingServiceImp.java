@@ -13,8 +13,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 //import org.springframework.security.authentication.BadCredentialsException;
@@ -51,10 +49,8 @@ public class BindingServiceImp implements BindingService {
         if (bindingMapper.findIdByBinding(userId, boundId) != null)
             throw new BadCredentialsException("已绑定,该用户");
         try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
             bindingMapper.insertBinding(Binding.builder().
                     userId(userId).boundId(boundId).
-                    createDate(df.format(new Date())).
                     build());
             return new Response();
         } catch (Exception e) {

@@ -6,6 +6,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -16,7 +18,7 @@ public class BindingResponse {
 
     private String username;
 
-    private String avatarUrl;
+    private String avatar;
 
-    private String date;
+    private Date date;
 }

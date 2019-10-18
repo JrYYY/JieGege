@@ -1,11 +1,9 @@
 package com.jryyy.forum.dao;
 
+import com.jryyy.forum.models.CheckIn;
 import com.jryyy.forum.models.UserInfo;
 import com.jryyy.forum.models.request.UserInfoRequest;
-import org.apache.ibatis.annotations.Insert;
-import org.apache.ibatis.annotations.Mapper;
-import org.apache.ibatis.annotations.Select;
-import org.apache.ibatis.annotations.UpdateProvider;
+import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
 /*
@@ -21,8 +19,18 @@ public interface UserInfoMapper {
      * @return {@link UserInfo}
      * @throws Exception
      */
-    @Select("select userId,username,avatarUrl,sex,age where userId = #{id}")
-    UserInfo selectUserInfo(int id) throws Exception;
+    @Select("select username,avatar,sex,age,checkInDays,checkInDate from userinfo where userId = #{id}")
+    UserInfo selectUserInfo(@Param("id") int id) throws Exception;
+
+    /**
+     * 查询签到日期和最近签到数据
+     *
+     * @param id 用户id
+     * @return {@link CheckIn}
+     * @throws Exception
+     */
+    @Select("select checkInDays,checkInDate from userinfo where userId = #{id}")
+    CheckIn selectCheckIn(@Param("id") int id) throws Exception;
 
     /**
      * 初始化创建用户信息
@@ -41,6 +49,17 @@ public interface UserInfoMapper {
     @UpdateProvider(type = SqlProvider.class, method = "updatePersonSql")
     void updateUserInfo(UserInfoRequest userInfo);
 
+    /**
+     * 签到
+     *
+     * @param checkInDays 签到天数
+     * @param userId      用户id
+     */
+    @Update("update userinfo set checkInDays = #{checkInDays}," +
+            "checkInDate = CURRENT_TIMESTAMP where userId = #{userId}")
+    void checkIn(@Param("userId") int userId, @Param("checkInDays") int checkInDays);
+
+
     /*
     sql构造器构造动态sql
      */
@@ -50,8 +69,8 @@ public interface UserInfoMapper {
                 UPDATE("userinfo");
                 if (userInfo.getUsername() != null)
                     SET("username = #{username}");
-                if (userInfo.getAvatarUrl() != null)
-                    SET("avatarUrl = #{avatarUrl}");
+                if (userInfo.getAvatar() != null)
+                    SET("avatar = #{avatar}");
                 if (userInfo.getSex() != null)
                     SET("sex = #{sex}");
                 if (userInfo.getAge() != null)

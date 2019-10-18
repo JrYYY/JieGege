@@ -1,7 +1,7 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.annotation.UserLoginToken;
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.tool.annotation.UserLoginToken;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

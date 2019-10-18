@@ -11,16 +11,22 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserFriendResponse {
+public class UserZoneResponse {
     /* id */
-    private Integer id;
+    private int id;
 
-    /* 用户名称 */
-    private String username;
+    /* 内容 */
+    private String msg;
 
-    /* 头像 */
-    private String avatar;
-
-    /* 好友添加时间 */
+    /* 创建时间 */
     private Date date;
+
+    /* 类型 */
+    private int msgType;
+
+    /* 认可 */
+    private int approval;
+
+    /* 图片 */
+    private String[] zoneImg;
 }

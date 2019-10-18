@@ -1,21 +1,17 @@
-package com.jryyy.forum.models;
+package com.jryyy.forum.models.response;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
-/**
- * 用户信息类
- */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserInfo {
-    /* 用户id */
-    private int userId;
-
+@Builder
+public class UserInfoResponse {
     /* 用户名称 */
     private String username;
 
@@ -28,9 +24,16 @@ public class UserInfo {
     /* 年龄 */
     private Integer age;
 
+    /* 关注数 */
+    private Integer followingNum;
+
+    /* 粉丝数 */
+    private Integer followersNum;
+
     /* 签到天数 */
     private int checkInDays;
 
     /* 最近签到时间 */
     private Date checkInDate;
+
 }

@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.*;
 import java.util.List;
 
 /**
- * 好友列表操作
+ * 关注/被关注 列表操作
  */
 @Mapper
 public interface UserFriendMapper {
@@ -39,7 +39,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatarUrl,A.createDate date " +
+    @Select("select A.id,B.username,B.avatar,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
@@ -52,7 +52,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatarUrl,A.createDate date " +
+    @Select("select A.id,B.username,B.avatar,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")
@@ -86,7 +86,7 @@ public interface UserFriendMapper {
      * @param userFriend {@link UserFriend}
      * @throws Exception
      */
-    @Insert("insert into user_friend(userId,friendId,createDate)values(#{userId},#{friendId},#{createDate})")
+    @Insert("insert into user_friend(userId,friendId)values(#{userId},#{friendId})")
     void insertUserFriend(UserFriend userFriend) throws Exception;
 
 

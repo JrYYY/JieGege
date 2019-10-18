@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -28,5 +30,5 @@ public class UserFriend {
     /**
      * 创建时间
      */
-    private String createDate;
+    private Date createDate;
 }

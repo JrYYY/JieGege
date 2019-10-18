@@ -11,8 +11,6 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 //import org.springframework.security.authentication.BadCredentialsException;
 
@@ -20,8 +18,6 @@ import java.util.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserRequestAccessRequest {
-    static SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
-
     @Email(message = "邮箱格式不正确")
     @NotBlank(message = "Email不能为空")
     private String name;
@@ -32,15 +28,15 @@ public class UserRequestAccessRequest {
 
     @NotBlank(message = "密码不能为空")
     @Size(min = 6, max = 20, message = "密码长度不符合标准")
-    private String password;
+    private String pass;
 
-    @NotBlank(message = "不能为空")
+    @NotBlank(message = "权限不能为空")
     private String role;
 
-    private String createDate = df.format(new Date());
-
     public User toUser() {
-        return new User(null, name, password, role, null, 0, createDate);
+        return new User(null,
+                name, pass, role, null,
+                0, null);
     }
 
     /**

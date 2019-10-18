@@ -1,9 +1,9 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.annotation.UserLoginToken;
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.services.UserFriendService;
+import com.jryyy.forum.tool.annotation.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,7 +14,7 @@ import javax.servlet.http.HttpSession;
  */
 @RestController
 @RequestMapping("/users")
-public class UserFriendController {
+public class FriendController {
 
     @Autowired
     UserFriendService userFriendService;
@@ -50,5 +50,10 @@ public class UserFriendController {
         return userFriendService.takeOff(userId, id);
     }
 
-
+    @UserLoginToken
+    @GetMapping("/judgment")
+    public Response judgment(@RequestParam String email, HttpSession session) throws Exception {
+        int userId = (Integer) session.getAttribute(Constants.USER_ID_STRING);
+        return userFriendService.judgedHasBeenConcerned(userId, email);
+    }
 }

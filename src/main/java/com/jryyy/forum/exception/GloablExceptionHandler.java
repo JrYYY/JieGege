@@ -54,6 +54,17 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
+     * 前提条件错误
+     *
+     * @param e {@link PreconditionFailedException}
+     * @return
+     */
+    @ExceptionHandler(PreconditionFailedException.class)
+    private static Object PreconditionFailedException(PreconditionFailedException e) {
+        return buildErrorResponse(HttpStatus.PRECONDITION_FAILED, e.getMessage());
+    }
+
+    /**
      * 请求错误异常
      *
      * @param e {@link IllegalArgumentException}

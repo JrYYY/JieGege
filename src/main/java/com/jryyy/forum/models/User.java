@@ -2,6 +2,8 @@ package com.jryyy.forum.models;
 
 import lombok.*;
 
+import java.sql.Date;
+
 /**
  * 用户基础类
  */
@@ -31,6 +33,6 @@ public class User {
     private Integer loginFailedAttemptCount;
 
     /* 创建时间 */
-    private String createDate;
+    private Date createDate;
 
 }

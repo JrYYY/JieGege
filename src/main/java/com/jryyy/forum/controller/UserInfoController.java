@@ -1,18 +1,15 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.annotation.UserLoginToken;
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.request.UserInfoRequest;
-import com.jryyy.forum.tool.file.SaveFileUtils;
+import com.jryyy.forum.services.UserInfoService;
+import com.jryyy.forum.tool.annotation.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import java.net.InetAddress;
 
 /**
  * 用户信息控制层
@@ -22,21 +19,35 @@ import java.net.InetAddress;
 public class UserInfoController {
 
     @Autowired
-    SaveFileUtils saveFile;
-
-    @Value("${cds.imagesPath}")
-    private String imagesPath;
+    UserInfoService userInfoService;
 
     @PutMapping
     @UserLoginToken
-    public Response addUserInformation(@Valid @ModelAttribute UserInfoRequest userInfo,
-                                       @RequestParam("avatar") MultipartFile avatar,
-                                       HttpSession session) throws Exception {
-        Integer userId = (int) session.getAttribute(Constants.USER_ID_STRING);
-        InetAddress addr = InetAddress.getLocalHost();
-        String servlet_url = "http://" + addr.getHostAddress() + ":9896/file:";
-        System.out.println(servlet_url + imagesPath + saveFile.savePicture(imagesPath, userId, avatar));
-        System.out.println(userInfo.toString());
-        return new Response<String>(servlet_url + imagesPath + saveFile.savePicture(imagesPath, 1000, avatar));
+    public Response addOrModifyUserInformation(@Valid @ModelAttribute UserInfoRequest request,
+                                               HttpSession session) throws Exception {
+        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);
+        request.setUserId(userId);
+        return userInfoService.changeUserPersonalBasicInformation(request);
+    }
+
+    @GetMapping
+    @UserLoginToken
+    public Response viewUserProfile(HttpSession session) throws Exception {
+        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);
+        return userInfoService.viewUserPersonalInformation(userId);
+    }
+
+    @PostMapping("/check")
+    @UserLoginToken
+    public Response checkIn(HttpSession session) throws Exception {
+        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);
+        return userInfoService.checkIn(userId);
+    }
+
+    @GetMapping("/check")
+    @UserLoginToken
+    public Response judgeWhetherToCheckIn(HttpSession session) throws Exception {
+        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);
+        return userInfoService.whetherToCheckIn(userId);
     }
 }

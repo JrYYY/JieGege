@@ -1,4 +1,4 @@
-package com.jryyy.forum.annotation;
+package com.jryyy.forum.tool.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,4 +13,6 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserLoginToken {
     boolean required() default true;
+
+    String role() default "{com.jryyy.forum.tool.annotation.UserLoginToken.role}";
 }

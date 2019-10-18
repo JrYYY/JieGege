@@ -11,8 +11,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.List;
 
 @Service("UserFriendService")
@@ -29,6 +27,7 @@ public class UserFriendServiceImp implements UserFriendService {
         try {
             return new Response<List<UserFriendResponse>>(userFriendMapper.findAttentionBasedOnId(userId));
         } catch (Exception e) {
+            e.printStackTrace();
             throw new RuntimeException("查看关注列表失败");
         }
     }
@@ -49,12 +48,10 @@ public class UserFriendServiceImp implements UserFriendService {
         if (friendId == null)
             throw new EntityNotFoundException("该用户不存在");
         if (userFriendMapper.findFriend(userId, friendId) != null)
-            throw new BadCredentialsException("已绑定,该用户");
+            throw new BadCredentialsException("已关注,该用户");
         try {
-            SimpleDateFormat df = new SimpleDateFormat("yyyy-mm-dd hh:mm:ss");
             userFriendMapper.insertUserFriend(UserFriend.builder().
                     userId(userId).friendId(friendId).
-                    createDate(df.format(new Date())).
                     build());
             return new Response();
         } catch (Exception e) {
@@ -77,6 +74,19 @@ public class UserFriendServiceImp implements UserFriendService {
             throw new RuntimeException("取消失败");
         }
 
+    }
+
+    @Override
+    public Response judgedHasBeenConcerned(int userId, String email) throws Exception {
+        Integer followId = userMapper.findIdByName(email);
+        if (followId == null)
+            throw new EntityNotFoundException("该用户不存在");
+        try {
+            boolean judged = userFriendMapper.findFriend(userId, followId) != null;
+            return new Response<Boolean>(judged);
+        } catch (Exception e) {
+            throw new RuntimeException("服务器错误");
+        }
     }
 
 }

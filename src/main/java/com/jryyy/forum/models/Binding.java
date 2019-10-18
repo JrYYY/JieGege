@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.sql.Date;
+
 /**
  * 用户绑定类
  */
@@ -28,10 +30,8 @@ public class Binding {
      */
     private Integer boundId;
 
-    /**
-     * 创建时间
-     */
-    private String createDate;
+    /* 创建时间 */
+    private Date createDate;
 
     /**
      * 绑定状态

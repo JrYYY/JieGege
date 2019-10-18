@@ -1,13 +1,26 @@
 package com.jryyy.forum.dao;
 
 import com.jryyy.forum.models.User;
+import com.jryyy.forum.models.response.AdminFindUserResponse;
 import org.apache.ibatis.annotations.*;
+
+import java.util.List;
 
 /**
  * 用户基础信息表
  */
 @Mapper
 public interface UserMapper {
+
+    /**
+     * 查看所有用户
+     *
+     * @return
+     * @throws Exception
+     */
+    @Select("select id,emailName email,password pass,createDate " +
+            "from user where role = 'parent' or role = 'child'")
+    List<AdminFindUserResponse> findAllUsers() throws Exception;
 
     /**
      * 根据id查询用户
@@ -44,8 +57,8 @@ public interface UserMapper {
      * @param user {@link User}
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    @Insert("insert into user(emailName,password,role,createDate)" +
-            "values(#{emailName},#{password},#{role},#{createDate})")
+    @Insert("insert into user(emailName,password,role)" +
+            "values(#{emailName},#{password},#{role})")
     void insertUser(User user) throws Exception;
 
     /**

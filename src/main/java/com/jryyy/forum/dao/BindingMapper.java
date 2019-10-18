@@ -18,7 +18,7 @@ public interface BindingMapper {
      * @param userId 用户id
      * @return {@link BindingResponse} 返回关联列表
      */
-    @Select("select A.id,B.username,B.avatarUrl,A.createDate date " +
+    @Select("select A.id,B.username,B.avatar,A.createDate date " +
             "from binding A join userinfo B " +
             "on A.boundId = B.userId " +
             "where A.userId = #{userId} and status = 1")
@@ -51,7 +51,7 @@ public interface BindingMapper {
      * @param binding {@link Binding}
      * @throws Exception
      */
-    @Insert("insert into binding(userId,boundId,createDate) values(#{userId},#{boundId},#{createDate})")
+    @Insert("insert into binding(userId,boundId) values(#{userId},#{boundId})")
     void insertBinding(Binding binding) throws Exception;
 
     /**

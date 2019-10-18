@@ -1,9 +1,9 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.annotation.UserLoginToken;
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.services.BindingService;
+import com.jryyy.forum.tool.annotation.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

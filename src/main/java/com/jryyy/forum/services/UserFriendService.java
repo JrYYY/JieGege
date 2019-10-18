@@ -2,6 +2,9 @@ package com.jryyy.forum.services;
 
 import com.jryyy.forum.models.Response;
 
+/**
+ * 追随者/追随 服务
+ */
 public interface UserFriendService {
 
     /**
@@ -36,11 +39,21 @@ public interface UserFriendService {
      * 取关
      *
      * @param userId 用户id
-     * @param id
+     * @param id    id
      * @return {@link Response}
      * @throws Exception
      */
     Response takeOff(int userId, int id) throws Exception;
+
+    /**
+     * 判断已关注
+     *
+     * @param userId 用户id
+     * @param email  邮箱
+     * @return true/false
+     * @throws Exception
+     */
+    Response judgedHasBeenConcerned(int userId, String email) throws Exception;
 
 //    /**
 //     * 粉丝数

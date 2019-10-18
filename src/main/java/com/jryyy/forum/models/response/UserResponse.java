@@ -14,10 +14,4 @@ public class UserResponse {
     private String token;
     /* 权限 */
     private String power;
-
-    /* 粉丝人数 */
-    private int followersNumber;
-
-    /* 关注人数 */
-    private int followingNumber;
 }

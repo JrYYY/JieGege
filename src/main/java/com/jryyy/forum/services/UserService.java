@@ -5,12 +5,15 @@ import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
 
+/**
+ * 用户操作 服务
+ */
 public interface UserService {
     /**
      * 用户登录
      *
      * @param request {@link UserRequest}
-     * @return {@link Response}
+     * @return {@link com.jryyy.forum.models.response.UserResponse}
      */
     Response userLogin(UserRequest request) throws Exception;
 
@@ -30,4 +33,11 @@ public interface UserService {
      */
     Response changePassword(ForgotUsernamePasswordRequest request) throws Exception;
 
+    /**
+     * 查询所有用户
+     *
+     * @return {@link com.jryyy.forum.models.response.AdminFindUserResponse}
+     * @throws Exception
+     */
+    Response findAllUsers() throws Exception;
 }

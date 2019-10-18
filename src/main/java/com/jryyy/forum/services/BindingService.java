@@ -2,6 +2,9 @@ package com.jryyy.forum.services;
 
 import com.jryyy.forum.models.Response;
 
+/**
+ * 绑定 服务
+ */
 public interface BindingService {
     /**
      * 查看绑定列表

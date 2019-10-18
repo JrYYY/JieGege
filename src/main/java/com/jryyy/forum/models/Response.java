@@ -6,7 +6,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 /**
- * 信息交互通用类
+ * 信息交互通用类（统一类型）
  *
  * @User JrYYY
  */
