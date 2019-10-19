@@ -5,7 +5,6 @@ import com.jryyy.forum.constant.RoleCode;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.BadCredentialsException;
 import com.jryyy.forum.models.User;
-import com.jryyy.forum.tool.annotation.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.method.HandlerMethod;

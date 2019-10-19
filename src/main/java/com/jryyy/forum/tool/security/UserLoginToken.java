@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool.annotation;
+package com.jryyy.forum.tool.security;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,5 +14,5 @@ import java.lang.annotation.Target;
 public @interface UserLoginToken {
     boolean required() default true;
 
-    String role() default "{com.jryyy.forum.tool.annotation.UserLoginToken.role}";
+    String role() default "{com.jryyy.forum.tool.security.UserLoginToken.role}";
 }

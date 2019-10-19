@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool.file;
+package com.jryyy.forum.tool;
 
 import org.springframework.stereotype.Component;
 

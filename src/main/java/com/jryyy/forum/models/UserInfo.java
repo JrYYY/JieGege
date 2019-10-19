@@ -33,4 +33,10 @@ public class UserInfo {
 
     /* 最近签到时间 */
     private Date checkInDate;
+
+    /* 标签 */
+    private String bio;
+
+    /* 联系签到天数 */
+    private Integer continuousDays;
 }

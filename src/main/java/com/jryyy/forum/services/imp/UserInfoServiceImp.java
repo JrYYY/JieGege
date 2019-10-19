@@ -3,18 +3,22 @@ package com.jryyy.forum.services.imp;
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.exception.PreconditionFailedException;
-import com.jryyy.forum.models.CheckIn;
+import com.jryyy.forum.models.Check;
 import com.jryyy.forum.models.Response;
-import com.jryyy.forum.models.UserInfo;
 import com.jryyy.forum.models.request.UserInfoRequest;
+import com.jryyy.forum.models.response.CheckResponse;
 import com.jryyy.forum.models.response.UserInfoResponse;
 import com.jryyy.forum.services.UserInfoService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.xml.crypto.Data;
+import java.util.Calendar;
 import java.util.Date;
 
 @Service("UserInfoService")
+@Slf4j
 public class UserInfoServiceImp implements UserInfoService {
 
     @Autowired
@@ -26,16 +30,12 @@ public class UserInfoServiceImp implements UserInfoService {
     @Override
     public Response viewUserPersonalInformation(int userId) throws Exception {
         try {
-            UserInfo userInfo = userInfoMapper.selectUserInfo(userId);
+            UserInfoResponse response = userInfoMapper.selectUserInfo(userId);
             Integer following = userFriendMapper.followingTotalByFId(userId);
             Integer followers = userFriendMapper.followersNumByUId(userId);
-            return new Response<UserInfoResponse>(UserInfoResponse.builder()
-                    .username(userInfo.getUsername()).avatar(userInfo.getAvatar())
-                    .age(userInfo.getAge()).sex(userInfo.getSex())
-                    .followersNum(followers).followingNum(following)
-                    .checkInDate(userInfo.getCheckInDate())
-                    .checkInDays(userInfo.getCheckInDays())
-                    .build());
+            response.setFollowingNum(following);
+            response.setFollowersNum(followers);
+            return new Response<UserInfoResponse>(response);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("查看用户个人基本信息失败");
@@ -54,14 +54,20 @@ public class UserInfoServiceImp implements UserInfoService {
 
     @Override
     public Response checkIn(int userId) throws Exception {
-        CheckIn check = userInfoMapper.selectCheckIn(userId);
-        Response response = whetherToCheckIn(userId);
-        if ((boolean) response.getData())
+        Check check = userInfoMapper.selectCheckIn(userId);
+        Response<CheckResponse> response = whetherToCheckIn(userId);
+        if (response.getData().isStatus())
             throw new PreconditionFailedException("已签到，签到失败！");
         try {
+            Date date = new Date();
             System.out.println(check.getCheckInDays());
-            userInfoMapper.checkIn(userId, check.getCheckInDays() + 1);
-            return new Response();
+            userInfoMapper.checkIn(userId, check.getCheckInDays() + 1,
+                    check.getContinuousDays() + 1);
+            return new Response<CheckResponse>(CheckResponse.builder().status(true).
+                    checkInDate(new java.sql.Date(date.getYear(), date.getMonth(), date.getDay())).
+                    checkInDays(check.getCheckInDays() + 1).
+                    continuousDays(check.getContinuousDays() + 1).
+                    build());
         } catch (Exception e) {
             throw new RuntimeException("服务器错误");
         }
@@ -69,26 +75,89 @@ public class UserInfoServiceImp implements UserInfoService {
 
     @Override
     public Response whetherToCheckIn(int userId) throws Exception {
-        CheckIn check = userInfoMapper.selectCheckIn(userId);
+        Check check = userInfoMapper.selectCheckIn(userId);
+
+        CheckResponse response = CheckResponse.builder()
+                .checkInDays(check.getCheckInDays())
+                .checkInDate(check.getCheckInDate())
+                .continuousDays(check.getContinuousDays())
+                .build();
+
+
+        if (check.getCheckInDate() == null) {
+            response.setStatus(false);
+            return new Response<CheckResponse>(response);
+        }
         Date date = new Date();
+        int checkYear = check.getCheckInDate().getYear();
+        int checkMonth = check.getCheckInDate().getMonth();
+        int checkDay = check.getCheckInDate().getDate();
+        Date checkDate = new Date(checkYear, checkMonth, checkDay);
+        int days = differentDays(checkDate,
+                new Date(date.getYear(), date.getMonth(), date.getDate()));
 
-        if (check.getCheckInDate() == null)
-            return new Response<Boolean>(false);
+        log.info(userId + ":" + days + "天没有签到");
 
+        if (days == 0)
+            response.setStatus(true);
+        else if (days == 1)
+            response.setStatus(false);
+        else {
+            userInfoMapper.modifyContinuousCheckIn(userId);
+            response.setStatus(false);
+        }
 
-        if (check.getCheckInDate().getYear() < date.getYear())
-            return new Response<Boolean>(false);
-
-
-        if (check.getCheckInDate().getYear() == date.getYear())
-            if (check.getCheckInDate().getMonth() < date.getMonth())
-                return new Response<Boolean>(false);
-
-        if (check.getCheckInDate().getYear() == date.getYear())
-            if (check.getCheckInDate().getMonth() == date.getMonth())
-                if (check.getCheckInDate().getDay() < date.getDay())
-                    return new Response<Boolean>(false);
-
-        return new Response<Boolean>(true);
+        return new Response<CheckResponse>(response);
     }
+
+
+    /**
+     * date2比date1多的天数
+     *
+     * @param date1 {@link Data}
+     * @param date2 {@link Data}
+     * @return 天数
+     */
+    public int differentDays(Date date1, Date date2) {
+        Calendar cal1 = Calendar.getInstance();
+        cal1.setTime(date1);
+
+        Calendar cal2 = Calendar.getInstance();
+        cal2.setTime(date2);
+        int day1 = cal1.get(Calendar.DAY_OF_YEAR);
+        int day2 = cal1.get(Calendar.DAY_OF_YEAR);
+        int year1 = cal1.get(Calendar.YEAR);
+        int year2 = cal2.get(Calendar.YEAR);
+        if (year1 != year2) {
+            int timeDistance = 0;
+            for (int i = year1; i < year2; i++) {
+                if (i % 4 == 0 && i % 100 != 0 || i % 400 == 0)    //闰年
+                {
+                    timeDistance += 366;
+                } else    //不是闰年
+                {
+                    timeDistance += 365;
+                }
+            }
+            return timeDistance + (day2 - day1);
+        } else {
+            return day2 - day1;
+        }
+    }
+
+    private int days(Date date) {
+        Calendar cal = Calendar.getInstance();
+        int[] months = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
+        cal.setTime(date);
+        int day = cal.get(Calendar.DATE);
+        int year = cal.get(Calendar.YEAR);
+        int month = cal.get(Calendar.MONTH);
+        System.out.println(year + "-" + month + "-" + day);
+        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
+            months[2] = 29;
+        for (int i = 1; i < month; i++)
+            day += months[i];
+        return day;
+    }
+
 }

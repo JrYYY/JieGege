@@ -18,8 +18,9 @@ public interface UserMapper {
      * @return
      * @throws Exception
      */
-    @Select("select id,emailName email,password pass,createDate " +
-            "from user where role = 'parent' or role = 'child'")
+    @Select("select A.id,A.emailName email,B.username,A.password pass,A.createDate " +
+            "from user A join userinfo B on A.id = B.userId " +
+            "where A.role = 'parent' or A.role = 'child'")
     List<AdminFindUserResponse> findAllUsers() throws Exception;
 
     /**

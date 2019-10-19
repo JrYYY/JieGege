@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool.email;
+package com.jryyy.forum.tool;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;

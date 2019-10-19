@@ -4,7 +4,7 @@ import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.request.UserInfoRequest;
 import com.jryyy.forum.services.UserInfoService;
-import com.jryyy.forum.tool.annotation.UserLoginToken;
+import com.jryyy.forum.tool.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

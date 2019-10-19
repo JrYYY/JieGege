@@ -11,33 +11,14 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserInfoResponse {
-    /* 用户名称 */
-    private String username;
-
-    /* 图像 */
-    private Integer avatar;
-
-    /* 性别 */
-    private String sex;
-
-    /* 年龄 */
-    private Integer age;
-
-    /* 关注数 */
-    private Integer followingNum;
-
-    /* 粉丝数 */
-    private Integer followersNum;
+public class CheckResponse {
+    private boolean status;
 
     /* 签到天数 */
     private int checkInDays;
 
     /* 最近签到时间 */
     private Date checkInDate;
-
-    /* 标签 */
-    private String bio;
 
     /* 联系签到天数 */
     private Integer continuousDays;

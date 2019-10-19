@@ -6,12 +6,13 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class UserZoneResponse {
+public class ZoneResponse {
     /* id */
     private int id;
 
@@ -28,5 +29,7 @@ public class UserZoneResponse {
     private int approval;
 
     /* 图片 */
-    private String[] zoneImg;
+    private List<ZoneImgResponse> zoneImgList;
+
 }
+

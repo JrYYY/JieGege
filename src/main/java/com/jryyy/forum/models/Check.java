@@ -11,10 +11,13 @@ import java.sql.Date;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CheckIn {
+public class Check {
     /* 签到天数 */
     private int checkInDays;
 
     /* 最近签到时间 */
     private Date checkInDate;
+
+    /* 联系签到天数 */
+    private Integer continuousDays;
 }

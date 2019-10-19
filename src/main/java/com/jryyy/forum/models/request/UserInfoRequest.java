@@ -8,6 +8,7 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
+import javax.validation.constraints.Size;
 
 @Data
 @NoArgsConstructor
@@ -33,5 +34,8 @@ public class UserInfoRequest {
     @Min(value = 0, message = "年龄输入不规范")
     private Integer age;
 
+    /* 标签 */
+    @Size(min = 0, max = 191)
+    private String bio;
 
 }
