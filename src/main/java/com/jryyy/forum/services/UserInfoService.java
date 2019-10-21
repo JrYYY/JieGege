@@ -8,6 +8,13 @@ import com.jryyy.forum.models.request.UserInfoRequest;
  */
 public interface UserInfoService {
     /**
+     * @param email 邮箱
+     * @return {@link com.jryyy.forum.models.response.UserInfoResponse}
+     * @throws Exception
+     */
+    Response viewOtherPeopleSPersonalInformation(String email) throws Exception;
+
+    /**
      * 查看用户个人基本信息
      *
      * @param userId 用户id

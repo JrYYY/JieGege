@@ -21,6 +21,12 @@ public class UserFriendResponse {
     /* 头像 */
     private String avatar;
 
+    /* 个性 */
+    private String bio;
+
+    /* 最近 */
+    private String recent;
+
     /* 好友添加时间 */
     private Date date;
 }

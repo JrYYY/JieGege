@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool;
+package com.jryyy.forum.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,7 +13,7 @@ import java.io.File;
 import java.util.List;
 
 @Component
-public class EmailVerificationUtils {
+public class EmailVerificationUtil {
 
     @Value("${spring.mail.username}")
     private String from;

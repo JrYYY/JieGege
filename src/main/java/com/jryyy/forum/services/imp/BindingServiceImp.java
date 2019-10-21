@@ -39,12 +39,13 @@ public class BindingServiceImp implements BindingService {
     @Override
     public Response addAssociatedUsers(int userId, String email) throws Exception {
         Integer boundId = userMapper.findIdByName(email);
-        String role = userMapper.findIdByRole(userId);
         if (boundId == null)
             throw new EntityNotFoundException("该用户不存在");
-        if (!RoleCode.PARENT.equals(role))
+        String role1 = userMapper.findIdByRole(userId);
+        String role2 = userMapper.findIdByRole(boundId);
+        if (!RoleCode.PARENT.equals(role1))
             throw new AccessDeniedException("权限不足");
-        if (RoleCode.CHILD.equals(role))
+        if (!RoleCode.CHILD.equals(role2))
             throw new BadCredentialsException("无法关联该用户");
         if (bindingMapper.findIdByBinding(userId, boundId) != null)
             throw new BadCredentialsException("已绑定,该用户");

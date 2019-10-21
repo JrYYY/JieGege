@@ -1,9 +1,9 @@
-package com.jryyy.forum.tool;
+package com.jryyy.forum.utils;
 
 import org.springframework.stereotype.Component;
 
 @Component
-public class GenerateFileNameUtils {
+public class GenerateFileNameUtil {
 
     public boolean isImageType(String fileName) {
         String type = fileName.substring(fileName.lastIndexOf(".") + 1);

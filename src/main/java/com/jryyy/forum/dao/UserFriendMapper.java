@@ -39,7 +39,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatar,A.createDate date " +
+    @Select("select A.id,B.username,B.avatar,B.bio,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
@@ -52,7 +52,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatar,A.createDate date " +
+    @Select("select A.id,B.username,B.avatar,B.bio,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")

@@ -3,24 +3,33 @@ package com.jryyy.forum.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.jryyy.forum.tool.security.JwtInterceptor;
+import com.jryyy.forum.utils.security.JwtInterceptor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created with IntelliJ IDEA.
- *
- * @User JrYYY
+ * spring boot 配置和注入
  */
 @Configuration
 public class FastJsonConfiguration extends WebMvcConfigurationSupport {
+
+    /* 网络访问资源文件夹 */
+    @Value("${file.staticAccessPath}")
+    private String staticAccessPath;
+
+    /* 基本路径 */
+    @Value("${file.uploadFolder}")
+    private String uploadFolder;
+
     /**
      * 修改自定义消息转换器
      *
@@ -85,8 +94,14 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
 
     @Bean
     public JwtInterceptor jwtInterceptor() {
-        JwtInterceptor jwtInterceptor = new JwtInterceptor();
-        return jwtInterceptor;
+        return new JwtInterceptor();
+    }
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {
+        registry.addResourceHandler(staticAccessPath)
+                .addResourceLocations("file:" + uploadFolder);
+        super.addResourceHandlers(registry);
     }
 
 }

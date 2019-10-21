@@ -1,7 +1,6 @@
 package com.jryyy.forum.models.request;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.constant.UserStatus;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.BadCredentialsException;
 import com.jryyy.forum.models.User;
@@ -50,7 +49,7 @@ public class UserRequest {
                         (Constants.MAXIMUM_NUMBER_ATTEMPTS - user.getLoginFailedAttemptCount() - 1) +
                         "尝试机会");
             } else {
-                userMapper.updateStatus(user.getId(), UserStatus.LOCKED);
+                //userMapper.updateStatus(user.getId(), UserStatus.LOCKED);
                 throw new ArithmeticException("您的账号已被冻结");
             }
         }

@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool.security;
+package com.jryyy.forum.utils.security;
 
 
 import com.fasterxml.jackson.core.JsonProcessingException;

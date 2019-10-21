@@ -4,6 +4,8 @@ import lombok.Getter;
 
 @Getter
 public class cs {
+
+
     private String name;
     private String pass;
 
@@ -43,5 +45,7 @@ public class cs {
         public cs build() {
             return new cs(name, pass);
         }
+
+
     }
 }

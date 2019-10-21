@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool;
+package com.jryyy.forum.utils;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -9,34 +9,35 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
 
 import java.util.Random;
+import java.util.concurrent.TimeUnit;
 
 
 @Component
-public class CodeMailUtils {
+public class CodeMailUtil {
 
     @Autowired
-    RedisTemplate redisTemplate;
+    RedisTemplate<String, String> redisTemplate;
+
     @Autowired
-    private JavaMailSender mailSender;
+    JavaMailSender mailSender;
+
     @Value("${spring.mail.username}")
     private String from;
 
     public void sendSimpleMail(String to, String subject) {
         SimpleMailMessage message = new SimpleMailMessage();
         String code = createCode();
-
         message.setFrom(from);
         message.setTo(to);
         message.setSubject(subject);
-        message.setText("请填入您的验证码: " + code);
+        message.setText("请填入您的验证码:  " + code);
         try {
             mailSender.send(message);
-            System.out.println("发送成功");
+            redisTemplate.opsForValue().set(to, code, 300L, TimeUnit.SECONDS);
         } catch (Exception e) {
             e.printStackTrace();
             throw new MailSendException("邮件发送失败");
         }
-
     }
 
     /**

@@ -39,6 +39,9 @@ public class UserInfoResponse {
     /* 标签 */
     private String bio;
 
+    /* 上传数量 */
+    private Integer zoneNum;
+
     /* 联系签到天数 */
     private Integer continuousDays;
 }

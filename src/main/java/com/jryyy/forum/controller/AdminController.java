@@ -3,11 +3,9 @@ package com.jryyy.forum.controller;
 import com.jryyy.forum.constant.RoleCode;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.tool.security.UserLoginToken;
+import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/admin")
@@ -34,16 +32,21 @@ public class AdminController {
      * @param id 用户id
      */
     @UserLoginToken(role = RoleCode.ADMIN)
-    @PutMapping("/{id}/lock")
-    public Response lock(@PathVariable("id") long id, int day) {
+    @PutMapping("/{id}/lock/{day}")
+    public Response lock(@PathVariable("id") long id, @PathVariable("day") int day) {
         // userService.lock(id);
         return new Response();
     }
 
-
+    /**
+     * 查询所有用户‘
+     *
+     * @return {@link com.jryyy.forum.models.response.AdminFindUserResponse}
+     * @throws Exception {}
+     */
     @UserLoginToken(role = RoleCode.ADMIN)
     @GetMapping("/users")
-    public Response findAllUsers(HttpSession session) throws Exception {
+    public Response findAllUsers() throws Exception {
         return userService.findAllUsers();
     }
 

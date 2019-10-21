@@ -11,8 +11,9 @@ import com.jryyy.forum.models.request.UserRequestAccessRequest;
 import com.jryyy.forum.models.response.AdminFindUserResponse;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.tool.security.TokenUtils;
+import com.jryyy.forum.utils.security.TokenUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -30,14 +31,18 @@ public class UserServiceImp implements UserService {
     UserFriendMapper userFriendMapper;
 
     @Autowired
+    RedisTemplate<String, String> template;
+
+    @Autowired
     TokenUtils tokenUtils;
 
     @Override
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
+        user.setPassword(null);
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
-        return new Response<UserResponse>(UserResponse.builder().
+        return new Response<>(UserResponse.builder().
                 token(tokenUtils.createJwtToken(user)).
                 power(user.getRole()).
                 build());
@@ -47,6 +52,7 @@ public class UserServiceImp implements UserService {
     public Response userRegistration(UserRequestAccessRequest request) throws Exception {
         request.requestAccessPermissionDetection();
         request.verifyUserRegistered(userMapper);
+        request.verifyVerificationCode(template);
         User user = request.toUser();
         try {
             userMapper.insertUser(user);
@@ -55,6 +61,12 @@ public class UserServiceImp implements UserService {
             throw new RuntimeException("注册用户失败");
         }
         return new Response();
+    }
+
+    @Override
+    public Response verifyUser(String email) throws Exception {
+        Integer id = userMapper.findIdByName(email);
+        return new Response<>(id != null);
     }
 
     @Override
@@ -73,7 +85,7 @@ public class UserServiceImp implements UserService {
     public Response findAllUsers() throws Exception {
         try {
             List<AdminFindUserResponse> allUsers = userMapper.findAllUsers();
-            return new Response<List<AdminFindUserResponse>>(allUsers);
+            return new Response<>(allUsers);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("查看用户列表失败");

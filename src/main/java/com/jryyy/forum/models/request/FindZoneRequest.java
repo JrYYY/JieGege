@@ -7,15 +7,14 @@ import lombok.NoArgsConstructor;
 import javax.validation.constraints.NotBlank;
 
 @Data
-@NoArgsConstructor
 @AllArgsConstructor
-public class QueryZoneRequest {
-
-    /* 每页显示几条数据 */
+@NoArgsConstructor
+public class FindZoneRequest {
+    /* 每页大小 */
     @NotBlank(message = "pageSize不能为空")
     private Integer pageSize;
 
-    /* 偏移量 */
+    /* 当前页 */
     @NotBlank(message = "offset不能为空")
-    private Integer offset;
+    private Integer curPageNumber;
 }

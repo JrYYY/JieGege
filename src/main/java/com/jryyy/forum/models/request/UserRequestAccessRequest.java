@@ -3,16 +3,16 @@ package com.jryyy.forum.models.request;
 import com.jryyy.forum.constant.RoleCode;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.BadCredentialsException;
+import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.data.redis.core.RedisTemplate;
 
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
-
-//import org.springframework.security.authentication.BadCredentialsException;
 
 @Data
 @NoArgsConstructor
@@ -23,8 +23,8 @@ public class UserRequestAccessRequest {
     private String name;
 
     /* 验证码 */
-    // @NotBlank(message = "验证码不能为空")
-    private String verificationCode;
+    @NotBlank(message = "验证码不能为空")
+    private String code;
 
     @NotBlank(message = "密码不能为空")
     @Size(min = 6, max = 20, message = "密码长度不符合标准")
@@ -57,5 +57,12 @@ public class UserRequestAccessRequest {
             throw new BadCredentialsException("异常访问");
     }
 
+    public void verifyVerificationCode(RedisTemplate redisTemplate) throws Exception {
+        String code = (String) redisTemplate.opsForValue().get(this.name);
+        if (code == null)
+            throw new PreconditionFailedException("验证码已过期");
+        else if (!code.equals(this.code))
+            throw new PreconditionFailedException("验证码错误");
+    }
 
 }

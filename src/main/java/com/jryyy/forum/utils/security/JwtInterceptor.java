@@ -1,4 +1,4 @@
-package com.jryyy.forum.tool.security;
+package com.jryyy.forum.utils.security;
 
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.constant.RoleCode;
@@ -45,21 +45,10 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
             if (userLoginToken.required()) {
                 HttpSession session = request.getSession();
 
-//                int userId;
-//                try {
-//                    userId = (int) session.getAttribute(Constants.USER_ID_STRING);
-//                }catch (Exception e){
-//                    log.info("没有登入！请登入");
-//                    throw new BadCredentialsException("没有登入！请登入");
-//                }
-
                 // 执行认证
                 if (token == null)
                     throw new BadCredentialsException("无token，请重新登录");
                 User user = tokenUtils.decodeJwtToken(token);
-
-//                if(user.getId() != userId)
-//                    throw new BadCredentialsException("非法访问");
 
                 session.setAttribute(Constants.USER_ID_STRING, user.getId());
 
@@ -70,7 +59,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                         throw new AccessDeniedException("权限不足");
                     }
                 }
-
 
                 return true;
             }

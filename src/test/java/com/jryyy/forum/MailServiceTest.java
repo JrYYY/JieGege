@@ -1,6 +1,6 @@
 package com.jryyy.forum;
 
-import com.jryyy.forum.tool.CodeMailUtils;
+import com.jryyy.forum.utils.CodeMailUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,14 +18,15 @@ import java.util.Set;
 public class MailServiceTest {
 
     @Autowired
-    private CodeMailUtils mailUtils;
+    private CodeMailUtil mailUtils;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Test
     public void testSimpleMail() throws Exception {
-        mailUtils.sendSimpleMail("ityouknow@126.com", "test simple mail");
+        mailUtils.sendSimpleMail("1952381587@qq.com", "test simple mail");
+        System.out.println(redisTemplate.opsForValue().get("1952381587@qq.com"));
     }
 
     @Test

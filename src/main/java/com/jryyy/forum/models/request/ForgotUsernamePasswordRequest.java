@@ -10,8 +10,9 @@ import org.springframework.data.redis.core.RedisTemplate;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 
-//import org.springframework.security.authentication.BadCredentialsException;
-
+/**
+ * 修改密码响应类
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -45,7 +46,7 @@ public class ForgotUsernamePasswordRequest {
     /**
      * 验证 验证码
      */
-    public void verification(RedisTemplate template) {
+    public void verifyVerificationCode(RedisTemplate template) {
 
     }
 }

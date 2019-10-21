@@ -8,13 +8,15 @@ import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.tool.security.TokenUtils;
+import com.jryyy.forum.utils.CodeMailUtil;
+import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.validation.constraints.Email;
 
 /**
  * 安全验证控制层
@@ -29,6 +31,9 @@ public class SecurityController {
 
     @Autowired
     TokenUtils tokenUtils;
+
+    @Autowired
+    CodeMailUtil codeMailUtil;
 
     /**
      * 登入
@@ -56,6 +61,11 @@ public class SecurityController {
         return userService.userRegistration(request);
     }
 
+    @GetMapping("/signUp")
+    public Response verification(@RequestParam String email) throws Exception {
+        return userService.verifyUser(email);
+    }
+
     /**
      * 更新token
      *
@@ -67,11 +77,9 @@ public class SecurityController {
     @PutMapping("/token")
     public Response PutJWT(String token, HttpSession session) throws Exception {
         User user = tokenUtils.decodeJwtToken(token);
-        Response response = userService.
-                userLogin(UserRequest.builder().
-                        name(user.getEmailName()).
-                        pass(user.getPassword()).
-                        build());
+        Response response = new Response<>(UserResponse.builder()
+                .token(tokenUtils.createJwtToken(user))
+                .power(user.getRole()).build());
         session.setAttribute(Constants.USER_ID_STRING, user.getId());
         log.info(user.toString() + "---更新token");
         return response;
@@ -102,5 +110,10 @@ public class SecurityController {
         return userService.changePassword(request);
     }
 
+    @GetMapping("/generate")
+    public Response generateVerificationCode(@Valid @Email @RequestParam String email) throws Exception {
+        codeMailUtil.sendSimpleMail(email, "注册验证");
+        return new Response<>(true);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.jryyy.forum.services.imp;
 
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.Check;
 import com.jryyy.forum.models.Response;
@@ -27,15 +28,20 @@ public class UserInfoServiceImp implements UserInfoService {
     @Autowired
     UserFriendMapper userFriendMapper;
 
+    @Autowired
+    UserZoneMapper zoneMapper;
+
     @Override
     public Response viewUserPersonalInformation(int userId) throws Exception {
         try {
             UserInfoResponse response = userInfoMapper.selectUserInfo(userId);
             Integer following = userFriendMapper.followingTotalByFId(userId);
             Integer followers = userFriendMapper.followersNumByUId(userId);
+            Integer zoneNum = zoneMapper.countZoneNumByUserId(userId);
             response.setFollowingNum(following);
             response.setFollowersNum(followers);
-            return new Response<UserInfoResponse>(response);
+            response.setZoneNum(zoneNum);
+            return new Response<>(response);
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("查看用户个人基本信息失败");
@@ -63,7 +69,7 @@ public class UserInfoServiceImp implements UserInfoService {
             System.out.println(check.getCheckInDays());
             userInfoMapper.checkIn(userId, check.getCheckInDays() + 1,
                     check.getContinuousDays() + 1);
-            return new Response<CheckResponse>(CheckResponse.builder().status(true).
+            return new Response<>(CheckResponse.builder().status(true).
                     checkInDate(new java.sql.Date(date.getYear(), date.getMonth(), date.getDay())).
                     checkInDays(check.getCheckInDays() + 1).
                     continuousDays(check.getContinuousDays() + 1).
@@ -83,16 +89,14 @@ public class UserInfoServiceImp implements UserInfoService {
                 .continuousDays(check.getContinuousDays())
                 .build();
 
-
         if (check.getCheckInDate() == null) {
             response.setStatus(false);
-            return new Response<CheckResponse>(response);
+            return new Response<>(response);
         }
+
         Date date = new Date();
-        int checkYear = check.getCheckInDate().getYear();
-        int checkMonth = check.getCheckInDate().getMonth();
-        int checkDay = check.getCheckInDate().getDate();
-        Date checkDate = new Date(checkYear, checkMonth, checkDay);
+        Date checkDate = new Date(check.getCheckInDate().getYear(),
+                check.getCheckInDate().getMonth(), check.getCheckInDate().getDate());
         int days = differentDays(checkDate,
                 new Date(date.getYear(), date.getMonth(), date.getDate()));
 
@@ -106,8 +110,7 @@ public class UserInfoServiceImp implements UserInfoService {
             userInfoMapper.modifyContinuousCheckIn(userId);
             response.setStatus(false);
         }
-
-        return new Response<CheckResponse>(response);
+        return new Response<>(response);
     }
 
 
@@ -126,8 +129,10 @@ public class UserInfoServiceImp implements UserInfoService {
         cal2.setTime(date2);
         int day1 = cal1.get(Calendar.DAY_OF_YEAR);
         int day2 = cal1.get(Calendar.DAY_OF_YEAR);
+
         int year1 = cal1.get(Calendar.YEAR);
         int year2 = cal2.get(Calendar.YEAR);
+
         if (year1 != year2) {
             int timeDistance = 0;
             for (int i = year1; i < year2; i++) {

@@ -26,6 +26,15 @@ public interface UserService {
     Response userRegistration(UserRequestAccessRequest request) throws Exception;
 
     /**
+     * 验证用户是否存在
+     *
+     * @param email 邮箱
+     * @return true/false
+     * @throws Exception
+     */
+    Response verifyUser(String email) throws Exception;
+
+    /**
      * 修改密码
      *
      * @param request {@link ForgotUsernamePasswordRequest}

@@ -1,43 +1,1 @@
-package com.jryyy.forum.controller;
-
-import com.jryyy.forum.exception.PreconditionFailedException;
-import com.jryyy.forum.models.Response;
-import com.jryyy.forum.tool.SaveFileUtils;
-import com.jryyy.forum.tool.security.UserLoginToken;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.servlet.http.HttpSession;
-import java.util.ArrayList;
-import java.util.List;
-
-@RestController
-@RequestMapping("/zone")
-public class ZoneController {
-
-    @Value("${cds.zoneImages}")
-    String url;
-
-    String http = "http://192.163.19.59:9896/file:";
-
-    @Autowired
-    SaveFileUtils file;
-
-    @PostMapping
-    @UserLoginToken
-    public Response writeUserZone(String msg, MultipartFile[] files, HttpSession session) throws Exception {
-        if (msg == null && files.length == 0)
-            throw new PreconditionFailedException("请填写上传内容");
-        System.out.println(msg);
-        List<String> fileUrls = file.saveTalkImg(url, files);
-        List<String> urls = new ArrayList<>();
-        for (String fileUrl : fileUrls) {
-            urls.add(http + fileUrl);
-        }
-        return new Response<List<String>>(urls);
-    }
-}
+package com.jryyy.forum.controller;import com.jryyy.forum.constant.Constants;import com.jryyy.forum.exception.PreconditionFailedException;import com.jryyy.forum.models.Response;import com.jryyy.forum.models.request.ZoneRequest;import com.jryyy.forum.services.ZoneService;import com.jryyy.forum.utils.security.UserLoginToken;import org.springframework.beans.factory.annotation.Autowired;import org.springframework.web.bind.annotation.*;import javax.servlet.http.HttpSession;@RestController@RequestMapping("/zone")public class ZoneController {    @Autowired    ZoneService zoneService;    @PostMapping    @UserLoginToken    public Response writeUserZone(ZoneRequest request, HttpSession session) throws Exception {        if (request.getMsg() == null && request.getFiles() == null)            throw new PreconditionFailedException("请填写上传内容");        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);        request.setUserId(userId);        return zoneService.writeZone(request);    }    @GetMapping("/{curPage}/{pageSize}/{mode}")    public Response readAllZone(@PathVariable("curPage") int curPage, @PathVariable("pageSize") int pageSize,                                @PathVariable("mode") int mode) throws Exception {        return zoneService.findAllZone(curPage, pageSize, mode);    }    @UserLoginToken    @GetMapping("/self/{curPage}/{pageSize}/{mode}")    public Response readUserZone(@PathVariable("curPage") int curPage, @PathVariable("pageSize") int pageSize,                                 @PathVariable("mode") int mode, HttpSession session) throws Exception {        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);        return zoneService.findUserZone(curPage, pageSize, userId, mode);    }    @UserLoginToken    @DeleteMapping("/{id}")    public Response deleteUserZone(@PathVariable("id") int id, HttpSession session) throws Exception {        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);        return zoneService.deleteZoneById(userId, id);    }    @UserLoginToken    @PutMapping("/commend/{id}")    public Response praiseZone(@PathVariable("id") int id, HttpSession session) throws Exception {        return null;    }}

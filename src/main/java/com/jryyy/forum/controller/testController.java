@@ -2,7 +2,7 @@ package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.dao.UserInfoMapper;
-import com.jryyy.forum.tool.security.UserLoginToken;
+import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;

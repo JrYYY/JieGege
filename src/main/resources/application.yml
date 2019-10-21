@@ -17,39 +17,44 @@ spring:
         max-idle: 8 # 连接池中的最大空闲连接
   mail:
     default-encoding: UTF-8
-    host: smtp.qq.com
-    username: 1952381587@qq.com
-    password: 18397331446plm
+    host: smtp.qiye.aliyun.com
+    port: 465
+    username: jryyy@angeldevil.top
+    password: JrYYY123
     protocol: smtp
     properties:
       mail:
         smtp:
+          ssl:
+            trust: smtp.qiye.aliyun.com
+          socketFactory:
+            class: javax.net.ssl.SSLSocketFactory
+            port: 465
           auth: true
           starttls:
             enable: true
             required: true
+
+  jackson:
+    date-format: yyyy-mm-dd hh:mm:ss
+    time-zone: GMT+8
+
   jpa:
     show-sql: true
-
-
-mail:
-  fromMail:
-    addr: JrYYY@Test.com
 
 server:
   port: 9896
 
-debug: true
-
-cds:
-  imagesPath: D:\cs\bs\user\avatar
-  zoneImages: D:\cs\bs\user\zone
+##图片临时路径
+file:
+  uploadFolder: D:/home/zone/image/
+  staticAccessPath: /upload/**
+  url: http://192.168.19.59:9896/upload/
 
 #token
 token:
   effectiveTime: 8640000
   secret: hjijfvbw859
-
 
 # Logging
 logging:
@@ -58,4 +63,7 @@ logging:
     com:
       quartzenergy:
         ofs: debug
+
+debug: true
+
 
