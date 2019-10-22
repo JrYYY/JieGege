@@ -13,6 +13,9 @@ import org.apache.ibatis.jdbc.SQL;
 @Mapper
 public interface UserInfoMapper {
 
+    @Delete("delete from userinfo where userId = #{userId}")
+    void deleteUserInfo(int userId) throws Exception;
+
     /**
      * 查询用户信息
      *
@@ -20,9 +23,10 @@ public interface UserInfoMapper {
      * @return {@link UserInfo}
      * @throws Exception
      */
-    @Select("select username,avatar,sex,age," +
-            "checkInDays,checkInDate,bio,continuousCheckInDays continuousDays " +
-            "from userinfo where userId = #{id}")
+    @Select("select B.emailName email,A.username,A.avatar,A.sex,A.age," +
+            "A.checkInDays,A.checkInDate,A.bio," +
+            "A.continuousCheckInDays continuousDays " +
+            "from userinfo A join user B on A.userId = B.id where A.userId = #{id}")
     UserInfoResponse selectUserInfo(@Param("id") int id) throws Exception;
 
     /**

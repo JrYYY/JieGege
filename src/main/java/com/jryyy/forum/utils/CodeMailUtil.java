@@ -46,7 +46,7 @@ public class CodeMailUtil {
      * @return 验证码
      */
     public String createCode() {
-        String codeNum = "";
+        StringBuilder codeNum = new StringBuilder();
         String[] numbers = {"0", "1", "2", "3", "4", "5", "6", "7", "8", "9",
                 "a", "b", "c", "d", "e", "f", "g", "h", "i", "g", "k", "l", "m",
                 "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z",
@@ -57,8 +57,8 @@ public class CodeMailUtil {
         for (int i = 0; i < 6; i++) {
             int next = random.nextInt(62);
             // System.out.println(next);
-            codeNum += numbers[next % 62];
+            codeNum.append(numbers[next % 62]);
         }
-        return codeNum;
+        return codeNum.toString();
     }
 }

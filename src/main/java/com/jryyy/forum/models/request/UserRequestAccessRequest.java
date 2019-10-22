@@ -60,9 +60,9 @@ public class UserRequestAccessRequest {
     public void verifyVerificationCode(RedisTemplate redisTemplate) throws Exception {
         String code = (String) redisTemplate.opsForValue().get(this.name);
         if (code == null)
-            throw new PreconditionFailedException("验证码已过期");
+            throw new PreconditionFailedException("尚未请求验证码");
         else if (!code.equals(this.code))
-            throw new PreconditionFailedException("验证码错误");
+            throw new IllegalArgumentException("验证码错误");
     }
 
 }

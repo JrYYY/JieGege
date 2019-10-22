@@ -50,7 +50,10 @@ public interface UserZoneMapper {
      * @return  {@link ZoneResponse}
      * @throws Exception
      */
-    @Select("select id,msg,createDate date,msgType where id = #{id}")
+    @Select("select " +
+            "A.id,B.emailName email,A.msg," +
+            "A.createDate date,A.msgType,A.praise " +
+            "from user_zone A join user B on A.userId = B.id where A.id = #{id}")
     ZoneResponse findZoneById(@Param("id") int id) throws Exception;
 
     /**
@@ -62,6 +65,14 @@ public interface UserZoneMapper {
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("insert into user_zone(userId,msg,msgType)values(#{userId},#{msg},#{msgType})")
     void insertZone(UserZone userZone) throws Exception;
+
+    /**
+     * @param count  总数
+     * @param zoneId id
+     * @throws Exception
+     */
+    @Update("update user_zone set praise = #{count} where id = #{zoneId}")
+    void updatePraise(int count, int zoneId) throws Exception;
 
     /**
      * 删除
@@ -137,27 +148,28 @@ public interface UserZoneMapper {
     class SqlProvider {
         public String selectAllZonePersonSql(Integer mode) {
             return new SQL() {{
-                SELECT("id", "msg", "createDate date", "msgType");
-                FROM("user_zone");
+                SELECT("A.id", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
+                FROM("user_zone A").JOIN("user B on A.userId = B.id");
                 if (mode == 0)
-                    ORDER_BY("createDate DESC,praise DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.createDate DESC,A.praise DESC limit #{currIndex},#{pageSize}");
                 else if (mode == 1)
-                    ORDER_BY("createDate DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.createDate DESC limit #{currIndex},#{pageSize}");
                 else if (mode == 2)
-                    ORDER_BY("praise DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.praise DESC limit #{currIndex},#{pageSize}");
             }}.toString();
         }
 
         public String selectUserZonePersonSql(Integer mode) {
             return new SQL() {{
-                SELECT("id", "msg", "createDate date", "msgType");
-                FROM("user_zone").WHERE("userId = #{userId}");
+                SELECT("A.id", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
+                FROM("user_zone A").JOIN("user B on A.userId = B.id")
+                        .WHERE("A.userId = #{userId}");
                 if (mode == 0)
-                    ORDER_BY("createDate DESC,praise DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.createDate DESC,praise DESC limit #{currIndex},#{pageSize}");
                 else if (mode == 1)
-                    ORDER_BY("createDate DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.createDate DESC limit #{currIndex},#{pageSize}");
                 else if (mode == 2)
-                    ORDER_BY("praise DESC limit #{currIndex},#{pageSize}");
+                    ORDER_BY("A.praise DESC limit #{currIndex},#{pageSize}");
             }}.toString();
         }
 

@@ -17,6 +17,9 @@ public class ZoneResponse {
     /* id */
     private int id;
 
+    /* 邮箱 */
+    private String email;
+
     /* 内容 */
     private String msg;
 

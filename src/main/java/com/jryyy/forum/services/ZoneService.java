@@ -57,4 +57,24 @@ public interface ZoneService {
     Response deleteZoneById(int userId, int id) throws Exception;
 
 
+    /**
+     * 点赞或取消
+     *
+     * @param userId 用户id
+     * @param zoneId 空间id
+     * @return true/false
+     * @throws Exception
+     */
+    Response likeOrCancel(int userId, int zoneId) throws Exception;
+
+    /**
+     * 判断是否已经点赞
+     *
+     * @param userId 用户id
+     * @param zoneId 空间id
+     * @return true/false
+     * @throws Exception
+     */
+    Response liked(int userId, int zoneId) throws Exception;
+
 }

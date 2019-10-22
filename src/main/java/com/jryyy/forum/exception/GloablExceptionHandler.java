@@ -57,7 +57,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 前提条件错误
      *
      * @param e {@link PreconditionFailedException}
-     * @return
+     * @return  {@link ResponseEntity}
      */
     @ExceptionHandler(PreconditionFailedException.class)
     private static Object PreconditionFailedException(PreconditionFailedException e) {
@@ -79,7 +79,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 请求错误异常
      *
      * @param ex {@link MultipartException}
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(MultipartException.class)
     public Object handleMultipartException(MultipartException ex) {
@@ -90,7 +90,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 身份验证异常
      *
      * @param ex {@link BadCredentialsException}
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(BadCredentialsException.class)
     public Object handleBadCredentialsException(BadCredentialsException ex) {
@@ -101,7 +101,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 运行时错误异常
      *
      * @param e {@link RuntimeException}
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(RuntimeException.class)
     public Object handleException(RuntimeException e) {
@@ -112,7 +112,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 无法找到请求资源异常
      *
      * @param ex {@link EntityNotFoundException}
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(EntityNotFoundException.class)
     public Object handleEntityNotFoundException(EntityNotFoundException ex) {
@@ -123,7 +123,7 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
      * 被拒绝访问异常
      *
      * @param ex
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(AccessDeniedException.class)
     public Object handleAccessDeniedException(AccessDeniedException ex) {

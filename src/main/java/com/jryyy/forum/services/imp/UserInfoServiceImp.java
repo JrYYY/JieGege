@@ -2,6 +2,7 @@ package com.jryyy.forum.services.imp;
 
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.Check;
@@ -29,7 +30,16 @@ public class UserInfoServiceImp implements UserInfoService {
     UserFriendMapper userFriendMapper;
 
     @Autowired
+    UserMapper userMapper;
+
+    @Autowired
     UserZoneMapper zoneMapper;
+
+    @Override
+    public Response viewOtherPeopleSPersonalInformation(String email) throws Exception {
+        Integer id = userMapper.findIdByName(email);
+        return viewUserPersonalInformation(id);
+    }
 
     @Override
     public Response viewUserPersonalInformation(int userId) throws Exception {

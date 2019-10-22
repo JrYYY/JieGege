@@ -92,5 +92,12 @@ public class UserServiceImp implements UserService {
         }
     }
 
+    @Override
+    public Response deleteUser(int userId) throws Exception {
+        userMapper.deleteUser(userId);
+        userInfoMapper.deleteUserInfo(userId);
+        return new Response<>(true);
+    }
+
 
 }

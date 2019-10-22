@@ -12,6 +12,9 @@ import java.util.List;
 @Mapper
 public interface UserMapper {
 
+    @Delete("delete from user where id = #{id}")
+    void deleteUser(int id) throws Exception;
+
     /**
      * 查看所有用户
      *

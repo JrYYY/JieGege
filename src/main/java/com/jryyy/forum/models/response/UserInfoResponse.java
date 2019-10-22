@@ -12,6 +12,9 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class UserInfoResponse {
+    /* 邮箱 */
+    private String email;
+
     /* 用户名称 */
     private String username;
 

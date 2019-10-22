@@ -36,19 +36,4 @@ public class MailServiceTest {
         redisTemplate.opsForValue();
     }
 
-    @Test
-    public void setRedis() {
-        redisTemplate.opsForValue().set("id", 1011);
-    }
-
-    @Test
-    public void getRedis() {
-        System.out.println(redisTemplate.opsForList().range("userlist", 0, 10));
-    }
-
-    @Test
-    public void deleteRedis() {
-        redisTemplate.delete("userlist");
-    }
-
 }

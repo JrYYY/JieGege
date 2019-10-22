@@ -23,7 +23,7 @@ public class UserInfoController {
 
     @GetMapping("/{email}")
     public Response findOtherUserInformation(@PathVariable String email) throws Exception {
-        return null;
+        return userInfoService.viewOtherPeopleSPersonalInformation(email);
     }
 
     @PutMapping

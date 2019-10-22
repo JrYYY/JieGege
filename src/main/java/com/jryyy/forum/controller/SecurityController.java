@@ -1,6 +1,7 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
@@ -16,7 +17,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
-import javax.validation.constraints.Email;
 
 /**
  * 安全验证控制层
@@ -44,7 +44,8 @@ public class SecurityController {
     @PostMapping("/signIn")
     public Response signIn(@Valid @ModelAttribute UserRequest request, HttpSession session) throws Exception {
         Response<UserResponse> response = userService.userLogin(request);
-        session.setAttribute(Constants.USER_ID_STRING, tokenUtils.decodeJwtToken(response.getData().getToken()).getId());
+        session.setAttribute(Constants.USER_ID_STRING,
+                tokenUtils.decodeJwtToken(response.getData().getToken()).getId());
         log.info(request.toString() + "__________登入成功");
         return response;
     }
@@ -111,7 +112,10 @@ public class SecurityController {
     }
 
     @GetMapping("/generate")
-    public Response generateVerificationCode(@Valid @Email @RequestParam String email) throws Exception {
+    public Response generateVerificationCode(@RequestParam String email) throws Exception {
+        Response response = userService.verifyUser(email);
+        if ((Boolean) response.getData())
+            throw new PreconditionFailedException("邮箱已注册");
         codeMailUtil.sendSimpleMail(email, "注册验证");
         return new Response<>(true);
     }

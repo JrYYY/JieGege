@@ -7,6 +7,8 @@ import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.file.AccessDeniedException;
+
 @RestController
 @RequestMapping("/admin")
 public class AdminController {
@@ -50,10 +52,12 @@ public class AdminController {
         return userService.findAllUsers();
     }
 
+    @DeleteMapping("/user/{id}")
     @UserLoginToken(role = RoleCode.ADMIN)
-    @GetMapping("/zones")
-    public Response findAllZones() throws Exception {
-        return new Response();
+    public Response deleteUser(@PathVariable("id") int id) throws Exception {
+        if (id != 1013)
+            throw new AccessDeniedException("权限不足");
+        return userService.deleteUser(id);
     }
 
 }

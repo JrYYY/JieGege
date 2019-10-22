@@ -49,4 +49,13 @@ public interface UserService {
      * @throws Exception
      */
     Response findAllUsers() throws Exception;
+
+    /**
+     * 注销用户
+     *
+     * @param userId id
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response deleteUser(int userId) throws Exception;
 }
