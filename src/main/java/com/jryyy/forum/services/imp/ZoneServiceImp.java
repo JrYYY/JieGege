@@ -66,6 +66,8 @@ public class ZoneServiceImp implements ZoneService {
     public Response findAllZone(int curPage, int pageSize, int mode) throws Exception {
         int totalNum = userZoneMapper.countZoneNum();
         int totalPageNum = (int) Math.ceil((float) totalNum / pageSize);
+        if (!(curPage > 0 && curPage <= totalPageNum))
+            throw new EntityNotFoundException("查询失败,页数不满足条件");
         ZoneListResponse response = ZoneListResponse.builder()
                 .curPageNumber(curPage).numberPerPage(pageSize)
                 .totalNum(totalNum).totalPageNum(totalPageNum)
@@ -84,13 +86,19 @@ public class ZoneServiceImp implements ZoneService {
 
     @Override
     public Response findUserZone(int curPage, int pageSize, int userId, int mode) throws Exception {
+
         int totalNum = userZoneMapper.countZoneNumByUserId(userId);
         int totalPageNum = (int) Math.ceil((float) totalNum / pageSize);
+
+        if (!(curPage > 0 && curPage <= totalPageNum))
+            throw new EntityNotFoundException("查询失败,页数异常");
+
         ZoneListResponse response = ZoneListResponse.builder()
                 .curPageNumber(curPage).numberPerPage(pageSize)
                 .totalNum(totalNum).totalPageNum(totalPageNum)
                 .hasNext(curPage != totalPageNum).hasPrev(curPage != 1)
                 .build();
+
         List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
                 (curPage - 1) * pageSize, pageSize, userId, mode);
         for (ZoneResponse zone : zones) {
