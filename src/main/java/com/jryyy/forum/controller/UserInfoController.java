@@ -21,9 +21,14 @@ public class UserInfoController {
     @Autowired
     UserInfoService userInfoService;
 
-    @GetMapping("/{email}")
-    public Response findOtherUserInformation(@PathVariable String email) throws Exception {
-        return userInfoService.viewOtherPeopleSPersonalInformation(email);
+    @GetMapping("/{id}")
+    public Response findOtherUserInformation(@PathVariable Integer id) throws Exception {
+        return userInfoService.viewOtherPeopleSPersonalInformation(id);
+    }
+
+    @GetMapping("/condition")
+    public Response queryUserListBasedOnCriteria(String value) throws Exception {
+        return userInfoService.queryUserList(value);
     }
 
     @PutMapping

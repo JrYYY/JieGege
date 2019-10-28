@@ -51,7 +51,7 @@ public interface UserZoneMapper {
      * @throws Exception
      */
     @Select("select " +
-            "A.id,B.emailName email,A.msg," +
+            "A.id,A.userId,B.emailName email,A.msg," +
             "A.createDate date,A.msgType,A.praise " +
             "from user_zone A join user B on A.userId = B.id where A.id = #{id}")
     ZoneResponse findZoneById(@Param("id") int id) throws Exception;
@@ -148,7 +148,7 @@ public interface UserZoneMapper {
     class SqlProvider {
         public String selectAllZonePersonSql(Integer mode) {
             return new SQL() {{
-                SELECT("A.id", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
+                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
                 FROM("user_zone A").JOIN("user B on A.userId = B.id");
                 if (mode == 0)
                     ORDER_BY("A.createDate DESC,A.praise DESC limit #{currIndex},#{pageSize}");
@@ -161,7 +161,7 @@ public interface UserZoneMapper {
 
         public String selectUserZonePersonSql(Integer mode) {
             return new SQL() {{
-                SELECT("A.id", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
+                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
                 FROM("user_zone A").JOIN("user B on A.userId = B.id")
                         .WHERE("A.userId = #{userId}");
                 if (mode == 0)

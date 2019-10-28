@@ -1,5 +1,7 @@
 package com.jryyy.forum.utils;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,7 +18,7 @@ public class FileUtil {
     @Autowired
     GenerateFileNameUtil generate;
 
-    public String savePicture(String url, MultipartFile img) {
+    public String savePicture(String url, MultipartFile img) throws GlobalException {
         generate.isImageType(img.getOriginalFilename());
         try {
             String imgName = generate.duplicateFileName("picture_",
@@ -28,11 +30,11 @@ public class FileUtil {
             return imgName;
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("图片保存失败");
+            throw new GlobalException(GlobalStatus.imageSaveFailed);
         }
     }
 
-    public String saveTalkImg(String url, MultipartFile file) {
+    public String saveTalkImg(String url, MultipartFile file) throws GlobalException {
         try {
             String imgName = generate.duplicateFileName("zoneImg_",
                     generate.interceptSuffix(file.getOriginalFilename()));
@@ -42,11 +44,11 @@ public class FileUtil {
             file.transferTo(new File(url, imgName));
             return imgName;
         } catch (IOException e) {
-            throw new RuntimeException("文件保存失败");
+            throw new GlobalException(GlobalStatus.imageSaveFailed);
         }
     }
 
-    public List<String> saveTalkImg(String url, MultipartFile[] files) {
+    public List<String> saveTalkImg(String url, MultipartFile[] files) throws GlobalException {
         try {
             List<String> imgUrls = new ArrayList<>();
             for (MultipartFile file : files) {
@@ -62,7 +64,7 @@ public class FileUtil {
             return imgUrls;
         } catch (IOException e) {
             e.printStackTrace();
-            throw new RuntimeException("文件保存失败");
+            throw new GlobalException(GlobalStatus.imageSaveFailed);
         }
     }
 

@@ -15,6 +15,9 @@ public class UserFriendResponse {
     /* id */
     private Integer id;
 
+    /* 用户id */
+    private Integer userId;
+
     /* 用户名称 */
     private String username;
 

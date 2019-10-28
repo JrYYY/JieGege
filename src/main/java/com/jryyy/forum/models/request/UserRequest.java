@@ -1,8 +1,9 @@
 package com.jryyy.forum.models.request;
 
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserMapper;
-import com.jryyy.forum.exception.BadCredentialsException;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -45,12 +46,10 @@ public class UserRequest {
         if (!user.getPassword().equals(this.pass)) {
             if (user.getLoginFailedAttemptCount() < Constants.MAXIMUM_NUMBER_ATTEMPTS) {
                 userMapper.updateLoginFailedAttemptCount(user.getId(), user.getLoginFailedAttemptCount() + 1);
-                throw new BadCredentialsException("密码错误,您还有：" +
-                        (Constants.MAXIMUM_NUMBER_ATTEMPTS - user.getLoginFailedAttemptCount() - 1) +
-                        "尝试机会");
+                throw new GlobalException(GlobalStatus.wrongPassword);
             } else {
                 //userMapper.updateStatus(user.getId(), UserStatus.LOCKED);
-                throw new ArithmeticException("您的账号已被冻结");
+                throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
             }
         }
         return user;
@@ -63,7 +62,7 @@ public class UserRequest {
      */
     public void userDoesNotExist(UserMapper userMapper) throws Exception {
         if (userMapper.findLoginByName(this.name) == null)
-            throw new BadCredentialsException("用户不存在");
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
     }
 
 

@@ -26,7 +26,7 @@ public interface UserFriendMapper {
      * 关注数
      *
      * @param userId 用户id
-     * @return
+     * @return 统计数
      * @throws Exception
      */
     @Select("select count(*) from user_friend where userId = #{userId}")
@@ -39,7 +39,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatar,B.bio,A.createDate date " +
+    @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
@@ -52,7 +52,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriendResponse}
      * @throws Exception
      */
-    @Select("select A.id,B.username,B.avatar,B.bio,A.createDate date " +
+    @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate date " +
             "from user_friend A join userinfo B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")
@@ -74,7 +74,7 @@ public interface UserFriendMapper {
      *
      * @param userId   用户id
      * @param friendId 好友id
-     * @return
+     * @return id
      * @throws Exception
      */
     @Select("select id from user_friend where userId = #{userId} and friendId = #{friendId}")

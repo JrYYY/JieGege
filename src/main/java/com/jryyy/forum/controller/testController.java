@@ -2,6 +2,7 @@ package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.utils.security.PassToken;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -13,12 +14,13 @@ import javax.servlet.http.HttpSession;
 
 @RestController
 @RequestMapping("/test")
+@UserLoginToken
 public class testController {
 
     @Autowired
     UserInfoMapper userInfoMapper;
 
-    @UserLoginToken
+
     @GetMapping("/string")
     public String testString(HttpSession session) {
         System.out.println(session.getAttribute(Constants.USER_ID_STRING));
@@ -26,7 +28,9 @@ public class testController {
     }
 
     @DeleteMapping("/check")
-    public void testCheck() throws Exception {
-        userInfoMapper.deleteCheckInDate(1010);
+    @PassToken
+    public String testCheck() throws Exception {
+        // userInfoMapper.deleteCheckInDate(1010);
+        return "测试成功";
     }
 }

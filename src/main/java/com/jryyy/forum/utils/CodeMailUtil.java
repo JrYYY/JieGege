@@ -1,9 +1,10 @@
 package com.jryyy.forum.utils;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.mail.MailSendException;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Component;
@@ -24,7 +25,7 @@ public class CodeMailUtil {
     @Value("${spring.mail.username}")
     private String from;
 
-    public void sendSimpleMail(String to, String subject) {
+    public void sendSimpleMail(String to, String subject) throws GlobalException {
         SimpleMailMessage message = new SimpleMailMessage();
         String code = createCode();
         message.setFrom(from);
@@ -36,7 +37,7 @@ public class CodeMailUtil {
             redisTemplate.opsForValue().set(to, code, 300L, TimeUnit.SECONDS);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new MailSendException("邮件发送失败");
+            throw new GlobalException(GlobalStatus.failedToApplyForVerificationCode);
         }
     }
 

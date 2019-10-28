@@ -38,9 +38,9 @@ public class FriendController {
 
     @UserLoginToken
     @PostMapping("/follow")
-    public Response addFollow(@RequestParam String email, HttpSession session) throws Exception {
+    public Response addFollow(@RequestParam int id, HttpSession session) throws Exception {
         int userId = (Integer) session.getAttribute(Constants.USER_ID_STRING);
-        return userFriendService.attention(userId, email);
+        return userFriendService.attention(userId, id);
     }
 
     @UserLoginToken

@@ -14,7 +14,7 @@ public class ZoneDetailResponse extends ZoneResponse {
     private List<ZonePraiseResponse> Users;
 
     public ZoneDetailResponse(ZoneResponse zone) {
-        super(zone.getId(), zone.getEmail(), zone.getMsg(), zone.getDate(), zone.getMsgType(), zone.getPraise(), zone.getZoneImgList());
+        super(zone.getId(), zone.getUserId(), zone.getEmail(), zone.getMsg(), zone.getDate(), zone.getMsgType(), zone.getPraise(), zone.getZoneImgList());
     }
 
 }

@@ -1,5 +1,7 @@
 package com.jryyy.forum.utils;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -45,7 +47,7 @@ public class EmailVerificationUtil {
                 helper.addAttachment(fileName, file);
             }
         } catch (Exception e) {
-            throw new RuntimeException("邮件发送失败");
+            throw new GlobalException(GlobalStatus.mailDeliveryFailed);
         }
         mailSender.send(message);
     }

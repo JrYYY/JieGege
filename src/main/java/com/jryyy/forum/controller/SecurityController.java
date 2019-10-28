@@ -1,7 +1,8 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.exception.PreconditionFailedException;
+import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
@@ -115,7 +116,7 @@ public class SecurityController {
     public Response generateVerificationCode(@RequestParam String email) throws Exception {
         Response response = userService.verifyUser(email);
         if ((Boolean) response.getData())
-            throw new PreconditionFailedException("邮箱已注册");
+            throw new GlobalException(GlobalStatus.userAlreadyExists);
         codeMailUtil.sendSimpleMail(email, "注册验证");
         return new Response<>(true);
     }

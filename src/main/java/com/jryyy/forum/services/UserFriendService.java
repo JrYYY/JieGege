@@ -33,7 +33,7 @@ public interface UserFriendService {
      * @return {@link Response}
      * @throws Exception
      */
-    Response attention(int userId, String email) throws Exception;
+    Response attention(int userId, int id) throws Exception;
 
     /**
      * 取关

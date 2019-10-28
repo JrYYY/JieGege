@@ -8,11 +8,20 @@ import com.jryyy.forum.models.request.UserInfoRequest;
  */
 public interface UserInfoService {
     /**
-     * @param email 邮箱
+     * @param id 邮箱
      * @return {@link com.jryyy.forum.models.response.UserInfoResponse}
      * @throws Exception
      */
-    Response viewOtherPeopleSPersonalInformation(String email) throws Exception;
+    Response viewOtherPeopleSPersonalInformation(Integer id) throws Exception;
+
+    /**
+     * 查询用户信息列表
+     *
+     * @param value 条件
+     * @return {@link com.jryyy.forum.models.response.InfoListResponse}
+     * @throws Exception
+     */
+    Response queryUserList(String value) throws Exception;
 
     /**
      * 查看用户个人基本信息

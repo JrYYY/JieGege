@@ -3,6 +3,8 @@ package com.jryyy.forum.utils.security;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -51,13 +53,13 @@ public class TokenUtils {
      * @param user the token payload
      * @return the JWT token
      */
-    public String createJwtToken(User user) {
+    public String createJwtToken(User user) throws GlobalException {
         final Date expiration = new Date(System.currentTimeMillis() + expirationInSeconds * 1000);
         try {
             return Jwts.builder().claim(CLAIM_KEY, objectMapper.writeValueAsString(user)).setExpiration(expiration)
                     .signWith(SignatureAlgorithm.HS512, secret).compact();
         } catch (JsonProcessingException ex) {
-            throw new RuntimeException("无法创建JWT令牌", ex);
+            throw new GlobalException(GlobalStatus.unableToCreateToken);
         }
     }
 
@@ -69,18 +71,18 @@ public class TokenUtils {
      * BadCredentialsException
      * if the JWT token is invalid
      */
-    public User decodeJwtToken(String jwtToken) {
+    public User decodeJwtToken(String jwtToken) throws GlobalException {
         Claims claims = null;
         try {
             claims = Jwts.parser().setSigningKey(secret).parseClaimsJws(jwtToken).getBody();
         } catch (Exception ex) {
-            throw new IllegalArgumentException("无效的JWT令牌", ex);
+            throw new GlobalException(GlobalStatus.invalidToken);
         }
         String payload = (String) claims.get(CLAIM_KEY);
         try {
             return objectMapper.readValue(payload, User.class);
         } catch (IOException ex) {
-            throw new IllegalArgumentException("无效的JWT令牌", ex);
+            throw new GlobalException(GlobalStatus.invalidToken);
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.jryyy.forum.services;
 
 import com.jryyy.forum.models.Response;
+import com.jryyy.forum.models.request.GetZoneRequest;
 import com.jryyy.forum.models.request.ZoneRequest;
 
 public interface ZoneService {
@@ -23,7 +24,7 @@ public interface ZoneService {
      * @return {@link com.jryyy.forum.models.response.ZoneListResponse}
      * @throws Exception
      */
-    Response findAllZone(int curPage, int pageSize, int mode) throws Exception;
+    Response findAllZone(GetZoneRequest getZoneRequest) throws Exception;
 
     /**
      * 查询用户空间
@@ -35,7 +36,7 @@ public interface ZoneService {
      * @return {@link com.jryyy.forum.models.response.ZoneListResponse}
      * @throws Exception
      */
-    Response findUserZone(int curPage, int pageSize, int userId, int mode) throws Exception;
+    Response findUserZone(GetZoneRequest getZoneRequest, int userId) throws Exception;
 
     /**
      * 查询空间详情

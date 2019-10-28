@@ -35,7 +35,7 @@ public class UserInfoRequest {
     private Integer age;
 
     /* 标签 */
-    @Size(min = 0, max = 191)
+    @Size(max = 191)
     private String bio;
 
 }

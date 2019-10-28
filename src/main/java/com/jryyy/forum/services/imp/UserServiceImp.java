@@ -1,8 +1,10 @@
 package com.jryyy.forum.services.imp;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
@@ -58,7 +60,7 @@ public class UserServiceImp implements UserService {
             userMapper.insertUser(user);
             userInfoMapper.insertUserInfo(user.getId());
         } catch (Exception e) {
-            throw new RuntimeException("注册用户失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
         return new Response();
     }
@@ -77,7 +79,7 @@ public class UserServiceImp implements UserService {
             userMapper.updatePassword(request.getName(), request.getPassword());
             return new Response();
         } catch (Exception e) {
-            throw new RuntimeException("修改密码失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
     }
 
@@ -88,7 +90,7 @@ public class UserServiceImp implements UserService {
             return new Response<>(allUsers);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("查看用户列表失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
     }
 

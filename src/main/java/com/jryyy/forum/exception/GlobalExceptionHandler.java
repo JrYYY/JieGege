@@ -1,6 +1,7 @@
 package com.jryyy.forum.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
+import com.jryyy.forum.constant.status.Status;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -24,16 +25,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-//import org.springframework.security.authentication.BadCredentialsException;
-
 
 /**
  * 将异常解析为json
- *
- * @User JrYYY
  */
 @RestControllerAdvice
-public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
+public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     /**
      * The message source.
@@ -42,8 +39,8 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
     private MessageSource messageSource;
 
     /**
-     * @param status
-     * @param message
+     * @param status    状态
+     * @param message   信息
      * @return
      */
     private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message) {
@@ -54,21 +51,27 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
     }
 
     /**
-     * 前提条件错误
-     *
-     * @param e {@link PreconditionFailedException}
-     * @return  {@link ResponseEntity}
+     * @param s {@link Status}
+     * @return {@link ResponseEntity}
      */
-    @ExceptionHandler(PreconditionFailedException.class)
-    private static Object PreconditionFailedException(PreconditionFailedException e) {
-        return buildErrorResponse(HttpStatus.PRECONDITION_FAILED, e.getMessage());
+    private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, Status s) {
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("status", s.getCode());
+        responseBody.put("message", s.getMsg());
+        return new ResponseEntity<>(responseBody, status);
     }
+
+    @ExceptionHandler(GlobalException.class)
+    private static Object GlobalException(GlobalException e) {
+        return buildErrorResponse(HttpStatus.UNAUTHORIZED, e.status);
+    }
+
 
     /**
      * 请求错误异常
      *
      * @param e {@link IllegalArgumentException}
-     * @return
+     * @return {@link ResponseEntity}
      */
     @ExceptionHandler(IllegalArgumentException.class)
     public Object IllegalArgumentException(IllegalArgumentException e) {
@@ -86,16 +89,6 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, ex.getMessage());
     }
 
-    /**
-     * 身份验证异常
-     *
-     * @param ex {@link BadCredentialsException}
-     * @return {@link ResponseEntity}
-     */
-    @ExceptionHandler(BadCredentialsException.class)
-    public Object handleBadCredentialsException(BadCredentialsException ex) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, ex.getMessage());
-    }
 
     /**
      * 运行时错误异常
@@ -147,7 +140,8 @@ public class GloablExceptionHandler extends ResponseEntityExceptionHandler {
         if (ex instanceof HttpMessageNotReadableException) {
             message = "请求正文缺失或无效";
             if (ex.getCause() != null && ex.getCause() instanceof JsonMappingException &&
-                    ex.getCause().getCause() != null && ex.getCause().getCause() instanceof IllegalArgumentException) {
+                    ex.getCause().getCause() != null
+                    && ex.getCause().getCause() instanceof IllegalArgumentException) {
                 message = ex.getCause().getCause().getMessage();
             }
         } else if (ex instanceof MethodArgumentNotValidException) {

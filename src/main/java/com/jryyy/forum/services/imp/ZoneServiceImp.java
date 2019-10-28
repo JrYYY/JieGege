@@ -1,10 +1,13 @@
 package com.jryyy.forum.services.imp;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.dao.ZonePraiseMapper;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.UserZone;
 import com.jryyy.forum.models.ZoneImg;
+import com.jryyy.forum.models.request.GetZoneRequest;
 import com.jryyy.forum.models.request.ZoneRequest;
 import com.jryyy.forum.models.response.ZoneDetailResponse;
 import com.jryyy.forum.models.response.ZoneListResponse;
@@ -18,10 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.persistence.EntityNotFoundException;
 import java.awt.image.BufferedImage;
 import java.io.FileInputStream;
-import java.nio.file.AccessDeniedException;
 import java.util.List;
 
 @Service("ZoneService")
@@ -63,18 +64,20 @@ public class ZoneServiceImp implements ZoneService {
     }
 
     @Override
-    public Response findAllZone(int curPage, int pageSize, int mode) throws Exception {
+    public Response findAllZone(GetZoneRequest request) throws Exception {
         int totalNum = userZoneMapper.countZoneNum();
-        int totalPageNum = (int) Math.ceil((float) totalNum / pageSize);
-        if (!(curPage > 0 && curPage <= totalPageNum))
-            throw new EntityNotFoundException("查询失败,页数不满足条件");
+        int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
+        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
+            throw new GlobalException(GlobalStatus.noSuchPage);
         ZoneListResponse response = ZoneListResponse.builder()
-                .curPageNumber(curPage).numberPerPage(pageSize)
+                .curPageNumber(request.getCurPage()).numberPerPage(request.getPageSize())
                 .totalNum(totalNum).totalPageNum(totalPageNum)
-                .hasNext(curPage != totalPageNum).hasPrev(curPage != 1)
+                .hasNext(request.getCurPage() != totalPageNum)
+                .hasPrev(request.getCurPage() != 1)
                 .build();
         List<ZoneResponse> zones = userZoneMapper.findAllZone(
-                (curPage - 1) * pageSize, pageSize, mode);
+                (request.getCurPage() - 1) * request.getPageSize(),
+                request.getPageSize(), request.getMode());
         for (ZoneResponse zone : zones) {
             zone.setPraise(zonePraiseMapper
                     .countZonePraise(zone.getId()));
@@ -85,22 +88,26 @@ public class ZoneServiceImp implements ZoneService {
     }
 
     @Override
-    public Response findUserZone(int curPage, int pageSize, int userId, int mode) throws Exception {
+    public Response findUserZone(GetZoneRequest request, int userId) throws Exception {
 
         int totalNum = userZoneMapper.countZoneNumByUserId(userId);
-        int totalPageNum = (int) Math.ceil((float) totalNum / pageSize);
+        int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
 
-        if (!(curPage > 0 && curPage <= totalPageNum))
-            throw new EntityNotFoundException("查询失败,页数异常");
+        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
+            throw new GlobalException(GlobalStatus.noSuchPage);
 
         ZoneListResponse response = ZoneListResponse.builder()
-                .curPageNumber(curPage).numberPerPage(pageSize)
+                .curPageNumber(request.getCurPage())
+                .numberPerPage(request.getPageSize())
                 .totalNum(totalNum).totalPageNum(totalPageNum)
-                .hasNext(curPage != totalPageNum).hasPrev(curPage != 1)
+                .hasNext(request.getCurPage() != totalPageNum)
+                .hasPrev(request.getCurPage() != 1)
                 .build();
 
         List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
-                (curPage - 1) * pageSize, pageSize, userId, mode);
+                (request.getCurPage() - 1) * request.getPageSize(),
+                request.getPageSize(), userId, request.getMode());
+
         for (ZoneResponse zone : zones) {
             zone.setPraise(zonePraiseMapper
                     .countZonePraise(zone.getId()));
@@ -115,7 +122,7 @@ public class ZoneServiceImp implements ZoneService {
     public Response findZoneById(int id) throws Exception {
         ZoneResponse zone = userZoneMapper.findZoneById(id);
         if (zone == null)
-            throw new EntityNotFoundException("没有找到资源");
+            throw new GlobalException(GlobalStatus.noResourcesFound);
         List<ZonePraiseResponse> praise = zonePraiseMapper.selectZonePraise(zone.getId());
         zone.toZoneImgList(userZoneMapper, file_url);
         ZoneDetailResponse response = new ZoneDetailResponse(zone);
@@ -127,7 +134,7 @@ public class ZoneServiceImp implements ZoneService {
     public Response deleteZoneById(int userId, int id) throws Exception {
         int ID = userZoneMapper.findUserIdById(id);
         if (ID == userId)
-            throw new AccessDeniedException("非自己上传，无法删除");
+            throw new GlobalException(GlobalStatus.insufficientPermissions);
         userZoneMapper.deleteZone(id);
         userZoneMapper.deleteAllZoneImg(id);
         zonePraiseMapper.deleteAllZonePraise(id);

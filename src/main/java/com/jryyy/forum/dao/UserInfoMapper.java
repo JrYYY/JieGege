@@ -3,9 +3,12 @@ package com.jryyy.forum.dao;
 import com.jryyy.forum.models.Check;
 import com.jryyy.forum.models.UserInfo;
 import com.jryyy.forum.models.request.UserInfoRequest;
+import com.jryyy.forum.models.response.InfoListResponse;
 import com.jryyy.forum.models.response.UserInfoResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
+
+import java.util.List;
 
 /*
     用户信息Mapper
@@ -23,11 +26,23 @@ public interface UserInfoMapper {
      * @return {@link UserInfo}
      * @throws Exception
      */
-    @Select("select B.emailName email,A.username,A.avatar,A.sex,A.age," +
+    @Select("select A.userId,B.emailName email,A.username,A.avatar,A.sex,A.age," +
             "A.checkInDays,A.checkInDate,A.bio," +
             "A.continuousCheckInDays continuousDays " +
             "from userinfo A join user B on A.userId = B.id where A.userId = #{id}")
     UserInfoResponse selectUserInfo(@Param("id") int id) throws Exception;
+
+    /**
+     * 更具条件查询用户信息列表
+     *
+     * @param value 查询条件
+     * @return {@link InfoListResponse}
+     * @throws Exception
+     */
+    @Select("select A.userId,A.username,B.emailName email,A.bio from userinfo A " +
+            "join user B on A.userId = B.id " +
+            "where A.username like '%${value}%' or B.emailName like '%${value}%' ")
+    List<InfoListResponse> findInfoByCondition(String value) throws Exception;
 
     /**
      * 查询签到日期和最近签到数据

@@ -1,12 +1,14 @@
 package com.jryyy.forum.services.imp;
 
+import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.dao.UserZoneMapper;
-import com.jryyy.forum.exception.PreconditionFailedException;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Check;
 import com.jryyy.forum.models.Response;
+import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.UserInfoRequest;
 import com.jryyy.forum.models.response.CheckResponse;
 import com.jryyy.forum.models.response.UserInfoResponse;
@@ -36,9 +38,16 @@ public class UserInfoServiceImp implements UserInfoService {
     UserZoneMapper zoneMapper;
 
     @Override
-    public Response viewOtherPeopleSPersonalInformation(String email) throws Exception {
-        Integer id = userMapper.findIdByName(email);
+    public Response viewOtherPeopleSPersonalInformation(Integer id) throws Exception {
+        User user = userMapper.findLoginById(id);
+        if (user == null)
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
         return viewUserPersonalInformation(id);
+    }
+
+    @Override
+    public Response queryUserList(String value) throws Exception {
+        return new Response<>(userInfoMapper.findInfoByCondition(value));
     }
 
     @Override
@@ -54,7 +63,7 @@ public class UserInfoServiceImp implements UserInfoService {
             return new Response<>(response);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new RuntimeException("查看用户个人基本信息失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
     }
 
@@ -64,7 +73,7 @@ public class UserInfoServiceImp implements UserInfoService {
             userInfoMapper.updateUserInfo(request);
             return new Response();
         } catch (Exception e) {
-            throw new RuntimeException("修改用户信息失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
     }
 
@@ -73,7 +82,7 @@ public class UserInfoServiceImp implements UserInfoService {
         Check check = userInfoMapper.selectCheckIn(userId);
         Response<CheckResponse> response = whetherToCheckIn(userId);
         if (response.getData().isStatus())
-            throw new PreconditionFailedException("已签到，签到失败！");
+            throw new GlobalException(GlobalStatus.alreadySignedIn);
         try {
             Date date = new Date();
             System.out.println(check.getCheckInDays());
@@ -85,7 +94,7 @@ public class UserInfoServiceImp implements UserInfoService {
                     continuousDays(check.getContinuousDays() + 1).
                     build());
         } catch (Exception e) {
-            throw new RuntimeException("服务器错误");
+            throw new GlobalException(GlobalStatus.serverError);
         }
     }
 
@@ -104,13 +113,12 @@ public class UserInfoServiceImp implements UserInfoService {
             return new Response<>(response);
         }
 
-        Date date = new Date();
         Date checkDate = new Date(check.getCheckInDate().getYear(),
                 check.getCheckInDate().getMonth(), check.getCheckInDate().getDate());
-        int days = differentDays(checkDate,
-                new Date(date.getYear(), date.getMonth(), date.getDate()));
+        int days = differentDays(checkDate, new Date());
 
-        log.info(userId + ":" + days + "天没有签到");
+        log.info(userId + ":" + days + "天没有签到,上次签到时间：" + check.getCheckInDate());
+
 
         if (days == 0)
             response.setStatus(true);
@@ -134,15 +142,12 @@ public class UserInfoServiceImp implements UserInfoService {
     public int differentDays(Date date1, Date date2) {
         Calendar cal1 = Calendar.getInstance();
         cal1.setTime(date1);
-
         Calendar cal2 = Calendar.getInstance();
         cal2.setTime(date2);
         int day1 = cal1.get(Calendar.DAY_OF_YEAR);
-        int day2 = cal1.get(Calendar.DAY_OF_YEAR);
-
+        int day2 = cal2.get(Calendar.DAY_OF_YEAR);
         int year1 = cal1.get(Calendar.YEAR);
         int year2 = cal2.get(Calendar.YEAR);
-
         if (year1 != year2) {
             int timeDistance = 0;
             for (int i = year1; i < year2; i++) {
@@ -159,20 +164,4 @@ public class UserInfoServiceImp implements UserInfoService {
             return day2 - day1;
         }
     }
-
-    private int days(Date date) {
-        Calendar cal = Calendar.getInstance();
-        int[] months = {0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};
-        cal.setTime(date);
-        int day = cal.get(Calendar.DATE);
-        int year = cal.get(Calendar.YEAR);
-        int month = cal.get(Calendar.MONTH);
-        System.out.println(year + "-" + month + "-" + day);
-        if (year % 4 == 0 && year % 100 != 0 || year % 400 == 0)
-            months[2] = 29;
-        for (int i = 1; i < month; i++)
-            day += months[i];
-        return day;
-    }
-
 }

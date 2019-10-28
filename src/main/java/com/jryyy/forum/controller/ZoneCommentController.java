@@ -2,6 +2,7 @@ package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.models.Response;
+import com.jryyy.forum.models.request.GetZoneCommentRequest;
 import com.jryyy.forum.services.ZoneCommentService;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,11 +17,9 @@ public class ZoneCommentController {
     @Autowired
     ZoneCommentService zoneCommentService;
 
-    @GetMapping("/comment/{id}/{currIndex}/{pageSize}")
-    public Response findComment(@PathVariable int id,
-                                @PathVariable int currIndex,
-                                @PathVariable int pageSize) throws Exception {
-        return zoneCommentService.findZoneComments(id, currIndex, pageSize);
+    @GetMapping("/comment")
+    public Response findComment(GetZoneCommentRequest request) throws Exception {
+        return zoneCommentService.findZoneComments(request);
     }
 
     @UserLoginToken

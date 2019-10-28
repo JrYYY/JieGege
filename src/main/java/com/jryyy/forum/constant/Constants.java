@@ -5,6 +5,7 @@ package com.jryyy.forum.constant;
  * 普通（通用）常量定义
  */
 public class Constants {
+
     /**
      * 用户id string
      */

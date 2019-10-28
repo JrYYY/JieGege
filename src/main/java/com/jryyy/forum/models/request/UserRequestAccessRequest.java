@@ -1,9 +1,9 @@
 package com.jryyy.forum.models.request;
 
 import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserMapper;
-import com.jryyy.forum.exception.BadCredentialsException;
-import com.jryyy.forum.exception.PreconditionFailedException;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -46,7 +46,7 @@ public class UserRequestAccessRequest {
      */
     public void verifyUserRegistered(UserMapper userMapper) throws Exception {
         if (userMapper.findLoginByName(this.name) != null)
-            throw new BadCredentialsException("用户已存在");
+            throw new GlobalException(GlobalStatus.userAlreadyExists);
     }
 
     /**
@@ -54,15 +54,15 @@ public class UserRequestAccessRequest {
      */
     public void requestAccessPermissionDetection() throws Exception {
         if (!this.role.equals(RoleCode.CHILD) && !this.role.equals(RoleCode.PARENT))
-            throw new BadCredentialsException("异常访问");
+            throw new GlobalException(GlobalStatus.insufficientPermissions);
     }
 
     public void verifyVerificationCode(RedisTemplate redisTemplate) throws Exception {
         String code = (String) redisTemplate.opsForValue().get(this.name);
         if (code == null)
-            throw new PreconditionFailedException("尚未请求验证码");
+            throw new GlobalException(GlobalStatus.notApplyingForVerificationCode);
         else if (!code.equals(this.code))
-            throw new IllegalArgumentException("验证码错误");
+            throw new GlobalException(GlobalStatus.verificationCodeError);
     }
 
 }
