@@ -8,6 +8,7 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserLoginToken {
+
     boolean required() default true;
 
     String role() default "{com.jryyy.forum.utils.security.UserLoginToken.role}";

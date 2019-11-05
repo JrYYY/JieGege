@@ -1,6 +1,6 @@
 package com.jryyy.forum.models.request;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import lombok.AllArgsConstructor;

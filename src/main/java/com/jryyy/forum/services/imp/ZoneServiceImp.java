@@ -1,6 +1,6 @@
 package com.jryyy.forum.services.imp;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.dao.ZonePraiseMapper;
 import com.jryyy.forum.exception.GlobalException;
@@ -14,7 +14,7 @@ import com.jryyy.forum.models.response.ZoneListResponse;
 import com.jryyy.forum.models.response.ZonePraiseResponse;
 import com.jryyy.forum.models.response.ZoneResponse;
 import com.jryyy.forum.services.ZoneService;
-import com.jryyy.forum.utils.FileUtil;
+import com.jryyy.forum.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -35,7 +35,7 @@ public class ZoneServiceImp implements ZoneService {
     ZonePraiseMapper zonePraiseMapper;
 
     @Autowired
-    private FileUtil fileUtil;
+    private FileUtils fileUtil;
 
     @Value("${file.uploadFolder}")
     private String uploadFolder;
@@ -48,12 +48,13 @@ public class ZoneServiceImp implements ZoneService {
         UserZone userZone = request.toUserZone();
         userZoneMapper.insertZone(userZone);
         if (request.getFiles() != null) {
+
             for (MultipartFile img : request.getFiles()) {
-                String fileName = fileUtil.saveTalkImg(uploadFolder + userZone.getId() + "/", img);
+                String fileName = fileUtil.saveTalkImg(uploadFolder + "zone/image/" + userZone.getId() + "/", img);
                 BufferedImage image = ImageIO.read(new FileInputStream(
-                        uploadFolder + userZone.getId() + "/" + fileName));
+                        uploadFolder + "zone/image/" + userZone.getId() + "/" + fileName));
                 userZoneMapper.insertZoneImg(ZoneImg.builder()
-                        .imgUrl(userZone.getId() + "/" + fileName)
+                        .imgUrl("zone/image/" + userZone.getId() + "/" + fileName)
                         .zoneId(userZone.getId())
                         .width(image.getWidth())
                         .height(image.getHeight())
@@ -69,6 +70,7 @@ public class ZoneServiceImp implements ZoneService {
         int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
         if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
             throw new GlobalException(GlobalStatus.noSuchPage);
+
         ZoneListResponse response = ZoneListResponse.builder()
                 .curPageNumber(request.getCurPage()).numberPerPage(request.getPageSize())
                 .totalNum(totalNum).totalPageNum(totalPageNum)
@@ -89,32 +91,36 @@ public class ZoneServiceImp implements ZoneService {
 
     @Override
     public Response findUserZone(GetZoneRequest request, int userId) throws Exception {
+        try {
+            int totalNum = userZoneMapper.countZoneNumByUserId(userId);
+            int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
 
-        int totalNum = userZoneMapper.countZoneNumByUserId(userId);
-        int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
+            if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
+                throw new GlobalException(GlobalStatus.noSuchPage);
 
-        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
-            throw new GlobalException(GlobalStatus.noSuchPage);
+            ZoneListResponse response = ZoneListResponse.builder()
+                    .curPageNumber(request.getCurPage())
+                    .numberPerPage(request.getPageSize())
+                    .totalNum(totalNum).totalPageNum(totalPageNum)
+                    .hasNext(request.getCurPage() != totalPageNum)
+                    .hasPrev(request.getCurPage() != 1)
+                    .build();
 
-        ZoneListResponse response = ZoneListResponse.builder()
-                .curPageNumber(request.getCurPage())
-                .numberPerPage(request.getPageSize())
-                .totalNum(totalNum).totalPageNum(totalPageNum)
-                .hasNext(request.getCurPage() != totalPageNum)
-                .hasPrev(request.getCurPage() != 1)
-                .build();
+            List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
+                    (request.getCurPage() - 1) * request.getPageSize(),
+                    request.getPageSize(), userId, request.getMode());
 
-        List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
-                (request.getCurPage() - 1) * request.getPageSize(),
-                request.getPageSize(), userId, request.getMode());
-
-        for (ZoneResponse zone : zones) {
-            zone.setPraise(zonePraiseMapper
-                    .countZonePraise(zone.getId()));
-            zone.toZoneImgList(userZoneMapper, file_url);
+            for (ZoneResponse zone : zones) {
+                zone.setPraise(zonePraiseMapper
+                        .countZonePraise(zone.getId()));
+                zone.toZoneImgList(userZoneMapper, file_url);
+            }
+            response.setZones(zones);
+            return new Response<>(response);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
         }
-        response.setZones(zones);
-        return new Response<>(response);
     }
 
 

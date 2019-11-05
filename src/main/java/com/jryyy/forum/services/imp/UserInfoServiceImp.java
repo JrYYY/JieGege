@@ -1,6 +1,6 @@
 package com.jryyy.forum.services.imp;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
@@ -13,9 +13,12 @@ import com.jryyy.forum.models.request.UserInfoRequest;
 import com.jryyy.forum.models.response.CheckResponse;
 import com.jryyy.forum.models.response.UserInfoResponse;
 import com.jryyy.forum.services.UserInfoService;
+import com.jryyy.forum.utils.FileUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.xml.crypto.Data;
 import java.util.Calendar;
@@ -37,12 +40,29 @@ public class UserInfoServiceImp implements UserInfoService {
     @Autowired
     UserZoneMapper zoneMapper;
 
+    @Autowired
+    private FileUtils fileUtil;
+
+    @Value("${file.uploadFolder}")
+    private String uploadFolder;
+
+    @Value("${file.url}")
+    private String file_url;
+
+
     @Override
     public Response viewOtherPeopleSPersonalInformation(Integer id) throws Exception {
         User user = userMapper.findLoginById(id);
         if (user == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);
         return viewUserPersonalInformation(id);
+    }
+
+    @Override
+    public Response modifyBackgroundImg(int userId, MultipartFile img) throws Exception {
+        String imgName = fileUtil.saveTalkImg(uploadFolder + "user/" + userId + "/", img);
+        userInfoMapper.updateUserBgImg(userId, "user/" + userId + "/" + imgName);
+        return new Response();
     }
 
     @Override
@@ -60,6 +80,7 @@ public class UserInfoServiceImp implements UserInfoService {
             response.setFollowingNum(following);
             response.setFollowersNum(followers);
             response.setZoneNum(zoneNum);
+            response.setBgImg(file_url + response.getBgImg());
             return new Response<>(response);
         } catch (Exception e) {
             e.printStackTrace();

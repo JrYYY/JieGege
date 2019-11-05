@@ -47,7 +47,7 @@ server:
 
 ##图片临时路径
 file:
-  uploadFolder: D:/home/zone/image/
+  uploadFolder: D:/home/
   staticAccessPath: /upload/**
   url: http://192.168.19.59:9896/upload/
 

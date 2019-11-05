@@ -39,4 +39,7 @@ public class UserInfo {
 
     /* 联系签到天数 */
     private Integer continuousDays;
+
+    /* 背景图片 */
+    private String bgImg;
 }

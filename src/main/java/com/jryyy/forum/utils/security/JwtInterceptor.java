@@ -1,8 +1,8 @@
 package com.jryyy.forum.utils.security;
 
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RoleCode;
-import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
@@ -36,6 +36,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
+
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
 
@@ -48,6 +49,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
             }
         }
 
+
         //检查有没有需要用户权限的注解
         if (method.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
@@ -59,6 +61,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                 // 执行认证
                 if (token == null)
                     throw new GlobalException(GlobalStatus.tokenCanNotBeEmpty);
+
                 User user = tokenUtils.decodeJwtToken(token);
 
                 session.setAttribute(Constants.USER_ID_STRING, user.getId());
@@ -70,6 +73,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                         throw new GlobalException(GlobalStatus.insufficientPermissions);
                     }
                 }
+
                 log.info(user.getId() + "登入成功");
                 return true;
             }

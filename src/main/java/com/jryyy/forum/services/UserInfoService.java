@@ -2,6 +2,7 @@ package com.jryyy.forum.services;
 
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.request.UserInfoRequest;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  * 用户基本信息 服务
@@ -13,6 +14,16 @@ public interface UserInfoService {
      * @throws Exception
      */
     Response viewOtherPeopleSPersonalInformation(Integer id) throws Exception;
+
+    /**
+     * 修改背景
+     *
+     * @param userId 用户id
+     * @param img    背景
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response modifyBackgroundImg(int userId, MultipartFile img) throws Exception;
 
     /**
      * 查询用户信息列表

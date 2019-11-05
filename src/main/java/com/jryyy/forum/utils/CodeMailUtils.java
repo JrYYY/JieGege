@@ -1,6 +1,6 @@
 package com.jryyy.forum.utils;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 
 @Component
-public class CodeMailUtil {
+public class CodeMailUtils {
 
     @Autowired
     RedisTemplate<String, String> redisTemplate;

@@ -7,6 +7,7 @@ import com.jryyy.forum.services.UserInfoService;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
@@ -29,6 +30,13 @@ public class UserInfoController {
     @GetMapping("/condition")
     public Response queryUserListBasedOnCriteria(String value) throws Exception {
         return userInfoService.queryUserList(value);
+    }
+
+    @PutMapping("/img")
+    @UserLoginToken
+    public Response setBackgroundImage(MultipartFile file, HttpSession session) throws Exception {
+        int userId = (int) session.getAttribute(Constants.USER_ID_STRING);
+        return userInfoService.modifyBackgroundImg(userId, file);
     }
 
     @PutMapping

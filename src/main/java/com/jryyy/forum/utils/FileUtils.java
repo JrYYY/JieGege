@@ -1,8 +1,7 @@
 package com.jryyy.forum.utils;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -13,16 +12,14 @@ import java.util.List;
 import java.util.Objects;
 
 @Component
-public class FileUtil {
+public class FileUtils {
 
-    @Autowired
-    GenerateFileNameUtil generate;
 
     public String savePicture(String url, MultipartFile img) throws GlobalException {
-        generate.isImageType(img.getOriginalFilename());
+        isImageType(img.getOriginalFilename());
         try {
-            String imgName = generate.duplicateFileName("picture_",
-                    generate.interceptSuffix(img.getOriginalFilename()));
+            String imgName = duplicateFileName("picture_",
+                    interceptSuffix(img.getOriginalFilename()));
             File imgUrl = new File(url);
             if (!imgUrl.exists())
                 imgUrl.mkdirs();
@@ -36,8 +33,8 @@ public class FileUtil {
 
     public String saveTalkImg(String url, MultipartFile file) throws GlobalException {
         try {
-            String imgName = generate.duplicateFileName("zoneImg_",
-                    generate.interceptSuffix(file.getOriginalFilename()));
+            String imgName = duplicateFileName("zoneImg_",
+                    interceptSuffix(file.getOriginalFilename()));
             File saveUrl = new File(url);
             if (!saveUrl.exists())
                 saveUrl.mkdirs();
@@ -52,8 +49,8 @@ public class FileUtil {
         try {
             List<String> imgUrls = new ArrayList<>();
             for (MultipartFile file : files) {
-                String name = generate.duplicateFileName("zoneImg_",
-                        generate.interceptSuffix(file.getOriginalFilename()));
+                String name = duplicateFileName("zoneImg_",
+                        interceptSuffix(file.getOriginalFilename()));
                 File saveUrl = new File(url);
                 if (!saveUrl.exists()) {
                     saveUrl.mkdirs();
@@ -81,5 +78,29 @@ public class FileUtil {
             url.delete();
         }
     }
+
+    public boolean isImageType(String fileName) {
+        String type = fileName.substring(fileName.lastIndexOf(".") + 1);
+        return type.toUpperCase().equals("PNG") ||
+                type.toUpperCase().equals("JPG") ||
+                type.toUpperCase().equals("GIF");
+    }
+
+    public String interceptSuffix(String fileName) {
+        return fileName.substring(fileName.lastIndexOf("."));
+    }
+
+    public String duplicateFileName(String suffixName) {
+        return System.currentTimeMillis() + suffixName;
+    }
+
+    public String duplicateFileName(String head, String suffixName) {
+        return head + System.currentTimeMillis() + suffixName;
+    }
+
+    public String duplicateFileName(String head, String tail, String suffixName) {
+        return head + System.currentTimeMillis() + tail + suffixName;
+    }
+
 
 }

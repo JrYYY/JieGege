@@ -50,4 +50,7 @@ public class UserInfoResponse {
 
     /* 联系签到天数 */
     private Integer continuousDays;
+
+    /* 背景 */
+    private String bgImg;
 }

@@ -1,7 +1,7 @@
 package com.jryyy.forum.services.imp;
 
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RoleCode;
-import com.jryyy.forum.constant.status.GlobalStatus;
 import com.jryyy.forum.dao.BindingMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;

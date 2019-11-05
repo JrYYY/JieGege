@@ -28,7 +28,7 @@ public interface UserInfoMapper {
      */
     @Select("select A.userId,B.emailName email,A.username,A.avatar,A.sex,A.age," +
             "A.checkInDays,A.checkInDate,A.bio," +
-            "A.continuousCheckInDays continuousDays " +
+            "A.continuousCheckInDays continuousDays,A.bgImg " +
             "from userinfo A join user B on A.userId = B.id where A.userId = #{id}")
     UserInfoResponse selectUserInfo(@Param("id") int id) throws Exception;
 
@@ -72,6 +72,16 @@ public interface UserInfoMapper {
     void updateUserInfo(UserInfoRequest userInfo) throws Exception;
 
     /**
+     * 设置背景图片
+     *
+     * @param userId 用户id
+     * @param bgImg  背景图片
+     * @throws Exception
+     */
+    @Update("update userinfo set bgImg = #{bgImg} where userId = #{userId}")
+    void updateUserBgImg(int userId, String bgImg) throws Exception;
+
+    /**
      * 签到
      *
      * @param checkInDays 签到天数
@@ -93,7 +103,11 @@ public interface UserInfoMapper {
     @Update("update userinfo set continuousCheckInDays = 0 where userId = #{userId}")
     void modifyContinuousCheckIn(int userId) throws Exception;
 
-
+    /**
+     * 删除
+     * @param userId    用户id
+     * @throws Exception
+     */
     @Update("update userinfo set checkInDate = null where userId =#{userId}")
     void deleteCheckInDate(@Param("userId") int userId) throws Exception;
 

@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.HtmlUtils;
 
 import javax.servlet.http.HttpSession;
 
@@ -32,5 +33,11 @@ public class testController {
     public String testCheck() throws Exception {
         // userInfoMapper.deleteCheckInDate(1010);
         return "测试成功";
+    }
+
+    public void greeting(String message) throws Exception {
+        Thread.sleep(1000); // 模拟处理延时
+        String msg = "Hello, " + HtmlUtils.htmlEscape(message) + "!";
+        //根据传入的信息，返回一个欢迎消息.
     }
 }

@@ -1,6 +1,6 @@
 package com.jryyy.forum.utils;
 
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -15,7 +15,7 @@ import java.io.File;
 import java.util.List;
 
 @Component
-public class EmailVerificationUtil {
+public class EmailVerificationUtils {
 
     @Value("${spring.mail.username}")
     private String from;

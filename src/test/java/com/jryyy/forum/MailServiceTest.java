@@ -1,6 +1,6 @@
 package com.jryyy.forum;
 
-import com.jryyy.forum.utils.CodeMailUtil;
+import com.jryyy.forum.utils.CodeMailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,7 +18,7 @@ import java.util.Set;
 public class MailServiceTest {
 
     @Autowired
-    private CodeMailUtil mailUtils;
+    private CodeMailUtils mailUtils;
 
     @Autowired
     private RedisTemplate redisTemplate;

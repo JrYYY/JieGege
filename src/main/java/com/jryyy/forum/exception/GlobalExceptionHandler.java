@@ -1,7 +1,7 @@
 package com.jryyy.forum.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.jryyy.forum.constant.status.Status;
+import com.jryyy.forum.constant.GlobalStatus;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -50,16 +50,18 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseBody, status);
     }
 
+
     /**
-     * @param s {@link Status}
+     * @param s {@link GlobalStatus}
      * @return {@link ResponseEntity}
      */
-    private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, Status s) {
+    private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, GlobalStatus s) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", s.getCode());
         responseBody.put("message", s.getMsg());
         return new ResponseEntity<>(responseBody, status);
     }
+
 
     @ExceptionHandler(GlobalException.class)
     private static Object GlobalException(GlobalException e) {

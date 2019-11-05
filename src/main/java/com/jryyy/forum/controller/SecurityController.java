@@ -1,7 +1,7 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.constant.status.GlobalStatus;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
@@ -10,7 +10,7 @@ import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.utils.CodeMailUtil;
+import com.jryyy.forum.utils.CodeMailUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,7 +34,7 @@ public class SecurityController {
     TokenUtils tokenUtils;
 
     @Autowired
-    CodeMailUtil codeMailUtil;
+    CodeMailUtils codeMailUtil;
 
     /**
      * 登入
@@ -94,8 +94,9 @@ public class SecurityController {
      * @return
      */
     @DeleteMapping("/token")
-    public Response Logout(HttpSession session) {
-        session.removeAttribute(Constants.USER_ID_STRING);
+    public Response Logout(HttpSession session) throws Exception {
+        Integer userId = (Integer) session.getAttribute(Constants.USER_ID_STRING);
+        tokenUtils.deleteJWTToken(userId);
         log.info("注销成功");
         return new Response();
     }
