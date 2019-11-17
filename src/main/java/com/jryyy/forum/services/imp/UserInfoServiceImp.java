@@ -80,7 +80,8 @@ public class UserInfoServiceImp implements UserInfoService {
             response.setFollowingNum(following);
             response.setFollowersNum(followers);
             response.setZoneNum(zoneNum);
-            response.setBgImg(file_url + response.getBgImg());
+            if (response.getBgImg() != null)
+                response.setBgImg(file_url + response.getBgImg());
             return new Response<>(response);
         } catch (Exception e) {
             e.printStackTrace();

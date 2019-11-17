@@ -14,6 +14,7 @@ import com.jryyy.forum.models.response.ZoneListResponse;
 import com.jryyy.forum.models.response.ZonePraiseResponse;
 import com.jryyy.forum.models.response.ZoneResponse;
 import com.jryyy.forum.services.ZoneService;
+import com.jryyy.forum.utils.DominantColorUtils;
 import com.jryyy.forum.utils.FileUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,6 +38,9 @@ public class ZoneServiceImp implements ZoneService {
     @Autowired
     private FileUtils fileUtil;
 
+    @Autowired
+    private DominantColorUtils dominantColorUtils;
+
     @Value("${file.uploadFolder}")
     private String uploadFolder;
 
@@ -51,13 +55,15 @@ public class ZoneServiceImp implements ZoneService {
 
             for (MultipartFile img : request.getFiles()) {
                 String fileName = fileUtil.saveTalkImg(uploadFolder + "zone/image/" + userZone.getId() + "/", img);
-                BufferedImage image = ImageIO.read(new FileInputStream(
-                        uploadFolder + "zone/image/" + userZone.getId() + "/" + fileName));
+
+                String url = uploadFolder + "zone/image/" + userZone.getId() + "/" + fileName;
+                BufferedImage image = ImageIO.read(new FileInputStream(url));
                 userZoneMapper.insertZoneImg(ZoneImg.builder()
                         .imgUrl("zone/image/" + userZone.getId() + "/" + fileName)
                         .zoneId(userZone.getId())
                         .width(image.getWidth())
                         .height(image.getHeight())
+                        .dominantColor(dominantColorUtils.dominantColor(url))
                         .build());
             }
         }
@@ -71,15 +77,17 @@ public class ZoneServiceImp implements ZoneService {
         if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
             throw new GlobalException(GlobalStatus.noSuchPage);
 
+        List<ZoneResponse> zones = userZoneMapper.findAllZone(
+                (request.getCurPage() - 1) * request.getPageSize(),
+                request.getPageSize(), request.getMode());
+
         ZoneListResponse response = ZoneListResponse.builder()
                 .curPageNumber(request.getCurPage()).numberPerPage(request.getPageSize())
                 .totalNum(totalNum).totalPageNum(totalPageNum)
                 .hasNext(request.getCurPage() != totalPageNum)
                 .hasPrev(request.getCurPage() != 1)
                 .build();
-        List<ZoneResponse> zones = userZoneMapper.findAllZone(
-                (request.getCurPage() - 1) * request.getPageSize(),
-                request.getPageSize(), request.getMode());
+
         for (ZoneResponse zone : zones) {
             zone.setPraise(zonePraiseMapper
                     .countZonePraise(zone.getId()));

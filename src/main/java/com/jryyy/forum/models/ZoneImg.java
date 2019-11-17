@@ -28,4 +28,7 @@ public class ZoneImg {
 
     /* 高 */
     private Integer height;
+
+    /* 主题颜色 */
+    private String dominantColor;
 }

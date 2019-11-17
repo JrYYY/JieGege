@@ -62,7 +62,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(responseBody, status);
     }
 
-
     @ExceptionHandler(GlobalException.class)
     private static Object GlobalException(GlobalException e) {
         return buildErrorResponse(HttpStatus.UNAUTHORIZED, e.status);

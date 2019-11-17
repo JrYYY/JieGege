@@ -8,6 +8,7 @@ import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpCookie;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -31,7 +32,11 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
+
+        HttpCookie httpCookie;
+
         String token = request.getHeader(Constants.USER_TOKEN_STRING);// 从 http 请求头中取出 token
+
         // 如果不是映射到方法直接通过
         if (!(handler instanceof HandlerMethod)) {
             return true;
@@ -40,6 +45,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
 
+        Class c = handlerMethod.getBeanType();
 
         //PassToken 直接通行
         if (method.isAnnotationPresent(PassToken.class)) {
@@ -49,11 +55,14 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
             }
         }
 
-
         //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserLoginToken.class)) {
-            UserLoginToken userLoginToken = method.getAnnotation(UserLoginToken.class);
-
+        if (method.isAnnotationPresent(UserLoginToken.class) ||
+                c.isAnnotationPresent(UserLoginToken.class)) {
+            UserLoginToken userLoginToken;
+            if (method.isAnnotationPresent(UserLoginToken.class))
+                userLoginToken = method.getAnnotation(UserLoginToken.class);
+            else
+                userLoginToken = (UserLoginToken) c.getAnnotation(UserLoginToken.class);
 
             if (userLoginToken.required()) {
                 HttpSession session = request.getSession();
@@ -63,7 +72,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     throw new GlobalException(GlobalStatus.tokenCanNotBeEmpty);
 
                 User user = tokenUtils.decodeJwtToken(token);
-
                 session.setAttribute(Constants.USER_ID_STRING, user.getId());
 
                 //管理员端口访问权限
@@ -73,13 +81,10 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                         throw new GlobalException(GlobalStatus.insufficientPermissions);
                     }
                 }
-
-                log.info(user.getId() + "登入成功");
                 return true;
             }
         }
         return true;
     }
-
 
 }

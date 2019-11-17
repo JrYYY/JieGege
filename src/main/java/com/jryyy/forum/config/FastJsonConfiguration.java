@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -42,7 +43,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
 
-        //升级最新版本需加=============================================================
+        //升级最新版本需加========================================
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
         supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
@@ -61,6 +62,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
         supportedMediaTypes.add(MediaType.TEXT_PLAIN);
         supportedMediaTypes.add(MediaType.TEXT_XML);
+
         fastConverter.setSupportedMediaTypes(supportedMediaTypes);
 
         //创建配置类
@@ -78,7 +80,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
 
         fastConverter.setFastJsonConfig(fastJsonConfig);
 
-        //将fastjson添加到视图消息转换器列表内
+        //将fastJson添加到视图消息转换器列表内
         converters.add(fastConverter);
     }
 
@@ -102,6 +104,22 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         registry.addResourceHandler(staticAccessPath)
                 .addResourceLocations("file:" + uploadFolder);
         super.addResourceHandlers(registry);
+    }
+
+    @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        //添加映射路径
+        registry.addMapping("/**")
+                //放行哪些原始域
+                .allowedOrigins("*")
+                //是否发送Cookie信息
+                .allowCredentials(true)
+                //放行哪些原始域(请求方式)
+                .allowedMethods("GET", "POST", "PUT", "DELETE")
+                //放行哪些原始域(头部信息)
+                .allowedHeaders("*")
+                //暴露哪些头部信息（因为跨域访问默认不能获取全部头部信息）
+                .exposedHeaders("test", "Header2");
     }
 
 }

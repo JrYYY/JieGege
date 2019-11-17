@@ -97,7 +97,6 @@ public class TokenUtils {
                 throw new GlobalException(GlobalStatus.alreadyLoggedInElsewhere);
             return user;
         } catch (Exception ex) {
-            ex.printStackTrace();
             throw new GlobalException(GlobalStatus.invalidToken);
         }
     }

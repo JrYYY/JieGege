@@ -121,5 +121,4 @@ public class SecurityController {
         codeMailUtil.sendSimpleMail(email, "注册验证");
         return new Response<>(true);
     }
-
 }

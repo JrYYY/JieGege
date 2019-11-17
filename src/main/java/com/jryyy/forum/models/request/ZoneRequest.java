@@ -6,6 +6,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.Size;
+
 /**
  * 空间请求类
  */
@@ -20,6 +22,7 @@ public class ZoneRequest {
     private String msg;
 
     /* 图片 */
+    @Size(max = 4, message = "最多上传4张图片")
     private MultipartFile[] files;
 
     public UserZone toUserZone() {

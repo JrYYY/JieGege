@@ -108,7 +108,7 @@ public interface UserZoneMapper {
      * @return {@link ZoneImg}
      * @throws Exception
      */
-    @Select("select id,zoneId,imgUrl,width,height from zone_img where zoneId = #{zoneId}")
+    @Select("select id,zoneId,imgUrl,width,height,dominantColor from zone_img where zoneId = #{zoneId}")
     List<ZoneImgResponse> findAllZoneImgByZoneId(@Param("zoneId") int zoneId) throws Exception;
 
     /**
@@ -117,7 +117,7 @@ public interface UserZoneMapper {
      * @param zoneImg   {@link ZoneImg}
      * @throws Exception
      */
-    @Insert("insert into zone_img(zoneId,imgUrl,width,height) values (#{zoneId},#{imgUrl},#{width},#{height})")
+    @Insert("insert into zone_img(zoneId,imgUrl,width,height,dominantColor) values (#{zoneId},#{imgUrl},#{width},#{height},#{dominantColor})")
     void insertZoneImg(ZoneImg zoneImg) throws Exception;
 
     /**
@@ -161,9 +161,8 @@ public interface UserZoneMapper {
 
         public String selectUserZonePersonSql(Integer mode) {
             return new SQL() {{
-                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
-                FROM("user_zone A").JOIN("user B on A.userId = B.id")
-                        .WHERE("A.userId = #{userId}");
+                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType").
+                        FROM("user_zone A").JOIN("user B on A.userId = B.id").WHERE("A.userId = #{userId}");
                 if (mode == 0)
                     ORDER_BY("A.createDate DESC,praise DESC limit #{currIndex},#{pageSize}");
                 else if (mode == 1)
