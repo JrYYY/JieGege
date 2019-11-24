@@ -124,6 +124,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(HttpStatus.FORBIDDEN, ex.getMessage());
     }
 
+
     /**
      * 来定制所有异常类型的响应主体
      *
@@ -163,11 +164,9 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      */
     private String convertErrorsToMessage(List<ObjectError> objectErrors) {
         List<String> messages = new ArrayList<>();
-
         for (ObjectError objectError : objectErrors) {
             messages.add(messageSource.getMessage(objectError, null));
         }
-
         return StringUtils.collectionToDelimitedString(messages, ", ");
     }
 

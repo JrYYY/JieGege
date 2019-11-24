@@ -90,15 +90,20 @@ public class TokenUtils {
             throw new GlobalException(GlobalStatus.invalidToken);
         }
         String payload = (String) claims.get(CLAIM_KEY);
+        String token = null;
         try {
             User user = objectMapper.readValue(payload, User.class);
-            String token = template.opsForValue().get(user.getId().toString());
+            token = template.opsForValue().get(user.getId().toString());
             if (token == null || token.isEmpty() || !token.equals(jwtToken))
-                throw new GlobalException(GlobalStatus.alreadyLoggedInElsewhere);
+                throw new GlobalException(GlobalStatus.invalidToken);
             return user;
         } catch (Exception ex) {
+            if (token != null && !token.equals(jwtToken))
+                throw new GlobalException(GlobalStatus.alreadyLoggedInElsewhere);
             throw new GlobalException(GlobalStatus.invalidToken);
         }
+
+
     }
 
 

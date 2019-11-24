@@ -11,5 +11,5 @@ public @interface UserLoginToken {
 
     boolean required() default true;
 
-    String role() default "{com.jryyy.forum.utils.security.UserLoginToken.role}";
+    String[] role() default "{com.jryyy.forum.utils.security.UserLoginToken.role}";
 }

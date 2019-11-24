@@ -3,13 +3,12 @@ package com.jryyy.forum.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.jryyy.forum.utils.security.JwtInterceptor;
+import com.jryyy.forum.interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.MediaType;
 import org.springframework.http.converter.HttpMessageConverter;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
@@ -30,6 +29,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
     /* 基本路径 */
     @Value("${file.uploadFolder}")
     private String uploadFolder;
+
 
     /**
      * 修改自定义消息转换器
@@ -106,20 +106,5 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         super.addResourceHandlers(registry);
     }
 
-    @Override
-    public void addCorsMappings(CorsRegistry registry) {
-        //添加映射路径
-        registry.addMapping("/**")
-                //放行哪些原始域
-                .allowedOrigins("*")
-                //是否发送Cookie信息
-                .allowCredentials(true)
-                //放行哪些原始域(请求方式)
-                .allowedMethods("GET", "POST", "PUT", "DELETE")
-                //放行哪些原始域(头部信息)
-                .allowedHeaders("*")
-                //暴露哪些头部信息（因为跨域访问默认不能获取全部头部信息）
-                .exposedHeaders("test", "Header2");
-    }
 
 }

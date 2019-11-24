@@ -1,25 +1,25 @@
 package com.jryyy.forum.models;
 
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Favorites {
-    /**
-     * id
-     */
-    private Integer id;
+@Builder
+public class UserLock {
 
     /**
-     * 用户id
+     * 冻结起始天
      */
-    private Integer userId;
+    private LocalDate date;
 
     /**
-     * 动态id
+     * 冻结天数
      */
-    private Integer zoneId;
+    private int day;
 }

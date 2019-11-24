@@ -9,6 +9,7 @@ import org.springframework.web.multipart.MultipartFile;
  */
 public interface UserInfoService {
     /**
+     * 查看他人详情信息
      * @param id 邮箱
      * @return {@link com.jryyy.forum.models.response.UserInfoResponse}
      * @throws Exception

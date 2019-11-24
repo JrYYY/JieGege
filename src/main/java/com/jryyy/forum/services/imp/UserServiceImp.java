@@ -10,17 +10,15 @@ import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
-import com.jryyy.forum.models.response.AdminFindUserResponse;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
 import com.jryyy.forum.utils.security.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-
+@Slf4j
 @Service
 public class UserServiceImp implements UserService {
     @Autowired
@@ -44,6 +42,7 @@ public class UserServiceImp implements UserService {
         User user = request.verifyUserLogin(userMapper);
         user.setPassword(null);
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
+        log.info("用户：" + user.getId() + " 登入成功");
         return new Response<>(UserResponse.builder().
                 token(tokenUtils.createJwtToken(user)).
                 power(user.getRole()).
@@ -83,23 +82,6 @@ public class UserServiceImp implements UserService {
         }
     }
 
-    @Override
-    public Response findAllUsers() throws Exception {
-        try {
-            List<AdminFindUserResponse> allUsers = userMapper.findAllUsers();
-            return new Response<>(allUsers);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new GlobalException(GlobalStatus.serverError);
-        }
-    }
-
-    @Override
-    public Response deleteUser(int userId) throws Exception {
-        userMapper.deleteUser(userId);
-        userInfoMapper.deleteUserInfo(userId);
-        return new Response<>(true);
-    }
 
 
 }

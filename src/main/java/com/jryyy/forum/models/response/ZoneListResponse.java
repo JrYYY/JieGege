@@ -1,5 +1,9 @@
 package com.jryyy.forum.models.response;
 
+import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.dao.UserZoneMapper;
+import com.jryyy.forum.exception.GlobalException;
+import com.jryyy.forum.models.request.GetZoneRequest;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -38,5 +42,21 @@ public class ZoneListResponse {
 
     /* 空间列表 */
     private List<ZoneResponse> zones;
+
+
+    public static ZoneListResponse create(UserZoneMapper userZoneMapper, GetZoneRequest request) throws Exception {
+        int totalNum = userZoneMapper.countZoneNum();
+        int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
+        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
+            throw new GlobalException(GlobalStatus.noSuchPage);
+        return ZoneListResponse.builder()
+                .curPageNumber(request.getCurPage())
+                .numberPerPage(request.getPageSize())
+                .totalNum(totalNum).totalPageNum(totalPageNum)
+                .hasNext(request.getCurPage() != totalPageNum)
+                .hasPrev(request.getCurPage() != 1)
+                .build();
+
+    }
 
 }

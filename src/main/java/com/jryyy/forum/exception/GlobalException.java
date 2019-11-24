@@ -6,6 +6,7 @@ public class GlobalException extends Exception {
     GlobalStatus status;
 
     public GlobalException(GlobalStatus status) {
+        super(status.getMsg());
         this.status = status;
     }
 }

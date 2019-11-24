@@ -41,15 +41,15 @@ public class EmailVerificationUtils {
             helper.setTo(to);
             helper.setSubject(title);
             helper.setText(cotent);
-            String fileName = null;
+            String fileName;
             for (File file : fileList) {
                 fileName = MimeUtility.encodeText(file.getName(), "GB2312", "B");
                 helper.addAttachment(fileName, file);
             }
+            mailSender.send(message);
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.mailDeliveryFailed);
         }
-        mailSender.send(message);
     }
 
 }

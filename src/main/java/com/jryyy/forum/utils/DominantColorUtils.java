@@ -1,5 +1,6 @@
 package com.jryyy.forum.utils;
 
+import com.jryyy.forum.models.ZoneImg;
 import org.springframework.stereotype.Component;
 
 import javax.imageio.ImageIO;
@@ -45,15 +46,15 @@ public class DominantColorUtils {
         return true;
     }
 
-    public String dominantColor(String url) throws Exception {
+    public ZoneImg dominantColor(String url) throws Exception {
         File file = new File(url);
         ImageInputStream is = ImageIO.createImageInputStream(file);
-        Iterator iter = ImageIO.getImageReaders(is);
+        Iterator<ImageReader> iter = ImageIO.getImageReaders(is);
         if (!iter.hasNext()) {
             System.out.println("Cannot load the specified file " + file);
             System.exit(1);
         }
-        ImageReader imageReader = (ImageReader) iter.next();
+        ImageReader imageReader = iter.next();
         imageReader.setInput(is);
 
         BufferedImage image = imageReader.read(0);
@@ -76,6 +77,11 @@ public class DominantColorUtils {
                 }
             }
         }
-        return getMostCommonColour(m);
+        String color = getMostCommonColour(m);
+        return ZoneImg.builder().
+                height(height).
+                width(width).
+                dominantColor(color).
+                build();
     }
 }

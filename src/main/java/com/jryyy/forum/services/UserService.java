@@ -42,20 +42,5 @@ public interface UserService {
      */
     Response changePassword(ForgotUsernamePasswordRequest request) throws Exception;
 
-    /**
-     * 查询所有用户
-     *
-     * @return {@link com.jryyy.forum.models.response.AdminFindUserResponse}
-     * @throws Exception
-     */
-    Response findAllUsers() throws Exception;
 
-    /**
-     * 注销用户
-     *
-     * @param userId id
-     * @return {@link Response}
-     * @throws Exception
-     */
-    Response deleteUser(int userId) throws Exception;
 }

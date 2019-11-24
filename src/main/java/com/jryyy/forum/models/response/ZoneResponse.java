@@ -39,8 +39,7 @@ public class ZoneResponse {
     private List<ZoneImgResponse> zoneImgList;
 
     public void toZoneImgList(UserZoneMapper zoneMapper, String file_url) throws Exception {
-        this.zoneImgList = zoneMapper.
-                findAllZoneImgByZoneId(this.id);
+        this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(this.id);
         for (ZoneImgResponse img : this.zoneImgList)
             img.setImgUrl(file_url + img.getImgUrl());
     }

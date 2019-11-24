@@ -1,14 +1,15 @@
-package com.jryyy.forum.utils.security;
+package com.jryyy.forum.interceptor;
 
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RoleCode;
-import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.User;
+import com.jryyy.forum.utils.security.PassToken;
+import com.jryyy.forum.utils.security.TokenUtils;
+import com.jryyy.forum.utils.security.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpCookie;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.handler.HandlerInterceptorAdapter;
 
@@ -17,14 +18,12 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 
-//import org.springframework.security.authentication.BadCredentialsException;
 
 @Slf4j
 public class JwtInterceptor extends HandlerInterceptorAdapter {
 
 
-    @Autowired
-    UserMapper userMapper;
+
 
     @Autowired
     TokenUtils tokenUtils;
@@ -32,8 +31,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-
-        HttpCookie httpCookie;
 
         String token = request.getHeader(Constants.USER_TOKEN_STRING);// 从 http 请求头中取出 token
 
@@ -72,7 +69,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     throw new GlobalException(GlobalStatus.tokenCanNotBeEmpty);
 
                 User user = tokenUtils.decodeJwtToken(token);
-                session.setAttribute(Constants.USER_ID_STRING, user.getId());
 
                 //管理员端口访问权限
                 if (userLoginToken.role().equals(RoleCode.ADMIN)) {
@@ -81,6 +77,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                         throw new GlobalException(GlobalStatus.insufficientPermissions);
                     }
                 }
+
+                session.setAttribute(Constants.USER_ID_STRING, user.getId());
                 return true;
             }
         }

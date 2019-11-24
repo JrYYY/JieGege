@@ -1,18 +1,18 @@
 package com.jryyy.forum.controller;
 
+
 import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.models.request.UserRequest;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.HtmlUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
+import javax.validation.Valid;
 
+@Slf4j
 @RestController
-//@UserLoginToken
 @RequestMapping("/test")
 public class testController {
 
@@ -34,9 +34,9 @@ public class testController {
         return "测试成功";
     }
 
-    public void greeting(String message) throws Exception {
-        Thread.sleep(1000); // 模拟处理延时
-        String msg = "Hello, " + HtmlUtils.htmlEscape(message) + "!";
-        //根据传入的信息，返回一个欢迎消息.
+    @PostMapping(value = "/json")
+    public String testJson(@RequestBody @Valid UserRequest request) throws Exception {
+        log.info(request.toString());
+        return request.toString();
     }
 }
