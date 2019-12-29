@@ -21,7 +21,6 @@ public class testController {
 
 
     @GetMapping("/string")
-    // @CrossOrigin(origins = "http://localhost:5500")
     public String testString(HttpSession session) {
         System.out.println(session.getAttribute(Constants.USER_ID_STRING));
         return "运行成功+7987";

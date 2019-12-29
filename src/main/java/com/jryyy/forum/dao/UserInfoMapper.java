@@ -16,7 +16,7 @@ import java.util.List;
 @Mapper
 public interface UserInfoMapper {
 
-    @Delete("delete from userinfo where userId = #{userId}")
+    @Delete("delete from user_info where userId = #{userId}")
     void deleteUserInfo(int userId) throws Exception;
 
     /**
@@ -29,7 +29,7 @@ public interface UserInfoMapper {
     @Select("select A.userId,B.emailName email,A.username,A.avatar,A.sex,A.age," +
             "A.checkInDays,A.checkInDate,A.bio," +
             "A.continuousCheckInDays continuousDays,A.bgImg " +
-            "from userinfo A join user B on A.userId = B.id where A.userId = #{id}")
+            "from user_info A join user B on A.userId = B.id where A.userId = #{id}")
     UserInfoResponse selectUserInfo(@Param("id") int id) throws Exception;
 
     /**
@@ -39,7 +39,7 @@ public interface UserInfoMapper {
      * @return {@link InfoListResponse}
      * @throws Exception
      */
-    @Select("select A.userId,A.username,B.emailName email,A.bio from userinfo A " +
+    @Select("select A.userId,A.username,B.emailName email,A.bio from user_info A " +
             "join user B on A.userId = B.id " +
             "where A.username like '%${value}%' or B.emailName like '%${value}%' ")
     List<InfoListResponse> findInfoByCondition(String value) throws Exception;
@@ -51,7 +51,7 @@ public interface UserInfoMapper {
      * @return {@link Check}
      * @throws Exception
      */
-    @Select("select checkInDays,checkInDate,continuousCheckInDays continuousDays from userinfo where userId = #{id}")
+    @Select("select checkInDays,checkInDate,continuousCheckInDays continuousDays from user_info where userId = #{id}")
     Check selectCheckIn(@Param("id") int id) throws Exception;
 
     /**
@@ -60,7 +60,7 @@ public interface UserInfoMapper {
      * @param id 用户id
      * @throws Exception
      */
-    @Insert("insert into userinfo(userId) value (#{id})")
+    @Insert("insert into user_info(userId) value (#{id})")
     void insertUserInfo(int id) throws Exception;
 
     /**
@@ -78,7 +78,7 @@ public interface UserInfoMapper {
      * @param bgImg  背景图片
      * @throws Exception
      */
-    @Update("update userinfo set bgImg = #{bgImg} where userId = #{userId}")
+    @Update("update user_info set bgImg = #{bgImg} where userId = #{userId}")
     void updateUserBgImg(int userId, String bgImg) throws Exception;
 
     /**
@@ -87,7 +87,7 @@ public interface UserInfoMapper {
      * @param checkInDays 签到天数
      * @param userId      用户id
      */
-    @Update("update userinfo set checkInDays = #{checkInDays}," +
+    @Update("update user_info set checkInDays = #{checkInDays}," +
             "continuousCheckInDays = #{continuousDays}," +
             "checkInDate = CURRENT_TIMESTAMP where userId = #{userId}")
     void checkIn(@Param("userId") int userId,
@@ -100,7 +100,7 @@ public interface UserInfoMapper {
      * @param userId
      * @throws Exception
      */
-    @Update("update userinfo set continuousCheckInDays = 0 where userId = #{userId}")
+    @Update("update user_info set continuousCheckInDays = 0 where userId = #{userId}")
     void modifyContinuousCheckIn(int userId) throws Exception;
 
     /**
@@ -108,7 +108,7 @@ public interface UserInfoMapper {
      * @param userId    用户id
      * @throws Exception
      */
-    @Update("update userinfo set checkInDate = null where userId =#{userId}")
+    @Update("update user_info set checkInDate = null where userId =#{userId}")
     void deleteCheckInDate(@Param("userId") int userId) throws Exception;
 
     /*
@@ -117,7 +117,7 @@ public interface UserInfoMapper {
     class SqlProvider {
         public String updatePersonSql(UserInfoRequest userInfo) {
             return new SQL() {{
-                UPDATE("userinfo");
+                UPDATE("user_info");
                 if (userInfo.getUsername() != null)
                     SET("username = #{username}");
                 if (userInfo.getAvatar() != null)

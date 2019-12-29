@@ -16,6 +16,9 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 
+/**
+ * @see com.jryyy.forum.services.AdminService
+ */
 @Service("AdminService")
 public class AdminServiceImp implements AdminService {
 
@@ -57,7 +60,7 @@ public class AdminServiceImp implements AdminService {
     public Response lock(int id, int day) throws Exception {
         userMapper.updateStatus(id, UserStatus.LOCKED);
         redisTemplate.opsForHash().put("userLock", id, UserLock.builder()
-                .date(LocalDate.now()).day(day).build());
+                .startDate(LocalDate.now()).endDate(LocalDate.now().plusDays(day)).day(day).build());
         return new Response();
     }
 

@@ -1,21 +1,24 @@
 package com.jryyy.forum.services.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.dao.UserFriendMapper;
+import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.UserFriend;
-import com.jryyy.forum.services.UserFriendService;
+import com.jryyy.forum.services.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @see FollowService
+ */
 @Service("UserFriendService")
-public class UserFriendServiceImp implements UserFriendService {
+public class FollowServiceImp implements FollowService {
 
     @Autowired
-    UserFriendMapper userFriendMapper;
+    FollowMapper followMapper;
 
     @Autowired
     UserMapper userMapper;
@@ -23,7 +26,7 @@ public class UserFriendServiceImp implements UserFriendService {
     @Override
     public Response viewWatchlist(int userId) throws Exception {
         try {
-            return new Response<>(userFriendMapper.findAttentionBasedOnId(userId));
+            return new Response<>(followMapper.findAttentionBasedOnId(userId));
         } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
@@ -33,7 +36,7 @@ public class UserFriendServiceImp implements UserFriendService {
     @Override
     public Response viewFanList(int fenId) throws Exception {
         try {
-            return new Response<>(userFriendMapper.findFansBasedOnId(fenId));
+            return new Response<>(followMapper.findFansBasedOnId(fenId));
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);
         }
@@ -44,10 +47,10 @@ public class UserFriendServiceImp implements UserFriendService {
         User user = userMapper.findLoginById(id);
         if (user == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);
-        if (userFriendMapper.findFriend(userId, id) != null)
+        if (followMapper.findFriend(userId, id) != null)
             throw new GlobalException(GlobalStatus.alreadyConcerned);
         try {
-            userFriendMapper.insertUserFriend(UserFriend.builder().
+            followMapper.insertUserFriend(UserFriend.builder().
                     userId(userId).friendId(id).build());
             return new Response();
         } catch (Exception e) {
@@ -58,11 +61,11 @@ public class UserFriendServiceImp implements UserFriendService {
 
     @Override
     public Response takeOff(int userId, int id) throws Exception {
-        UserFriend userFriend = userFriendMapper.findFriendsBasedOnId(id);
+        UserFriend userFriend = followMapper.findFriendsBasedOnId(id);
         if (userFriend == null || !userFriend.getUserId().equals(userId))
             throw new GlobalException(GlobalStatus.noAttention);
         try {
-            userFriendMapper.unsubscribe(userId, id);
+            followMapper.unsubscribe(userId, id);
             return new Response();
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);
@@ -76,7 +79,7 @@ public class UserFriendServiceImp implements UserFriendService {
         if (followId == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);
         try {
-            boolean judged = userFriendMapper.findFriend(userId, followId) != null;
+            boolean judged = followMapper.findFriend(userId, followId) != null;
             return new Response<>(judged);
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);

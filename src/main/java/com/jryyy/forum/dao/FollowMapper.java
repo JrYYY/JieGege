@@ -10,7 +10,7 @@ import java.util.List;
  * 关注/被关注 列表操作
  */
 @Mapper
-public interface UserFriendMapper {
+public interface FollowMapper {
 
     /**
      * 粉丝数
@@ -19,7 +19,7 @@ public interface UserFriendMapper {
      * @return FanCount
      * @throws Exception
      */
-    @Select("select count(*) from user_friend where friendId = #{friendId}")
+    @Select("select count(*) from follow where friendId = #{friendId}")
     int followersNumByUId(@Param("friendId") int friendId) throws Exception;
 
     /**
@@ -29,7 +29,7 @@ public interface UserFriendMapper {
      * @return 统计数
      * @throws Exception
      */
-    @Select("select count(*) from user_friend where userId = #{userId}")
+    @Select("select count(*) from follow where userId = #{userId}")
     int followingTotalByFId(@Param("userId") int userId) throws Exception;
 
     /**
@@ -40,7 +40,7 @@ public interface UserFriendMapper {
      * @throws Exception
      */
     @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate date " +
-            "from user_friend A join userinfo B " +
+            "from follow A join user_info B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
     List<UserFriendResponse> findAttentionBasedOnId(@Param("userId") Integer userId) throws Exception;
@@ -53,7 +53,7 @@ public interface UserFriendMapper {
      * @throws Exception
      */
     @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate date " +
-            "from user_friend A join userinfo B " +
+            "from follow A join user_info B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")
     List<UserFriendResponse> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
@@ -66,7 +66,7 @@ public interface UserFriendMapper {
      * @return {@link UserFriend}
      * @throws Exception
      */
-    @Select("select id,userId,friendId,createDate from user_friend where id = #{id}")
+    @Select("select id,userId,friendId,createDate from follow where id = #{id}")
     UserFriend findFriendsBasedOnId(@Param("id") int id) throws Exception;
 
     /**
@@ -77,7 +77,7 @@ public interface UserFriendMapper {
      * @return id
      * @throws Exception
      */
-    @Select("select id from user_friend where userId = #{userId} and friendId = #{friendId}")
+    @Select("select id from follow where userId = #{userId} and friendId = #{friendId}")
     Integer findFriend(@Param("userId") int userId, @Param("friendId") int friendId) throws Exception;
 
     /**
@@ -86,9 +86,8 @@ public interface UserFriendMapper {
      * @param userFriend {@link UserFriend}
      * @throws Exception
      */
-    @Insert("insert into user_friend(userId,friendId)values(#{userId},#{friendId})")
+    @Insert("insert into follow(userId,friendId)values(#{userId},#{friendId})")
     void insertUserFriend(UserFriend userFriend) throws Exception;
-
 
     /**
      * 取消关注
@@ -97,7 +96,7 @@ public interface UserFriendMapper {
      * @param id
      * @throws Exception
      */
-    @Delete("delete from user_friend where userId = #{userId} and id = #{id}")
+    @Delete("delete from follow where userId = #{userId} and id = #{id}")
     void unsubscribe(@Param("userId") int userId, @Param("id") int id) throws Exception;
 
 }

@@ -7,6 +7,9 @@ import com.jryyy.forum.services.ZoneCommentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+/**
+ * @see com.jryyy.forum.services.ZoneCommentService
+ */
 @Service
 public class ZoneCommentServiceImp implements ZoneCommentService {
 

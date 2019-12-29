@@ -14,8 +14,6 @@ import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
 
-//import org.springframework.security.authentication.BadCredentialsException;
-
 /**
  * 用户请求类型
  *

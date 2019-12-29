@@ -14,8 +14,10 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-//import org.springframework.security.authentication.BadCredentialsException;
 
+/**
+ * @see com.jryyy.forum.services.BindingService
+ */
 @Service("BindingService")
 public class BindingServiceImp implements BindingService {
     @Autowired

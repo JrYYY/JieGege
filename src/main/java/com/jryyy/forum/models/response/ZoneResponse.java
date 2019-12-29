@@ -14,30 +14,42 @@ import java.util.List;
 @AllArgsConstructor
 @Builder
 public class ZoneResponse {
-    /* id */
+    /**
+     * id
+     */
     private int id;
 
-    /* 用户id */
+    /**
+     *  用户id */
     private int userId;
 
-    /* 邮箱 */
+    /**
+     *  邮箱 */
     private String email;
 
-    /* 内容 */
+    /**
+     *  内容 */
     private String msg;
 
-    /* 创建时间 */
+    /** 创建时间 */
     private Date date;
 
-    /* 类型 */
+    /** 类型 */
     private int msgType;
 
-    /* 认可 */
+    /** 认可 */
     private int praise;
 
-    /* 图片 */
+    /** 图片 */
     private List<ZoneImgResponse> zoneImgList;
 
+
+    /**
+     *
+     * @param zoneMapper {@link UserZoneMapper}
+     * @param file_url
+     * @throws Exception
+     */
     public void toZoneImgList(UserZoneMapper zoneMapper, String file_url) throws Exception {
         this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(this.id);
         for (ZoneImgResponse img : this.zoneImgList)

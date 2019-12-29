@@ -1,5 +1,6 @@
 package com.jryyy.forum.config;
 
+import com.jryyy.forum.constant.Constants;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.cors.CorsConfiguration;
@@ -28,6 +29,7 @@ public class GlobalCorsConfig {
         config.addExposedHeader("Origin");
         config.addExposedHeader("Access-Control-Request-Method");
         config.addExposedHeader("Access-Control-Request-Headers");
+        config.addExposedHeader(Constants.USER_TOKEN_STRING);
 
         //2.添加映射路径
         UrlBasedCorsConfigurationSource configSource = new UrlBasedCorsConfigurationSource();

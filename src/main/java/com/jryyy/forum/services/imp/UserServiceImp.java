@@ -1,7 +1,7 @@
 package com.jryyy.forum.services.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.dao.UserFriendMapper;
+import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
@@ -18,6 +18,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+/**
+ * @see com.jryyy.forum.services.UserService
+ */
 @Slf4j
 @Service
 public class UserServiceImp implements UserService {
@@ -28,7 +31,7 @@ public class UserServiceImp implements UserService {
     UserInfoMapper userInfoMapper;
 
     @Autowired
-    UserFriendMapper userFriendMapper;
+    FollowMapper followMapper;
 
     @Autowired
     RedisTemplate<String, String> template;
@@ -40,7 +43,6 @@ public class UserServiceImp implements UserService {
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
-        user.setPassword(null);
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
         log.info("用户：" + user.getId() + " 登入成功");
         return new Response<>(UserResponse.builder().
@@ -81,7 +83,6 @@ public class UserServiceImp implements UserService {
             throw new GlobalException(GlobalStatus.serverError);
         }
     }
-
 
 
 }

@@ -55,16 +55,16 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @param s {@link GlobalStatus}
      * @return {@link ResponseEntity}
      */
-    private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, GlobalStatus s) {
+    private static ResponseEntity<Object> buildErrorResponse(GlobalStatus s) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("status", s.getCode());
         responseBody.put("message", s.getMsg());
-        return new ResponseEntity<>(responseBody, status);
+        return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(GlobalException.class)
-    private static Object GlobalException(GlobalException e) {
-        return buildErrorResponse(HttpStatus.UNAUTHORIZED, e.status);
+    private Object globalException(GlobalException e) {
+        return buildErrorResponse(e.status);
     }
 
 

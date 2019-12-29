@@ -10,8 +10,13 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Builder
 public class UserResponse {
-    /* token 加密码 */
+    /**
+     * token 加密码
+     */
     private String token;
-    /* 权限 */
+
+    /**
+     * 权限
+     */
     private String power;
 }

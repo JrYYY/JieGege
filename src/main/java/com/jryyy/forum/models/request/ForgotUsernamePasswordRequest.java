@@ -26,11 +26,13 @@ public class ForgotUsernamePasswordRequest {
     @Email(message = "邮箱格式错误")
     private String name;
 
-    /* 验证码 */
+    /**
+     * 验证码
+     */
     @NotBlank(message = "验证码不能为空")
     private String verificationCode;
 
-    /* 修改的密码 */
+    /** 修改的密码 */
     @NotBlank(message = "密码不能为空")
     private String password;
 

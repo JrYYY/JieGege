@@ -5,7 +5,7 @@ import com.jryyy.forum.models.Response;
 /**
  * 追随者/追随 服务
  */
-public interface UserFriendService {
+public interface FollowService {
 
     /**
      * 查看关注列表

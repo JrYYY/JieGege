@@ -49,6 +49,11 @@ public class SecurityController {
         return userService.userLogin(request);
     }
 
+    /**
+     * @param request
+     * @return
+     * @throws Exception
+     */
     @PostMapping("/login")
     public Response adminLogin(@RequestBody @Valid UserRequest request) throws Exception {
         Response response = userService.userLogin(request);
@@ -70,6 +75,12 @@ public class SecurityController {
         return userService.userRegistration(request);
     }
 
+    /**
+     *
+     * @param email
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/signUp")
     public Response verification(@RequestParam String email) throws Exception {
         return userService.verifyUser(email);

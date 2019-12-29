@@ -14,4 +14,6 @@ public class Constants {
     public static final String USER_TOKEN_STRING = "token";
 
     public static final int MAXIMUM_NUMBER_ATTEMPTS = 6;
+
+
 }

@@ -6,7 +6,6 @@ spring:
     username: root
     password: 10086
 
-
   #配置redis缓存
   redis:
     host: 127.0.0.1
@@ -40,6 +39,7 @@ spring:
           starttls:
             enable: true
             required: true
+
   jackson:
     date-format: yyyy-mm-dd hh:mm:ss
     time-zone: GMT+8
@@ -68,6 +68,7 @@ logging:
     com:
       quartzenergy:
         ofs: debug
+
 debug: true
 
 

@@ -16,7 +16,12 @@ public class UserLock {
     /**
      * 冻结起始天
      */
-    private LocalDate date;
+    private LocalDate startDate;
+
+    /**
+     * 冻结结束天
+     */
+    private LocalDate endDate;
 
     /**
      * 冻结天数

@@ -1,7 +1,7 @@
 package com.jryyy.forum.services.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.dao.UserFriendMapper;
+import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.dao.UserZoneMapper;
@@ -32,7 +32,7 @@ public class UserInfoServiceImp implements UserInfoService {
     UserInfoMapper userInfoMapper;
 
     @Autowired
-    UserFriendMapper userFriendMapper;
+    FollowMapper followMapper;
 
     @Autowired
     UserMapper userMapper;
@@ -74,8 +74,8 @@ public class UserInfoServiceImp implements UserInfoService {
     public Response viewUserPersonalInformation(int userId) throws Exception {
         try {
             UserInfoResponse response = userInfoMapper.selectUserInfo(userId);
-            Integer following = userFriendMapper.followingTotalByFId(userId);
-            Integer followers = userFriendMapper.followersNumByUId(userId);
+            Integer following = followMapper.followingTotalByFId(userId);
+            Integer followers = followMapper.followersNumByUId(userId);
             Integer zoneNum = zoneMapper.countZoneNumByUserId(userId);
             response.setFollowingNum(following);
             response.setFollowersNum(followers);
@@ -102,8 +102,8 @@ public class UserInfoServiceImp implements UserInfoService {
     @Override
     public Response checkIn(int userId) throws Exception {
         Check check = userInfoMapper.selectCheckIn(userId);
-        Response<CheckResponse> response = whetherToCheckIn(userId);
-        if (response.getData().isStatus())
+        Response response = whetherToCheckIn(userId);
+        if (((CheckResponse) response.getData()).isStatus())
             throw new GlobalException(GlobalStatus.alreadySignedIn);
         try {
             Date date = new Date();

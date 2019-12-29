@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 
+@CrossOrigin
 @RestController
 @RequestMapping("/admin")
 @UserLoginToken(role = RoleCode.ADMIN)

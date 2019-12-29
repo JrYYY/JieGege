@@ -22,6 +22,9 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/**
+ * @see com.jryyy.forum.services.ZoneService
+ */
 @Service("ZoneService")
 public class ZoneServiceImp implements ZoneService {
 
@@ -79,16 +82,16 @@ public class ZoneServiceImp implements ZoneService {
     @Override
     public Response findUserZone(GetZoneRequest request, int userId) throws Exception {
         ZoneListResponse response = ZoneListResponse.create(userZoneMapper, request);
-            List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
-                    (request.getCurPage() - 1) * request.getPageSize(),
-                    request.getPageSize(), userId, request.getMode());
-            for (ZoneResponse zone : zones) {
-                zone.setPraise(zonePraiseMapper
-                        .countZonePraise(zone.getId()));
-                zone.toZoneImgList(userZoneMapper, file_url);
-            }
-            response.setZones(zones);
-            return new Response<>(response);
+        List<ZoneResponse> zones = userZoneMapper.findZoneByUser(
+                (request.getCurPage() - 1) * request.getPageSize(),
+                request.getPageSize(), userId, request.getMode());
+        for (ZoneResponse zone : zones) {
+            zone.setPraise(zonePraiseMapper
+                    .countZonePraise(zone.getId()));
+            zone.toZoneImgList(userZoneMapper, file_url);
+        }
+        response.setZones(zones);
+        return new Response<>(response);
     }
 
 

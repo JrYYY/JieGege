@@ -18,21 +18,20 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.lang.reflect.Method;
 
-
+/**
+ * @author JrYYY
+ */
 @Slf4j
 public class JwtInterceptor extends HandlerInterceptorAdapter {
-
-
-
 
     @Autowired
     TokenUtils tokenUtils;
 
-
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
 
-        String token = request.getHeader(Constants.USER_TOKEN_STRING);// 从 http 请求头中取出 token
+        // 从 http 请求头中取出 token
+        String token = request.getHeader(Constants.USER_TOKEN_STRING);
 
         // 如果不是映射到方法直接通过
         if (!(handler instanceof HandlerMethod)) {
@@ -41,7 +40,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
         HandlerMethod handlerMethod = (HandlerMethod) handler;
         Method method = handlerMethod.getMethod();
-
         Class c = handlerMethod.getBeanType();
 
         //PassToken 直接通行
@@ -56,6 +54,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         if (method.isAnnotationPresent(UserLoginToken.class) ||
                 c.isAnnotationPresent(UserLoginToken.class)) {
             UserLoginToken userLoginToken;
+
             if (method.isAnnotationPresent(UserLoginToken.class))
                 userLoginToken = method.getAnnotation(UserLoginToken.class);
             else
