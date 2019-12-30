@@ -77,7 +77,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     }
                 }
 
-                session.setAttribute(Constants.USER_ID_STRING, user.getId());
                 return true;
             }
         }

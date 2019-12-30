@@ -5,10 +5,15 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * @author JrYYY
+ */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 public @interface UserLoginToken {
-    boolean required() default true;
-
-    String[] role() default "{com.jryyy.forum.utils.security.UserLoginToken.role}";
+    /**
+     * 权限
+     * @return  权限信息
+     */
+    String role() default "all";
 }
