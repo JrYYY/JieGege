@@ -1,7 +1,6 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;

@@ -4,7 +4,6 @@ import com.jryyy.forum.dao.UserFriendMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.dao.UserZoneMapper;
-import com.jryyy.forum.exception.PreconditionFailedException;
 import com.jryyy.forum.models.Check;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.request.UserInfoRequest;
