@@ -1,7 +1,8 @@
 package com.jryyy.forum.models.request;
 
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.UserMapper;
-import com.jryyy.forum.exception.BadCredentialsException;
+import com.jryyy.forum.exception.GlobalException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,11 +26,15 @@ public class ForgotUsernamePasswordRequest {
     @Email(message = "邮箱格式错误")
     private String name;
 
-    /* 验证码 */
+    /**
+     * 验证码
+     */
     @NotBlank(message = "验证码不能为空")
     private String verificationCode;
 
-    /* 修改的密码 */
+    /**
+     * 修改的密码
+     */
     @NotBlank(message = "密码不能为空")
     private String password;
 
@@ -40,13 +45,14 @@ public class ForgotUsernamePasswordRequest {
      */
     public void userDoesNotExist(UserMapper userMapper) throws Exception {
         if (userMapper.findLoginByName(this.name) == null)
-            throw new BadCredentialsException("用户不存在");
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
     }
 
     /**
      * 验证 验证码
      */
     public void verifyVerificationCode(RedisTemplate template) {
+        String code = (String) template.opsForValue().get("");
 
     }
 }

@@ -1,24 +1,27 @@
 package com.jryyy.forum.services.imp;
 
-import com.jryyy.forum.dao.UserFriendMapper;
+import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
-import com.jryyy.forum.models.response.AdminFindUserResponse;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
 import com.jryyy.forum.utils.security.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
-
+/**
+ * @see com.jryyy.forum.services.UserService
+ */
+@Slf4j
 @Service
 public class UserServiceImp implements UserService {
     @Autowired
@@ -28,7 +31,7 @@ public class UserServiceImp implements UserService {
     UserInfoMapper userInfoMapper;
 
     @Autowired
-    UserFriendMapper userFriendMapper;
+    FollowMapper followMapper;
 
     @Autowired
     RedisTemplate<String, String> template;
@@ -40,8 +43,8 @@ public class UserServiceImp implements UserService {
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
-        user.setPassword(null);
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
+        log.info("用户：" + user.getId() + " 登入成功");
         return new Response<>(UserResponse.builder().
                 token(tokenUtils.createJwtToken(user)).
                 power(user.getRole()).
@@ -58,7 +61,7 @@ public class UserServiceImp implements UserService {
             userMapper.insertUser(user);
             userInfoMapper.insertUserInfo(user.getId());
         } catch (Exception e) {
-            throw new RuntimeException("注册用户失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
         return new Response();
     }
@@ -77,26 +80,8 @@ public class UserServiceImp implements UserService {
             userMapper.updatePassword(request.getName(), request.getPassword());
             return new Response();
         } catch (Exception e) {
-            throw new RuntimeException("修改密码失败");
+            throw new GlobalException(GlobalStatus.serverError);
         }
-    }
-
-    @Override
-    public Response findAllUsers() throws Exception {
-        try {
-            List<AdminFindUserResponse> allUsers = userMapper.findAllUsers();
-            return new Response<>(allUsers);
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new RuntimeException("查看用户列表失败");
-        }
-    }
-
-    @Override
-    public Response deleteUser(int userId) throws Exception {
-        userMapper.deleteUser(userId);
-        userInfoMapper.deleteUserInfo(userId);
-        return new Response<>(true);
     }
 
 

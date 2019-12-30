@@ -18,6 +18,7 @@ public class RedisConfiguration {
         this.redisTemplate = redisTemplate;
     }
 
+
     @Bean
     @SuppressWarnings("unchecked")
     public RedisTemplate<String, Object> redisTemplate() {
@@ -29,4 +30,6 @@ public class RedisConfiguration {
         redisTemplate.setHashValueSerializer(jsonString);
         return redisTemplate;
     }
+
+
 }

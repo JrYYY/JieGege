@@ -1,6 +1,9 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
@@ -8,7 +11,7 @@ import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
 import com.jryyy.forum.models.response.UserResponse;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.utils.CodeMailUtil;
+import com.jryyy.forum.utils.CodeMailUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,9 +23,9 @@ import javax.validation.Valid;
 /**
  * 安全验证控制层
  */
+@Slf4j
 @RestController
 @RequestMapping("/security")
-@Slf4j
 public class SecurityController {
 
     @Autowired
@@ -32,7 +35,7 @@ public class SecurityController {
     TokenUtils tokenUtils;
 
     @Autowired
-    CodeMailUtil codeMailUtil;
+    CodeMailUtils codeMailUtil;
 
     /**
      * 登入
@@ -41,11 +44,22 @@ public class SecurityController {
      * @return {@link Response}
      */
     @PostMapping("/signIn")
-    public Response signIn(@Valid @ModelAttribute UserRequest request, HttpSession session) throws Exception {
-        Response<UserResponse> response = userService.userLogin(request);
-        session.setAttribute(Constants.USER_ID_STRING,
-                tokenUtils.decodeJwtToken(response.getData().getToken()).getId());
-        log.info(request.toString() + "__________登入成功");
+    public Response signIn(@Valid @ModelAttribute UserRequest request) throws Exception {
+        log.info("--------" + request.toString());
+        return userService.userLogin(request);
+    }
+
+    /**
+     * @param request
+     * @return
+     * @throws Exception
+     */
+    @PostMapping("/login")
+    public Response adminLogin(@RequestBody @Valid UserRequest request) throws Exception {
+        Response response = userService.userLogin(request);
+        UserResponse userRequest = (UserResponse) response.getData();
+        if (!userRequest.getPower().equals(RoleCode.ADMIN))
+            throw new GlobalException(GlobalStatus.insufficientPermissions);
         return response;
     }
 
@@ -61,6 +75,11 @@ public class SecurityController {
         return userService.userRegistration(request);
     }
 
+    /**
+     * @param email
+     * @return
+     * @throws Exception
+     */
     @GetMapping("/signUp")
     public Response verification(@RequestParam String email) throws Exception {
         return userService.verifyUser(email);
@@ -75,7 +94,7 @@ public class SecurityController {
      * @throws Exception
      */
     @PutMapping("/token")
-    public Response PutJWT(String token, HttpSession session) throws Exception {
+    public Response PutJWT(@RequestParam String token, HttpSession session) throws Exception {
         User user = tokenUtils.decodeJwtToken(token);
         Response response = new Response<>(UserResponse.builder()
                 .token(tokenUtils.createJwtToken(user))
@@ -92,8 +111,9 @@ public class SecurityController {
      * @return
      */
     @DeleteMapping("/token")
-    public Response Logout(HttpSession session) {
-        session.removeAttribute(Constants.USER_ID_STRING);
+    public Response Logout(HttpSession session) throws Exception {
+        Integer userId = (Integer) session.getAttribute(Constants.USER_ID_STRING);
+        tokenUtils.deleteJWTToken(userId);
         log.info("注销成功");
         return new Response();
     }
@@ -114,9 +134,8 @@ public class SecurityController {
     public Response generateVerificationCode(@RequestParam String email) throws Exception {
         Response response = userService.verifyUser(email);
         if ((Boolean) response.getData())
-            throw new PreconditionFailedException("邮箱已注册");
+            throw new GlobalException(GlobalStatus.userAlreadyExists);
         codeMailUtil.sendSimpleMail(email, "注册验证");
         return new Response<>(true);
     }
-
 }

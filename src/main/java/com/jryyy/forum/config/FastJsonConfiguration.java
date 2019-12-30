@@ -3,7 +3,7 @@ package com.jryyy.forum.config;
 import com.alibaba.fastjson.serializer.SerializerFeature;
 import com.alibaba.fastjson.support.config.FastJsonConfig;
 import com.alibaba.fastjson.support.spring.FastJsonHttpMessageConverter;
-import com.jryyy.forum.utils.security.JwtInterceptor;
+import com.jryyy.forum.interceptor.JwtInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -30,6 +30,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
     @Value("${file.uploadFolder}")
     private String uploadFolder;
 
+
     /**
      * 修改自定义消息转换器
      *
@@ -42,7 +43,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         //创建fastJson消息转换器
         FastJsonHttpMessageConverter fastConverter = new FastJsonHttpMessageConverter();
 
-        //升级最新版本需加=============================================================
+        //升级最新版本需加========================================
         List<MediaType> supportedMediaTypes = new ArrayList<>();
         supportedMediaTypes.add(MediaType.APPLICATION_JSON);
         supportedMediaTypes.add(MediaType.APPLICATION_JSON_UTF8);
@@ -61,6 +62,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
         supportedMediaTypes.add(MediaType.TEXT_MARKDOWN);
         supportedMediaTypes.add(MediaType.TEXT_PLAIN);
         supportedMediaTypes.add(MediaType.TEXT_XML);
+
         fastConverter.setSupportedMediaTypes(supportedMediaTypes);
 
         //创建配置类
@@ -78,7 +80,7 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
 
         fastConverter.setFastJsonConfig(fastJsonConfig);
 
-        //将fastjson添加到视图消息转换器列表内
+        //将fastJson添加到视图消息转换器列表内
         converters.add(fastConverter);
     }
 
@@ -103,5 +105,6 @@ public class FastJsonConfiguration extends WebMvcConfigurationSupport {
                 .addResourceLocations("file:" + uploadFolder);
         super.addResourceHandlers(registry);
     }
+
 
 }

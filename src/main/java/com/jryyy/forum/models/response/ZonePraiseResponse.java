@@ -9,6 +9,8 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class ZonePraiseResponse {
 
+    int userId;
+
     String username;
 
     String email;

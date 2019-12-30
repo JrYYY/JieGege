@@ -3,6 +3,7 @@ package com.jryyy.forum.dao;
 import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.response.AdminFindUserResponse;
 import org.apache.ibatis.annotations.*;
+import org.apache.ibatis.type.JdbcType;
 
 import java.util.List;
 
@@ -14,6 +15,10 @@ public interface UserMapper {
 
     @Delete("delete from user where id = #{id}")
     void deleteUser(int id) throws Exception;
+
+
+    @Select("select * from user link '%'#{info}'%'")
+    List<User> findUser(String info);
 
     /**
      * 查看所有用户
@@ -35,6 +40,7 @@ public interface UserMapper {
     @Select("select id,emailName,password,role from user where id = #{id}")
     User findLoginById(Integer id) throws Exception;
 
+
     /**
      * 根据name查询用户
      *
@@ -42,6 +48,7 @@ public interface UserMapper {
      * @return {@link User}
      */
     @Select("select id,emailName,password,role,status,loginFailedAttemptCount from user where emailName = #{name}")
+    @Results({@Result(property = "status", column = "status", jdbcType = JdbcType.BIT)})
     User findLoginByName(@Param("name") String name) throws Exception;
 
     /**
@@ -61,8 +68,7 @@ public interface UserMapper {
      * @param user {@link User}
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
-    @Insert("insert into user(emailName,password,role)" +
-            "values(#{emailName},#{password},#{role})")
+    @Insert("insert into user(emailName,password,role)values(#{emailName},#{password},#{role})")
     void insertUser(User user) throws Exception;
 
     /**
@@ -95,17 +101,16 @@ public interface UserMapper {
      */
     @Update("update user set loginFailedAttemptCount = #{loginFailedAttemptCount} where id = #{id}")
     void updateLoginFailedAttemptCount(@Param("id") int id,
-                                       @Param("loginFailedAttemptCount") int AttemptCount)
-            throws Exception;
+                                       @Param("loginFailedAttemptCount") int AttemptCount) throws Exception;
 
     /**
      * 设置用户当前状态
      *
-     * @param id
-     * @param status
+     * @param id        用户id
+     * @param status    状态
      * @throws Exception
      */
     @Update("update user set status = #{status} where id = #{id}")
-    void updateStatus(@Param("id") int id, @Param("status") String status) throws Exception;
+    void updateStatus(@Param("id") int id, @Param("status") Integer status) throws Exception;
 }
 

@@ -1,22 +1,32 @@
 package com.jryyy.forum.models.response;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
-public class UserResponse {
+public class InfoListResponse {
     /**
-     * token 加密码
+     * id
      */
-    private String token;
+    int userId;
 
     /**
-     * 权限
+     * 用户名
      */
-    private String power;
+    String username;
+
+    /**
+     * 邮箱
+     */
+    String email;
+
+    /**
+     * bio
+     */
+    String bio;
+
 }

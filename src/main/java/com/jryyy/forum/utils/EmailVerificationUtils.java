@@ -1,5 +1,7 @@
 package com.jryyy.forum.utils;
 
+import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.exception.GlobalException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
@@ -13,7 +15,7 @@ import java.io.File;
 import java.util.List;
 
 @Component
-public class EmailVerificationUtil {
+public class EmailVerificationUtils {
 
     @Value("${spring.mail.username}")
     private String from;
@@ -39,15 +41,15 @@ public class EmailVerificationUtil {
             helper.setTo(to);
             helper.setSubject(title);
             helper.setText(cotent);
-            String fileName = null;
+            String fileName;
             for (File file : fileList) {
                 fileName = MimeUtility.encodeText(file.getName(), "GB2312", "B");
                 helper.addAttachment(fileName, file);
             }
+            mailSender.send(message);
         } catch (Exception e) {
-            throw new RuntimeException("邮件发送失败");
+            throw new GlobalException(GlobalStatus.mailDeliveryFailed);
         }
-        mailSender.send(message);
     }
 
 }

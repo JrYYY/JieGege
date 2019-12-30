@@ -12,6 +12,9 @@ import java.sql.Date;
 @AllArgsConstructor
 @Builder
 public class UserInfoResponse {
+    /* 用户id */
+    private Integer userId;
+
     /* 邮箱 */
     private String email;
 
@@ -47,4 +50,7 @@ public class UserInfoResponse {
 
     /* 联系签到天数 */
     private Integer continuousDays;
+
+    /* 背景 */
+    private String bgImg;
 }
