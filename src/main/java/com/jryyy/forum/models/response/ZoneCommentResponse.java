@@ -1,18 +1,30 @@
 package com.jryyy.forum.models.response;
 
+import com.jryyy.forum.models.IdentifiableEntity;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
 import java.util.Date;
 
+/**
+ * 空间评论
+ * @author JrYYY
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ZoneCommentResponse {
+@EqualsAndHashCode(callSuper = true)
+public class ZoneCommentResponse extends IdentifiableEntity {
+
+    /** 邮箱 */
     private String email;
 
-    private String msg;
+    /** 评论 */
+    private String comment;
 
+    /** 时间 */
     private Date date;
 }

@@ -19,7 +19,7 @@ import java.util.List;
  * @see com.jryyy.forum.services.BindingService
  */
 @Service("BindingService")
-public class BindingServiceImp implements BindingService {
+public class BindingServiceImpl implements BindingService {
     @Autowired
     BindingMapper bindingMapper;
 

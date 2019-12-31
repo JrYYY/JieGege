@@ -6,14 +6,10 @@ package com.jryyy.forum.constant;
  */
 public class Constants {
 
-    /**
-     * 用户id string
-     */
     public static final String USER_ID_STRING = "userId";
 
-    public static final String USER_TOKEN_STRING = "token";
+    public static final String USER_TOKEN_STRING = "Authorization";
 
     public static final int MAXIMUM_NUMBER_ATTEMPTS = 6;
-
 
 }

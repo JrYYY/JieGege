@@ -11,7 +11,8 @@ import org.springframework.web.method.HandlerMethod;
 import java.lang.reflect.Method;
 
 /**
- * @author 安全工具
+ * 安全工具
+ * @author JrYYY
  */
 @Component
 public class SecurityUtils {
@@ -31,11 +32,9 @@ public class SecurityUtils {
     public SecurityUtils annotationValidation(HandlerMethod handlerMethod){
         Method method = handlerMethod.getMethod();
         Class c = handlerMethod.getBeanType();
-
         if (method.isAnnotationPresent(PassToken.class)) {
             return this;
         }
-
         //检查有没有需要用户权限的注解
         if (method.isAnnotationPresent(UserLoginToken.class) ||
                 c.isAnnotationPresent(UserLoginToken.class)) {
@@ -49,20 +48,46 @@ public class SecurityUtils {
         return this;
     }
 
+//    public void
+
     /**
      * 身份验证
      * @param token     用户令牌
      * @param userId    用户id
      * @throws GlobalException  抛出{@link GlobalException}
      */
-    public void authenticationToken(String token, String userId) throws GlobalException {
+    public SecurityUtils authenticationToken(String token, String userId) throws GlobalException {
         if (userLoginToken != null) {
             User user = tokenUtils.decodeJwtToken(token);
-            if(userId == null || !userId.equals(user.getId().toString())) {
-                throw new GlobalException(GlobalStatus.insufficientPermissions);
-            } else if(!RoleCode.ALL.equals(role) && !role.equals(user.getRole())) {
-                throw new GlobalException(GlobalStatus.insufficientPermissions);
-            }
+            validationUser(user,userId);
+            validationRole(user,role);
+        }
+        return this;
+    }
+
+
+    /**
+     * 验证用户
+     * @param user token解析用户
+     * @param userId    用户id
+     * @throws GlobalException {@link GlobalStatus}
+     */
+    private void validationUser(User user,String userId)throws GlobalException{
+        if(userId != null && !userId.equals(user.getId().toString())) {
+            throw new GlobalException(GlobalStatus.insufficientPermissions);
         }
     }
+
+    /**
+     * 验证权限
+     * @param user token解析用户
+     * @param role 权限
+     * @throws GlobalException {@link GlobalStatus}
+     */
+    private void validationRole(User user,String role) throws GlobalException {
+        if(!RoleCode.ALL.equals(role) && !role.equals(user.getRole())) {
+            throw new GlobalException(GlobalStatus.insufficientPermissions);
+        }
+    }
+
 }

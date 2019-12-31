@@ -4,6 +4,7 @@ import com.jryyy.forum.models.Response;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
+import com.jryyy.forum.models.response.SecurityResponse;
 
 /**
  * 用户操作 服务
@@ -11,9 +12,9 @@ import com.jryyy.forum.models.request.UserRequestAccessRequest;
 public interface UserService {
     /**
      * 用户登录
-     *
      * @param request {@link UserRequest}
-     * @return {@link com.jryyy.forum.models.response.UserResponse}
+     * @return {@link SecurityResponse}
+     * @throws Exception
      */
     Response userLogin(UserRequest request) throws Exception;
 
@@ -22,6 +23,7 @@ public interface UserService {
      *
      * @param request {@link UserRequestAccessRequest}
      * @return {@link Response}
+     * @throws Exception
      */
     Response userRegistration(UserRequestAccessRequest request) throws Exception;
 
@@ -35,10 +37,10 @@ public interface UserService {
     Response verifyUser(String email) throws Exception;
 
     /**
-     * 修改密码
-     *
+     * 忘记密码修改密码
      * @param request {@link ForgotUsernamePasswordRequest}
      * @return {@link Response}
+     * @throws Exception
      */
     Response changePassword(ForgotUsernamePasswordRequest request) throws Exception;
 

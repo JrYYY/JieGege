@@ -10,12 +10,18 @@ import org.apache.ibatis.jdbc.SQL;
 
 import java.util.List;
 
-/*
-    用户信息Mapper
+/**
+ * 用户信息Mapper
+ * @author JrYYY
  */
 @Mapper
 public interface UserInfoMapper {
 
+    /**
+     * 清除用户信息
+     * @param userId    用户id
+     * @throws Exception
+     */
     @Delete("delete from user_info where userId = #{userId}")
     void deleteUserInfo(int userId) throws Exception;
 

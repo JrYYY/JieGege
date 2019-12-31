@@ -1,6 +1,6 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.response.ZonePraiseResponse;
+import com.jryyy.forum.models.ZonePraise;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
@@ -42,11 +42,11 @@ public interface ZonePraiseMapper {
      * 点赞列表
      *
      * @param zoneId    id
-     * @return {@link ZonePraiseResponse}
+     * @return {@link ZonePraise}
      * @throws Exception
      */
     @Select("select B.username,C.emailName email from (zone_praise A join userinfo B on A.userId = B.userId) join user C on A.userId = C.id where A.zoneId = #{zoneId}")
-    List<ZonePraiseResponse> selectZonePraise(int zoneId) throws Exception;
+    List<ZonePraise> selectZonePraise(int zoneId) throws Exception;
 
     /**
      *  验证是否点赞

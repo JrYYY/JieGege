@@ -9,7 +9,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.nio.file.AccessDeniedException;
 
-@CrossOrigin
+/**
+ * 管理员控制层
+ * @author JrYYY
+ */
 @RestController
 @RequestMapping("/admin")
 @UserLoginToken(role = RoleCode.ADMIN)
@@ -20,7 +23,6 @@ public class AdminController {
 
     /**
      * 解锁用户
-     *
      * @param id 用户id
      */
     @PutMapping("/{id}/unlock")
@@ -51,13 +53,6 @@ public class AdminController {
     @GetMapping("/users")
     public Response findAllUsers() throws Exception {
         return adminService.findAllUsers();
-    }
-
-    @DeleteMapping("/user/{id}")
-    public Response deleteUser(@PathVariable("id") int id) throws Exception {
-        if (id != 1013)
-            throw new AccessDeniedException("权限不足");
-        return adminService.deleteUser(id);
     }
 
 }

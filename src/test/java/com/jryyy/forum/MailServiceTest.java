@@ -1,6 +1,7 @@
 package com.jryyy.forum;
 
-import com.jryyy.forum.utils.CodeMailUtils;
+import com.jryyy.forum.utils.CaptchaUtils;
+import com.jryyy.forum.utils.EmailUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -18,14 +19,18 @@ import java.util.Set;
 public class MailServiceTest {
 
     @Autowired
-    private CodeMailUtils mailUtils;
+    private CaptchaUtils captchaUtils;
+
+    @Autowired
+    private EmailUtils emailUtils;
 
     @Autowired
     private RedisTemplate redisTemplate;
 
     @Test
     public void testSimpleMail() throws Exception {
-        mailUtils.sendSimpleMail("1952381587@qq.com", "test simple mail");
+      emailUtils.sendSimpleMail("1952381587@qq.com", "test simple mail",
+              captchaUtils.generateAlphanumericVerificationCode("1952381587@qq.com"));
         System.out.println(redisTemplate.opsForValue().get("1952381587@qq.com"));
     }
 

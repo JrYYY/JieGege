@@ -9,12 +9,14 @@ import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
-import com.jryyy.forum.models.response.UserResponse;
+import com.jryyy.forum.models.response.SecurityResponse;
 import com.jryyy.forum.services.UserService;
-import com.jryyy.forum.utils.CodeMailUtils;
+import com.jryyy.forum.utils.CaptchaUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
+import com.jryyy.forum.utils.security.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpSession;
@@ -35,7 +37,7 @@ public class SecurityController {
     TokenUtils tokenUtils;
 
     @Autowired
-    CodeMailUtils codeMailUtil;
+    CaptchaUtils codeMailUtil;
 
     /**
      * 登入
@@ -44,22 +46,22 @@ public class SecurityController {
      * @return {@link Response}
      */
     @PostMapping("/signIn")
-    public Response signIn(@Valid @ModelAttribute UserRequest request) throws Exception {
-        log.info("--------" + request.toString());
+    public Response signIn(@Valid @RequestBody UserRequest request) throws Exception {
         return userService.userLogin(request);
     }
 
     /**
-     * @param request
-     * @return
+     * @param request   请求
+     * @return  {@link SecurityResponse}
      * @throws Exception
      */
     @PostMapping("/login")
     public Response adminLogin(@RequestBody @Valid UserRequest request) throws Exception {
         Response response = userService.userLogin(request);
-        UserResponse userRequest = (UserResponse) response.getData();
-        if (!userRequest.getPower().equals(RoleCode.ADMIN))
+        SecurityResponse userRequest = (SecurityResponse) response.getData();
+        if (!userRequest.getPower().equals(RoleCode.ADMIN)) {
             throw new GlobalException(GlobalStatus.insufficientPermissions);
+        }
         return response;
     }
 
@@ -76,7 +78,8 @@ public class SecurityController {
     }
 
     /**
-     * @param email
+     * 验证邮箱是否存在
+     * @param email 邮箱
      * @return
      * @throws Exception
      */
@@ -89,17 +92,15 @@ public class SecurityController {
      * 更新token
      *
      * @param token   jwt加密码
-     * @param session {@link HttpSession}
      * @return {@link Response}
      * @throws Exception
      */
     @PutMapping("/token")
-    public Response PutJWT(@RequestParam String token, HttpSession session) throws Exception {
+    public Response putJwt(@RequestParam String token) throws Exception {
         User user = tokenUtils.decodeJwtToken(token);
-        Response response = new Response<>(UserResponse.builder()
+        Response response = new Response<>(SecurityResponse.builder()
                 .token(tokenUtils.createJwtToken(user))
                 .power(user.getRole()).build());
-        session.setAttribute(Constants.USER_ID_STRING, user.getId());
         log.info(user.toString() + "---更新token");
         return response;
     }
@@ -107,14 +108,14 @@ public class SecurityController {
     /**
      * 注销
      *
-     * @param session {@link HttpSession}
-     * @return
+     * @param userId 用户id
+     * @return {@link Response}
      */
-    @DeleteMapping("/token")
-    public Response Logout(HttpSession session) throws Exception {
-        Integer userId = (Integer) session.getAttribute(Constants.USER_ID_STRING);
-        tokenUtils.deleteJWTToken(userId);
-        log.info("注销成功");
+    @UserLoginToken
+    @DeleteMapping("/signOut")
+    public Response signOut(@RequestParam Integer userId) throws Exception {
+        tokenUtils.deleteJwtToken(userId);
+        log.info(userId + ": 注销成功");
         return new Response();
     }
 
@@ -126,16 +127,16 @@ public class SecurityController {
      * @throws Exception
      */
     @PostMapping(value = "/forgotPassword")
-    public Response changePassword(@Valid @ModelAttribute ForgotUsernamePasswordRequest request) throws Exception {
+    public Response changePassword(@Valid @RequestBody ForgotUsernamePasswordRequest request) throws Exception {
         return userService.changePassword(request);
     }
 
     @GetMapping("/generate")
     public Response generateVerificationCode(@RequestParam String email) throws Exception {
         Response response = userService.verifyUser(email);
-        if ((Boolean) response.getData())
+        if ((Boolean) response.getData()) {
             throw new GlobalException(GlobalStatus.userAlreadyExists);
-        codeMailUtil.sendSimpleMail(email, "注册验证");
+        }
         return new Response<>(true);
     }
 }

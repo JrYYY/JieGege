@@ -42,14 +42,6 @@ public class StringTest {
     }
 
 
-    @Test
-    public void test1() {
-        UserInfoServiceImp service = new UserInfoServiceImp();
-        SimpleDateFormat format = new SimpleDateFormat("YYYY-MM-dd");
-        Date date1 = new Date(2019, 10, 10);
-        Date date2 = new Date(2019, 10, 19);
-        // System.out.println(service.differentDays(date1,date2));
-    }
 
 
 }

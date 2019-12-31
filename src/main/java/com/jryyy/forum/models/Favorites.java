@@ -4,6 +4,10 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * 收藏
+ * @author JrYYY
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

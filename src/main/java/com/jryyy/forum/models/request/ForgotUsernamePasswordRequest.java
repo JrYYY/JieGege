@@ -43,16 +43,20 @@ public class ForgotUsernamePasswordRequest {
      *
      * @param userMapper {@link UserMapper}
      */
-    public void userDoesNotExist(UserMapper userMapper) throws Exception {
-        if (userMapper.findLoginByName(this.name) == null)
+    public ForgotUsernamePasswordRequest userDoesNotExist(UserMapper userMapper) throws Exception {
+        if (userMapper.findLoginByName(this.name) == null) {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
+        }
+        return this;
     }
 
     /**
      * 验证 验证码
      */
-    public void verifyVerificationCode(RedisTemplate template) {
-        String code = (String) template.opsForValue().get("");
-
+    public void verifyVerificationCode(RedisTemplate template) throws GlobalException {
+        String code = (String) template.opsForValue().get(this.name);
+        if(code == null || !code.equals(this.verificationCode)){
+            throw new GlobalException(GlobalStatus.verificationCodeError);
+        }
     }
 }

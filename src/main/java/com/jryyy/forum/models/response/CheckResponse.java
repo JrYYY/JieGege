@@ -14,12 +14,12 @@ import java.sql.Date;
 public class CheckResponse {
     private boolean status;
 
-    /* 签到天数 */
+    /** 签到天数 */
     private int checkInDays;
 
-    /* 最近签到时间 */
+    /** 最近签到时间 */
     private Date checkInDate;
 
-    /* 联系签到天数 */
+    /** 联系签到天数 */
     private Integer continuousDays;
 }

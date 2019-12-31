@@ -107,7 +107,7 @@ public class TokenUtils {
     }
 
 
-    public void deleteJWTToken(Integer userId) throws Exception {
+    public void deleteJwtToken(Integer userId) throws Exception {
         template.delete(userId.toString());
     }
 }

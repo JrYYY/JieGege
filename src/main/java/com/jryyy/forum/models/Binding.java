@@ -1,24 +1,20 @@
 package com.jryyy.forum.models;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.sql.Date;
 
 /**
  * 用户绑定类
+ * @author JrYYY
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Builder
-public class Binding {
-    /**
-     * 绑定序列id
-     */
-    private Integer id;
+public class Binding extends IdentifiableEntity{
 
     /**
      * 用户id
@@ -30,7 +26,7 @@ public class Binding {
      */
     private Integer boundId;
 
-    /* 创建时间 */
+    /** 创建时间 */
     private Date createDate;
 
     /**

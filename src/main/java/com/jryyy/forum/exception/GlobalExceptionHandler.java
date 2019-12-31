@@ -18,7 +18,6 @@ import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.multipart.MultipartException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import javax.persistence.EntityNotFoundException;
 import java.nio.file.AccessDeniedException;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -102,16 +101,6 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return buildErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR, e.getMessage());
     }
 
-    /**
-     * 无法找到请求资源异常
-     *
-     * @param ex {@link EntityNotFoundException}
-     * @return {@link ResponseEntity}
-     */
-    @ExceptionHandler(EntityNotFoundException.class)
-    public Object handleEntityNotFoundException(EntityNotFoundException ex) {
-        return buildErrorResponse(HttpStatus.NOT_FOUND, ex.getMessage());
-    }
 
     /**
      * 被拒绝访问异常

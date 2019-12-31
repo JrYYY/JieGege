@@ -31,6 +31,8 @@ public enum GlobalStatus {
     notApplyingForVerificationCode(12, "未申请验证码"),
     /* 图片 */
     imageSaveFailed(13, "图片保存失败"),
+    fileDoesNotExist(23,"文件不存在"),
+    fileTypeIsIncorrect(24,"文件类型不正确"),
     /* 签到 */
     alreadySignedIn(14, "已签到,签到失败！"),
     /* 绑定 */

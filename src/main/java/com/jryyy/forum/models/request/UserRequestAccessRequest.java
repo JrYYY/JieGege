@@ -39,8 +39,7 @@ public class UserRequestAccessRequest {
     private String role;
 
     public User toUser() {
-        return new User(null,
-                name, pass, role, null,
+        return new User(name, pass, role, null,
                 0, null);
     }
 

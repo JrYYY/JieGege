@@ -32,7 +32,7 @@ public class UserRequest {
 
     @NotBlank(message = "密码不能为空")
     @Size(min = 6, max = 20, message = "密码长度不满足")
-    private String pass;
+    private String pwd;
 
     /**
      * 密码是否正确
@@ -41,12 +41,11 @@ public class UserRequest {
      */
     public User verifyUserLogin(UserMapper userMapper) throws Exception {
         User user = userMapper.findLoginByName(this.name);
-        if (!user.getPassword().equals(this.pass)) {
+        if (!user.getPassword().equals(this.pwd)) {
             if (user.getLoginFailedAttemptCount() < Constants.MAXIMUM_NUMBER_ATTEMPTS) {
                 userMapper.updateLoginFailedAttemptCount(user.getId(), user.getLoginFailedAttemptCount() + 1);
                 throw new GlobalException(GlobalStatus.wrongPassword);
             } else {
-                //userMapper.updateStatus(user.getId(), UserStatus.LOCKED);
                 throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
             }
         }

@@ -19,37 +19,38 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class ZoneListResponse {
+public class ZonesResponse {
 
 
-    /* 当前第几页 */
+    /** 当前第几页 */
     private int curPageNumber;
 
-    /*是否有下一页*/
+    /** 是否有下一页*/
     private boolean hasNext;
 
-    /*是否有上一页*/
+    /** 是否有上一页*/
     private boolean hasPrev;
 
-    /* 每页多少 */
+    /** 每页多少 */
     private int numberPerPage;
 
-    /* 总数量 */
+    /** 总数量 */
     private int totalNum;
 
-    /* 总共页数*/
+    /** 总共页数*/
     private int totalPageNum;
 
-    /* 空间列表 */
+    /** 空间列表 */
     private List<ZoneResponse> zones;
 
 
-    public static ZoneListResponse create(UserZoneMapper userZoneMapper, GetZoneRequest request) throws Exception {
+    public static ZonesResponse create(UserZoneMapper userZoneMapper, GetZoneRequest request) throws Exception {
         int totalNum = userZoneMapper.countZoneNum();
         int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
-        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum))
+        if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum)) {
             throw new GlobalException(GlobalStatus.noSuchPage);
-        return ZoneListResponse.builder()
+        }
+        return ZonesResponse.builder()
                 .curPageNumber(request.getCurPage())
                 .numberPerPage(request.getPageSize())
                 .totalNum(totalNum).totalPageNum(totalPageNum)

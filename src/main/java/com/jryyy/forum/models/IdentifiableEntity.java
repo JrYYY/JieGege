@@ -5,7 +5,7 @@ import lombok.Setter;
 import lombok.ToString;
 
 /**
- * 所有携带id类型的基础类型
+ * 具有id属性的所有实体的基类
  * @author JrYYY
  */
 @Getter
@@ -13,6 +13,7 @@ import lombok.ToString;
 @ToString
 public class IdentifiableEntity {
 
+    /** id */
     private Integer id;
 
 }

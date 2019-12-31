@@ -10,7 +10,7 @@ import com.jryyy.forum.models.User;
 import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
 import com.jryyy.forum.models.request.UserRequest;
 import com.jryyy.forum.models.request.UserRequestAccessRequest;
-import com.jryyy.forum.models.response.UserResponse;
+import com.jryyy.forum.models.response.SecurityResponse;
 import com.jryyy.forum.services.UserService;
 import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -20,10 +20,12 @@ import org.springframework.stereotype.Service;
 
 /**
  * @see com.jryyy.forum.services.UserService
+ * @author JrYYY
  */
 @Slf4j
 @Service
-public class UserServiceImp implements UserService {
+public class UserServiceImpl implements UserService {
+
     @Autowired
     UserMapper userMapper;
 
@@ -45,9 +47,9 @@ public class UserServiceImp implements UserService {
         User user = request.verifyUserLogin(userMapper);
         userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
         log.info("用户：" + user.getId() + " 登入成功");
-        return new Response<>(UserResponse.builder().
+        return new Response<>(SecurityResponse.builder().
                 token(tokenUtils.createJwtToken(user)).
-                power(user.getRole()).
+                power(user.getRole()).userId(user.getId()).
                 build());
     }
 
@@ -74,8 +76,7 @@ public class UserServiceImp implements UserService {
 
     @Override
     public Response changePassword(ForgotUsernamePasswordRequest request) throws Exception {
-        request.userDoesNotExist(userMapper);
-        //request.verification();
+        request.userDoesNotExist(userMapper).verifyVerificationCode(template);
         try {
             userMapper.updatePassword(request.getName(), request.getPassword());
             return new Response();
@@ -83,6 +84,5 @@ public class UserServiceImp implements UserService {
             throw new GlobalException(GlobalStatus.serverError);
         }
     }
-
 
 }

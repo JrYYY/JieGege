@@ -1,7 +1,7 @@
 package com.jryyy.forum.dao;
 
 import com.jryyy.forum.models.UserFriend;
-import com.jryyy.forum.models.response.UserFriendResponse;
+import com.jryyy.forum.models.response.FollowResponse;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -36,27 +36,27 @@ public interface FollowMapper {
      * 查询关注列表
      *
      * @param userId 用户id
-     * @return {@link UserFriendResponse}
+     * @return {@link FollowResponse}
      * @throws Exception
      */
     @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate date " +
             "from follow A join user_info B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
-    List<UserFriendResponse> findAttentionBasedOnId(@Param("userId") Integer userId) throws Exception;
+    List<FollowResponse> findAttentionBasedOnId(@Param("userId") Integer userId) throws Exception;
 
     /**
      * 查询粉丝列表
      *
      * @param friendId 用户id
-     * @return {@link UserFriendResponse}
+     * @return {@link FollowResponse}
      * @throws Exception
      */
     @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate date " +
             "from follow A join user_info B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")
-    List<UserFriendResponse> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
+    List<FollowResponse> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
 
 
     /**

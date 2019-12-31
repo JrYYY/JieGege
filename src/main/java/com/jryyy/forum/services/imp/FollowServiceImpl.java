@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
  * @see FollowService
  */
 @Service("UserFriendService")
-public class FollowServiceImp implements FollowService {
+public class FollowServiceImpl implements FollowService {
 
     @Autowired
     FollowMapper followMapper;

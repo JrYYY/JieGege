@@ -111,6 +111,6 @@ public interface UserMapper {
      * @throws Exception
      */
     @Update("update user set status = #{status} where id = #{id}")
-    void updateStatus(@Param("id") int id, @Param("status") Integer status) throws Exception;
+    void updateStatus(@Param("id") int id, @Param("status") boolean status) throws Exception;
 }
 

@@ -1,23 +1,27 @@
 package com.jryyy.forum.models.response;
 
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.UserZoneMapper;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.jryyy.forum.exception.GlobalException;
+import com.jryyy.forum.models.IdentifiableEntity;
+import com.jryyy.forum.models.ZoneImg;
+import com.jryyy.forum.models.ZonePraise;
+import lombok.*;
 
 import java.util.Date;
 import java.util.List;
 
+/**
+ *
+ * @author JrYYY
+ */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(callSuper = true)
 @Builder
-public class ZoneResponse {
-    /**
-     * id
-     */
-    private int id;
+public class ZoneResponse extends IdentifiableEntity {
 
     /**
      * 用户id
@@ -34,30 +38,49 @@ public class ZoneResponse {
      */
     private String msg;
 
-    /** 创建时间 */
+    /**
+     * 创建时间
+     */
     private Date date;
 
-    /** 类型 */
+    /**
+     *  类型
+     */
     private int msgType;
 
-    /** 认可 */
+    /**
+     *  认可
+     */
     private int praise;
 
-    /** 图片 */
-    private List<ZoneImgResponse> zoneImgList;
+    /**
+     * 图片
+     */
+    private List<ZoneImg> zoneImgList;
 
 
     /**
-     *
-     * @param zoneMapper {@link UserZoneMapper}
-     * @param file_url
-     * @throws Exception
+     * 认可的用户
      */
-    public void toZoneImgList(UserZoneMapper zoneMapper, String file_url) throws Exception {
-        this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(this.id);
-        for (ZoneImgResponse img : this.zoneImgList)
-            img.setImgUrl(file_url + img.getImgUrl());
+    private List<ZonePraise> praiseUsers;
+
+
+    /**
+     * 添加
+     * @param zoneMapper {@link UserZoneMapper}
+     * @param fileUrl 访问文件路径
+     * @throws GlobalException 抛出信息{@link GlobalStatus}
+     */
+    public void addZoneImage(UserZoneMapper zoneMapper, String fileUrl) throws GlobalException {
+        try {
+            this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(super.getId());
+            this.zoneImgList.forEach(zoneImg -> zoneImg.setImgUrl(fileUrl + zoneImg.getImgUrl()));
+        } catch (Exception e) {
+            throw new GlobalException(GlobalStatus.serverError);
+        }
     }
+
+
 
 }
 

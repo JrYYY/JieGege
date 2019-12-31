@@ -18,9 +18,10 @@ import java.util.List;
 
 /**
  * @see com.jryyy.forum.services.AdminService
+ * @author JrYYY
  */
 @Service("AdminService")
-public class AdminServiceImp implements AdminService {
+public class AdminServiceImpl implements AdminService {
 
     @Autowired
     UserMapper userMapper;

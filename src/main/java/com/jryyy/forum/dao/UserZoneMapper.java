@@ -1,8 +1,7 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.UserZone;
+import com.jryyy.forum.models.Zone;
 import com.jryyy.forum.models.ZoneImg;
-import com.jryyy.forum.models.response.ZoneImgResponse;
 import com.jryyy.forum.models.response.ZoneResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
@@ -59,12 +58,12 @@ public interface UserZoneMapper {
     /**
      * 写说说
      *
-     * @param userZone {@link UserZone}
+     * @param userZone {@link Zone}
      * @throws Exception
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("insert into user_zone(userId,msg,msgType)values(#{userId},#{msg},#{msgType})")
-    void insertZone(UserZone userZone) throws Exception;
+    void insertZone(Zone userZone) throws Exception;
 
     /**
      * @param count  总数
@@ -109,7 +108,7 @@ public interface UserZoneMapper {
      * @throws Exception
      */
     @Select("select id,zoneId,imgUrl,width,height,dominantColor from zone_img where zoneId = #{zoneId}")
-    List<ZoneImgResponse> findAllZoneImgByZoneId(@Param("zoneId") int zoneId) throws Exception;
+    List<ZoneImg> findAllZoneImgByZoneId(@Param("zoneId") int zoneId) throws Exception;
 
     /**
      * 添加图片
@@ -171,6 +170,8 @@ public interface UserZoneMapper {
                     ORDER_BY("A.praise DESC limit #{currIndex},#{pageSize}");
             }}.toString();
         }
+
+//        private Boolean
 
     }
 }

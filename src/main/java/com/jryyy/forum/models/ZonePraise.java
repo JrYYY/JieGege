@@ -1,4 +1,4 @@
-package com.jryyy.forum.models.response;
+package com.jryyy.forum.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ZonePraiseResponse {
+public class ZonePraise {
 
     int userId;
 
