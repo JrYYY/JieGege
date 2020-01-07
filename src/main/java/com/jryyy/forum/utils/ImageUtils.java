@@ -1,19 +1,8 @@
 package com.jryyy.forum.utils;
 
-import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.exception.GlobalException;
-import com.jryyy.forum.models.ZoneImg;
 import org.springframework.stereotype.Component;
 
-import javax.imageio.ImageIO;
-import javax.imageio.ImageReader;
-import javax.imageio.stream.ImageInputStream;
-import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.*;
 import java.util.List;
 
@@ -82,7 +71,7 @@ public class ImageUtils {
                 int rgb = image.getRGB(i, j);
                 int[] rgbArr = getRgbArr(rgb);
                 if (!isGray(rgbArr)) {
-                    Integer counter = (Integer) m.get(rgb);
+                    Integer counter = m.get(rgb);
                     if (counter == null){
                         counter = 0;
                     }
@@ -93,7 +82,4 @@ public class ImageUtils {
         }
         return getMostCommonColour(m);
     }
-
-
-
 }

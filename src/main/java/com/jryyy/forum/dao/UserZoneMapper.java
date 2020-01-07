@@ -1,8 +1,8 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.Zone;
-import com.jryyy.forum.models.ZoneImg;
-import com.jryyy.forum.models.response.ZoneResponse;
+import com.jryyy.forum.model.Zone;
+import com.jryyy.forum.model.ZoneImg;
+import com.jryyy.forum.model.response.ZoneResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 

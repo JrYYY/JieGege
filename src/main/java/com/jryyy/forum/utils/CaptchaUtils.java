@@ -54,7 +54,7 @@ public class CaptchaUtils {
         }
         redisTemplate.opsForValue().set(key, codeNum.toString(), 300L, TimeUnit.SECONDS);
         return codeNum.toString();
-    }
+}
 
 
 }

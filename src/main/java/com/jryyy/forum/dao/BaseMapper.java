@@ -1,6 +1,6 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.IdentifiableEntity;
+import com.jryyy.forum.model.IdentifiableEntity;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Select;
 
@@ -19,6 +19,8 @@ public interface BaseMapper<T extends IdentifiableEntity> {
         void deleteData(String table, Integer id);
 
         class SqlProvider {
+
+
 
 
         }

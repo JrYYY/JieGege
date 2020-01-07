@@ -1,6 +1,6 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.response.FavoritesResponse;
+import com.jryyy.forum.model.response.FavoritesResponse;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

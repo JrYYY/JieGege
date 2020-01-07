@@ -1,6 +1,6 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.ZonePraise;
+import com.jryyy.forum.model.ZonePraise;
 import org.apache.ibatis.annotations.Delete;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;

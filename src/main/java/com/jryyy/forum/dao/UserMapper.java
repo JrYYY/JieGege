@@ -1,7 +1,7 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.User;
-import com.jryyy.forum.models.response.AdminFindUserResponse;
+import com.jryyy.forum.model.User;
+import com.jryyy.forum.model.response.AdminFindUserResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.type.JdbcType;
 
@@ -9,33 +9,43 @@ import java.util.List;
 
 /**
  * 用户基础信息表
+ *
+ * @author OU
  */
 @Mapper
 public interface UserMapper {
 
-    @Delete("delete from user where id = #{id}")
+    /**
+     * 删除用户
+     * @param id    用户id
+     * @throws Exception
+     */
+    @Delete("delete from user A join use_info B on A.id = B.userId where id = #{id}")
     void deleteUser(int id) throws Exception;
 
 
-    @Select("select * from user link '%'#{info}'%'")
+    @Select("select * from user where emailName like '%#{info}%' or id like '%#{info}%'")
     List<User> findUser(String info);
 
     /**
      * 查看所有用户
      *
-     * @return
+     * @return {@link AdminFindUserResponse }
      * @throws Exception
      */
     @Select("select A.id,A.emailName email,B.username,A.password pass,A.createDate " +
-            "from user A join userinfo B on A.id = B.userId " +
+            "from user A join user_info B on A.id = B.userId " +
             "where A.role = 'parent' or A.role = 'child'")
     List<AdminFindUserResponse> findAllUsers() throws Exception;
+
+
 
     /**
      * 根据id查询用户
      *
      * @param id 用户id
      * @return {@link User}
+     * @throws Exception
      */
     @Select("select id,emailName,password,role from user where id = #{id}")
     User findLoginById(Integer id) throws Exception;
@@ -46,6 +56,7 @@ public interface UserMapper {
      *
      * @param name 用户名称
      * @return {@link User}
+     * @throws Exception
      */
     @Select("select id,emailName,password,role,status,loginFailedAttemptCount from user where emailName = #{name}")
     @Results({@Result(property = "status", column = "status", jdbcType = JdbcType.BIT)})
@@ -66,6 +77,7 @@ public interface UserMapper {
      * 创建用户
      *
      * @param user {@link User}
+     * @throws Exception
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("insert into user(emailName,password,role)values(#{emailName},#{password},#{role})")

@@ -1,9 +1,8 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.models.Response;
-import com.jryyy.forum.services.FollowService;
+import com.jryyy.forum.model.Response;
+import com.jryyy.forum.service.FollowService;
 import com.jryyy.forum.utils.security.UserLoginToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 /**
@@ -15,17 +14,20 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping("/user")
 public class FollowController {
 
-    @Autowired
-    FollowService followService;
+    private final FollowService followService;
 
-    @GetMapping("/following")
-    public Response following(@RequestParam Integer userId) throws Exception {
+    public FollowController(FollowService followService) {
+        this.followService = followService;
+    }
+
+    @GetMapping("/following/{userId}")
+    public Response following(@PathVariable Integer userId) throws Exception {
         return followService.viewWatchlist(userId);
     }
 
 
-    @GetMapping("/followers")
-    public Response followers(@RequestParam Integer userId) throws Exception {
+    @GetMapping("/followers/{userId}")
+    public Response followers(@PathVariable Integer userId) throws Exception {
         return followService.viewFanList(userId);
     }
 

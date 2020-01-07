@@ -4,12 +4,12 @@ package com.jryyy.forum.utils.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.constant.RedisKey;
 import com.jryyy.forum.exception.GlobalException;
-import com.jryyy.forum.models.User;
+import com.jryyy.forum.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -20,6 +20,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * This utility class contains helper methods used to generate and decode JWT
  * tokens.
+ * @author OU
  */
 @Component
 public class TokenUtils {
@@ -44,14 +45,17 @@ public class TokenUtils {
     /**
      * The object dao.
      */
-    @Autowired
-    private ObjectMapper objectMapper;
+    private final ObjectMapper objectMapper;
 
     /**
      * 缓存
      */
-    @Autowired
-    private RedisTemplate<String, String> template;
+    private final RedisTemplate<String, String> template;
+
+    public TokenUtils(RedisTemplate<String, String> template, ObjectMapper objectMapper) {
+        this.template = template;
+        this.objectMapper = objectMapper;
+    }
 
 //    @Autowired
 //    ValueOperations operations;
@@ -67,7 +71,7 @@ public class TokenUtils {
         try {
             String token = Jwts.builder().claim(CLAIM_KEY, objectMapper.writeValueAsString(user)).setExpiration(expiration)
                     .signWith(SignatureAlgorithm.HS512, secret).compact();
-            template.opsForValue().set(user.getId().toString(), token, 10L, TimeUnit.DAYS);
+            template.opsForValue().set(RedisKey.userTokenKey(user.getId()), token, 10L, TimeUnit.DAYS);
             return token;
         } catch (JsonProcessingException ex) {
             throw new GlobalException(GlobalStatus.unableToCreateToken);
@@ -93,13 +97,15 @@ public class TokenUtils {
         String token = null;
         try {
             User user = objectMapper.readValue(payload, User.class);
-            token = template.opsForValue().get(user.getId().toString());
-            if (token == null || token.isEmpty() || !token.equals(jwtToken))
+            token = template.opsForValue().get(RedisKey.userTokenKey(user.getId()));
+            if (token == null || token.isEmpty() || !token.equals(jwtToken)) {
                 throw new GlobalException(GlobalStatus.invalidToken);
+            }
             return user;
         } catch (Exception ex) {
-            if (token != null && !token.equals(jwtToken))
+            if (token != null && !token.equals(jwtToken)) {
                 throw new GlobalException(GlobalStatus.alreadyLoggedInElsewhere);
+            }
             throw new GlobalException(GlobalStatus.invalidToken);
         }
 
@@ -108,7 +114,7 @@ public class TokenUtils {
 
 
     public void deleteJwtToken(Integer userId) throws Exception {
-        template.delete(userId.toString());
+        template.delete(RedisKey.userTokenKey(userId));
     }
 }
 

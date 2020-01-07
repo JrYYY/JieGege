@@ -1,7 +1,7 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.Binding;
-import com.jryyy.forum.models.response.BindingResponse;
+import com.jryyy.forum.model.Binding;
+import com.jryyy.forum.model.response.BindingResponse;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

@@ -6,7 +6,7 @@ package com.jryyy.forum.constant;
  */
 public class Constants {
 
-    public static final String USER_ID_STRING = "userId";
+
 
     public static final String USER_TOKEN_STRING = "Authorization";
 

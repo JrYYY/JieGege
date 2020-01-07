@@ -1,29 +1,30 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.Template;
 import com.jryyy.forum.constant.RoleCode;
 import com.jryyy.forum.exception.GlobalException;
-import com.jryyy.forum.models.Response;
-import com.jryyy.forum.models.User;
-import com.jryyy.forum.models.request.ForgotUsernamePasswordRequest;
-import com.jryyy.forum.models.request.UserRequest;
-import com.jryyy.forum.models.request.UserRequestAccessRequest;
-import com.jryyy.forum.models.response.SecurityResponse;
-import com.jryyy.forum.services.UserService;
+import com.jryyy.forum.model.Response;
+import com.jryyy.forum.model.User;
+import com.jryyy.forum.model.request.ForgotUsernamePasswordRequest;
+import com.jryyy.forum.model.request.UserRequest;
+import com.jryyy.forum.model.request.UserRequestAccessRequest;
+import com.jryyy.forum.model.response.SecurityResponse;
+import com.jryyy.forum.service.UserService;
 import com.jryyy.forum.utils.CaptchaUtils;
+import com.jryyy.forum.utils.EmailUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Repository;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
 /**
  * 安全验证控制层
+ * @author JrYYY
  */
 @Slf4j
 @RestController
@@ -37,11 +38,14 @@ public class SecurityController {
     TokenUtils tokenUtils;
 
     @Autowired
-    CaptchaUtils codeMailUtil;
+    EmailUtils emailUtils;
+
+    @Autowired
+    CaptchaUtils captchaUtils;
+
 
     /**
      * 登入
-     *
      * @param request {@link UserRequest}
      * @return {@link Response}
      */
@@ -58,8 +62,8 @@ public class SecurityController {
     @PostMapping("/login")
     public Response adminLogin(@RequestBody @Valid UserRequest request) throws Exception {
         Response response = userService.userLogin(request);
-        SecurityResponse userRequest = (SecurityResponse) response.getData();
-        if (!userRequest.getPower().equals(RoleCode.ADMIN)) {
+        SecurityResponse securityResponse = (SecurityResponse) response.getData();
+        if (!securityResponse.getRole().equals(RoleCode.ADMIN)) {
             throw new GlobalException(GlobalStatus.insufficientPermissions);
         }
         return response;
@@ -72,7 +76,7 @@ public class SecurityController {
      * @return {@link Response}
      */
     @PostMapping("/signUp")
-    public Response signUp(@Valid @ModelAttribute UserRequestAccessRequest request) throws Exception {
+    public Response signUp(@Valid @RequestBody UserRequestAccessRequest request) throws Exception {
         log.info(request.toString());
         return userService.userRegistration(request);
     }
@@ -80,7 +84,7 @@ public class SecurityController {
     /**
      * 验证邮箱是否存在
      * @param email 邮箱
-     * @return
+     * @return  true|false
      * @throws Exception
      */
     @GetMapping("/signUp")
@@ -92,7 +96,7 @@ public class SecurityController {
      * 更新token
      *
      * @param token   jwt加密码
-     * @return {@link Response}
+     * @return token
      * @throws Exception
      */
     @PutMapping("/token")
@@ -100,14 +104,13 @@ public class SecurityController {
         User user = tokenUtils.decodeJwtToken(token);
         Response response = new Response<>(SecurityResponse.builder()
                 .token(tokenUtils.createJwtToken(user))
-                .power(user.getRole()).build());
+                .role(user.getRole()).userId(user.getId()).build());
         log.info(user.toString() + "---更新token");
         return response;
     }
 
     /**
      * 注销
-     *
      * @param userId 用户id
      * @return {@link Response}
      */
@@ -126,17 +129,44 @@ public class SecurityController {
      * @return {@link Response}
      * @throws Exception
      */
-    @PostMapping(value = "/forgotPassword")
+    @PostMapping("/forgotPassword")
     public Response changePassword(@Valid @RequestBody ForgotUsernamePasswordRequest request) throws Exception {
         return userService.changePassword(request);
     }
 
+    /**
+     * 获取邮箱忘记密码验证码
+     * @param email 邮箱
+     * @return {@link Response}
+     * @throws Exception
+     */
+    @GetMapping("/forgotPassword")
+    public Response passwordCode(@RequestParam String email)throws Exception{
+        Response response = userService.verifyUser(email);
+        if (!(Boolean) response.getData()) {
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
+        }
+        String content = String.format(Template.MODIFY_PASSWORD_VERIFICATION_TEMPLATE,
+                captchaUtils.generateDigitalVerificationCode(RedisKey.modifyPasswordCodeKey(email)));
+        emailUtils.sendSimpleMail(email,"忘记密码验证码",content);
+        return new Response<>(true);
+    }
+
+    /**
+     * 生成放送验证码
+     * @param email 接受邮箱
+     * @return  {@link Response}
+     * @throws Exception
+     */
     @GetMapping("/generate")
     public Response generateVerificationCode(@RequestParam String email) throws Exception {
         Response response = userService.verifyUser(email);
         if ((Boolean) response.getData()) {
             throw new GlobalException(GlobalStatus.userAlreadyExists);
         }
+        String content = String.format(Template.REGISTRATION_VERIFICATION_TEMPLATE,
+                captchaUtils.generateDigitalVerificationCode(RedisKey.registrationCodeKey(email)));
+        emailUtils.sendSimpleMail(email,"注册验证码",content);
         return new Response<>(true);
     }
 }

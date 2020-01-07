@@ -1,10 +1,10 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.Check;
-import com.jryyy.forum.models.UserInfo;
-import com.jryyy.forum.models.request.UserInfoRequest;
-import com.jryyy.forum.models.response.InfoListResponse;
-import com.jryyy.forum.models.response.UserInfoResponse;
+import com.jryyy.forum.model.Check;
+import com.jryyy.forum.model.UserInfo;
+import com.jryyy.forum.model.request.UserInfoRequest;
+import com.jryyy.forum.model.response.InfoListResponse;
+import com.jryyy.forum.model.response.UserInfoResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 

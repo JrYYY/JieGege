@@ -1,7 +1,7 @@
 package com.jryyy.forum;
 
 import com.jryyy.forum.dao.UserZoneMapper;
-import com.jryyy.forum.models.ZoneImg;
+import com.jryyy.forum.model.ZoneImg;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,9 +9,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @RunWith(SpringRunner.class)

@@ -1,0 +1,97 @@
+package com.jryyy.forum.service.imp;
+
+import com.jryyy.forum.constant.GlobalStatus;
+import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.dao.FollowMapper;
+import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.dao.UserMapper;
+import com.jryyy.forum.exception.GlobalException;
+import com.jryyy.forum.model.Response;
+import com.jryyy.forum.model.User;
+import com.jryyy.forum.model.request.ForgotUsernamePasswordRequest;
+import com.jryyy.forum.model.request.UserRequest;
+import com.jryyy.forum.model.request.UserRequestAccessRequest;
+import com.jryyy.forum.model.response.SecurityResponse;
+import com.jryyy.forum.service.UserService;
+import com.jryyy.forum.utils.security.TokenUtils;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Service;
+
+/**
+ * @see com.jryyy.forum.service.UserService
+ * @author JrYYY
+ */
+@Slf4j
+@Service
+public class UserServiceImpl implements UserService {
+
+    @Autowired
+    UserMapper userMapper;
+
+    @Autowired
+    UserInfoMapper userInfoMapper;
+
+    @Autowired
+    FollowMapper followMapper;
+
+    @Autowired
+    RedisTemplate<String, String> template;
+
+    @Autowired
+    TokenUtils tokenUtils;
+
+    @Override
+    public Response userLogin(UserRequest request) throws Exception {
+        try {
+            request.userDoesNotExist(userMapper);
+            User user = request.verifyUserLogin(userMapper);
+            userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
+            log.info("用户：" + user.getId() + " 登入成功");
+            return new Response<>(SecurityResponse.builder().
+                    token(tokenUtils.createJwtToken(user)).
+                    role(user.getRole()).userId(user.getId()).
+                    build());
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new GlobalException(GlobalStatus.serverError);
+        }
+
+    }
+
+    @Override
+    public Response userRegistration(UserRequestAccessRequest request) throws Exception {
+        request.requestAccessPermissionDetection();
+        request.verifyUserRegistered(userMapper);
+        request.verifyVerificationCode(template);
+        User user = request.toUser();
+        try {
+            userMapper.insertUser(user);
+            userInfoMapper.insertUserInfo(user.getId());
+            template.delete(RedisKey.registrationCodeKey(request.getName()));
+            return new Response();
+        } catch (Exception e) {
+            throw new GlobalException(GlobalStatus.serverError);
+        }
+    }
+
+    @Override
+    public Response verifyUser(String email) throws Exception {
+        Integer id = userMapper.findIdByName(email);
+        return new Response<>(id != null);
+    }
+
+    @Override
+    public Response changePassword(ForgotUsernamePasswordRequest request) throws Exception {
+        request.userDoesNotExist(userMapper).verifyVerificationCode(template);
+        try {
+            userMapper.updatePassword(request.getName(), request.getPwd());
+            template.delete(RedisKey.modifyPasswordCodeKey(request.getName()));
+            return new Response();
+        } catch (Exception e) {
+            throw new GlobalException(GlobalStatus.serverError);
+        }
+    }
+
+}

@@ -1,13 +1,11 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.RoleCode;
-import com.jryyy.forum.models.Response;
-import com.jryyy.forum.services.AdminService;
+import com.jryyy.forum.model.Response;
+import com.jryyy.forum.service.AdminService;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-
-import java.nio.file.AccessDeniedException;
 
 /**
  * 管理员控制层
@@ -46,7 +44,7 @@ public class AdminController {
     /**
      * 查询所有用户‘
      *
-     * @return {@link com.jryyy.forum.models.response.AdminFindUserResponse}
+     * @return {@link com.jryyy.forum.model.response.AdminFindUserResponse}
      * @throws Exception {}
      */
     @UserLoginToken(role = RoleCode.ADMIN)

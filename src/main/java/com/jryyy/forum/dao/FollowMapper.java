@@ -1,7 +1,7 @@
 package com.jryyy.forum.dao;
 
-import com.jryyy.forum.models.UserFriend;
-import com.jryyy.forum.models.response.FollowResponse;
+import com.jryyy.forum.model.UserFollow;
+import com.jryyy.forum.model.response.FollowResponse;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -63,11 +63,11 @@ public interface FollowMapper {
      * 验证
      *
      * @param id 编号
-     * @return {@link UserFriend}
+     * @return {@link UserFollow}
      * @throws Exception
      */
     @Select("select id,userId,friendId,createDate from follow where id = #{id}")
-    UserFriend findFriendsBasedOnId(@Param("id") int id) throws Exception;
+    UserFollow findFriendsBasedOnId(@Param("id") int id) throws Exception;
 
     /**
      * 验证
@@ -83,11 +83,11 @@ public interface FollowMapper {
     /**
      * 添加好友
      *
-     * @param userFriend {@link UserFriend}
+     * @param userFollow {@link UserFollow}
      * @throws Exception
      */
     @Insert("insert into follow(userId,friendId)values(#{userId},#{friendId})")
-    void insertUserFriend(UserFriend userFriend) throws Exception;
+    void insertUserFriend(UserFollow userFollow) throws Exception;
 
     /**
      * 取消关注
