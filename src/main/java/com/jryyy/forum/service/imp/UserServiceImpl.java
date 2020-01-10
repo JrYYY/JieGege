@@ -27,26 +27,29 @@ import org.springframework.stereotype.Service;
 @Service
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    UserInfoMapper userInfoMapper;
+    private final UserInfoMapper userInfoMapper;
 
-    @Autowired
-    FollowMapper followMapper;
+    private final FollowMapper followMapper;
 
-    @Autowired
-    RedisTemplate<String, String> template;
+    private  final RedisTemplate<String, String> template;
 
-    @Autowired
-    TokenUtils tokenUtils;
+    private final TokenUtils tokenUtils;
+
+    public UserServiceImpl(UserMapper userMapper, UserInfoMapper userInfoMapper, FollowMapper followMapper, RedisTemplate<String, String> template, TokenUtils tokenUtils) {
+        this.userMapper = userMapper;
+        this.userInfoMapper = userInfoMapper;
+        this.followMapper = followMapper;
+        this.template = template;
+        this.tokenUtils = tokenUtils;
+    }
 
     @Override
     public Response userLogin(UserRequest request) throws Exception {
+        request.userDoesNotExist(userMapper);
+        User user = request.verifyUserLogin(userMapper);
         try {
-            request.userDoesNotExist(userMapper);
-            User user = request.verifyUserLogin(userMapper);
             userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
             log.info("用户：" + user.getId() + " 登入成功");
             return new Response<>(SecurityResponse.builder().

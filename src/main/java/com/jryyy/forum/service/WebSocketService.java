@@ -38,9 +38,24 @@ public interface WebSocketService {
 
     /**
      *
-     * @param id
-     * @return
+     * @param id 群组id
+     * @return  {@link List<Message>}
      * @throws Exception
      */
     Response queryHistory(Integer id)throws Exception;
+
+    /**
+     * 在线人数
+     * @return 人数
+     * @throws Exception
+     */
+    Response onLine()throws Exception;
+
+    /**
+     * 判断该用户是否在线
+     * @param userId    用户id
+     * @return  true|false
+     * @throws Exception
+     */
+    Response onLine(Integer userId)throws Exception;
 }

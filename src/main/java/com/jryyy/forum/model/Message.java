@@ -19,7 +19,6 @@ public class Message {
     /**
      * 来自于
      */
-    @NotNull(message = "发送地址不能为空")
     private Integer from;
 
     /**

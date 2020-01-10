@@ -79,19 +79,7 @@ public class FileUtils {
         }
     }
 
-    public void deleteFile(String path) {
-        File filePath = new File(path);
-        if (filePath.exists()) {
-            for (File file : Objects.requireNonNull(filePath.listFiles())) {
-                if (file.isDirectory()) {
-                    deleteFile(path + "/" + file.getName());
-                } else {
-                    file.delete();
-                }
-            }
-            filePath.delete();
-        }
-    }
+
 
     /**
      *  判单文件类型

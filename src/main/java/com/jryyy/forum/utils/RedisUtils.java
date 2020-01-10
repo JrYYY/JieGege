@@ -5,10 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 /**
  * Redis 封装实例工具
@@ -22,7 +19,6 @@ public class RedisUtils{
     public RedisUtils(RedisTemplate<String, Object> redisTemplate) {
         this.redisTemplate = redisTemplate;
     }
-
 
     public Boolean delete(String key){
         return redisTemplate.delete(key);
@@ -63,7 +59,12 @@ public class RedisUtils{
         setHashList(key,field,data);
     }
 
-    public <T> void setHashList(String key, String field, List<T> values) {
+    public <T> void setHashList(String key, String field,List<T> values) {
+        String v = JSONObject.toJSONString(values);
+        redisTemplate.opsForHash().put(key, field, v);
+    }
+
+    public <T> void setHashMap(String key, String field, Map<Integer,T> values){
         String v = JSONObject.toJSONString(values);
         redisTemplate.opsForHash().put(key, field, v);
     }

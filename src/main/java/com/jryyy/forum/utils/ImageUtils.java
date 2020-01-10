@@ -60,9 +60,8 @@ public class ImageUtils {
      * 主题颜色
      * @param image   图片
      * @return  主题颜色
-     * @throws Exception
      */
-    public String dominantColor(BufferedImage image) throws Exception {
+    public String dominantColor(BufferedImage image) {
         int height = image.getHeight();
         int width = image.getWidth();
         Map<Integer, Integer> m = new HashMap<>();
