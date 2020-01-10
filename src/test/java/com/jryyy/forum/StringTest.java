@@ -1,5 +1,7 @@
 package com.jryyy.forum;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.model.ZoneImg;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @RunWith(SpringRunner.class)
@@ -37,6 +40,30 @@ public class StringTest {
             System.out.println(z.toString());
         }
         //userZoneMapper.insertZoneImg(zoneImgs);
+    }
+
+    @Test
+    public void test1() {
+        String str = "{\"test1\":{\"name\":\"zhangsan\"},\"test2\":{\"name\":\"lisi\"},\"test3\":{\"name\":\"wanger\"}}";
+
+        HashMap<String, NameEntity> nameMap =
+                JSON.parseObject(str, new TypeReference<HashMap<String, NameEntity>>() {
+                });
+
+        HashMap<String, NameEntity> map = getHashList(str, new TypeReference<HashMap<String, NameEntity>>() {
+        });
+
+        System.out.println(nameMap.toString());
+
+        //其中Map中key为String类型，value为 NameEntity类型的实体
+    }
+
+    public <T> T getHashList(String str, TypeReference<T> obj) {
+
+        if (str != null) {
+            return JSON.parseObject(str, obj.getType());
+        }
+        return null;
     }
 
 

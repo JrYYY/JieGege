@@ -23,6 +23,7 @@ public enum GlobalStatus {
     unauthorizedAccess("非法访问"),
 
     wrongPassword("密码错误"),
+    //    用户未登入
     userDoesNotExist( "用户不存在"),
     unableToCreateToken( "无法创建令牌"),
     userAlreadyExists( "用户已存在"),

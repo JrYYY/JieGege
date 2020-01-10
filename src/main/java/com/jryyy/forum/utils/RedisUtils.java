@@ -1,11 +1,14 @@
 package com.jryyy.forum.utils;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.alibaba.fastjson.TypeReference;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Redis 封装实例工具
@@ -49,6 +52,15 @@ public class RedisUtils{
         }
     }
 
+    public <T> T getHashMap(String key, Integer field, TypeReference<T> text) {
+        Object value = redisTemplate.opsForHash().get(key, field);
+        if (value != null) {
+            return JSON.parseObject(value.toString(), text.getType());
+        }
+        return null;
+
+    }
+
 
     public void rightPushHashList(String key,String field,Object values){
         List data = getHashList(key,field,values.getClass());
@@ -59,12 +71,14 @@ public class RedisUtils{
         setHashList(key,field,data);
     }
 
+
     public <T> void setHashList(String key, String field,List<T> values) {
         String v = JSONObject.toJSONString(values);
         redisTemplate.opsForHash().put(key, field, v);
     }
 
-    public <T> void setHashMap(String key, String field, Map<Integer,T> values){
+
+    public <T> void setHashMap(String key, Integer field, Map values) {
         String v = JSONObject.toJSONString(values);
         redisTemplate.opsForHash().put(key, field, v);
     }

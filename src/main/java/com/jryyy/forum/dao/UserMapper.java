@@ -24,7 +24,11 @@ public interface UserMapper {
     void deleteUser(int id) throws Exception;
 
 
-    @Select("select * from user where emailName like '%#{info}%' or id like '%#{info}%'")
+    /**
+     * @param info
+     * @return
+     */
+    @Select("select * from user  where emailName like '%#{info}%' or id like '%#{info}%'")
     List<User> findUser(String info);
 
     /**
@@ -48,7 +52,7 @@ public interface UserMapper {
      * @throws Exception
      */
     @Select("select id,emailName,password,role from user where id = #{id}")
-    User findLoginById(Integer id) throws Exception;
+    User findUserById(Integer id) throws Exception;
 
 
     /**

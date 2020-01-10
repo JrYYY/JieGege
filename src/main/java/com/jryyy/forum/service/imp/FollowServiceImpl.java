@@ -8,7 +8,6 @@ import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.User;
 import com.jryyy.forum.model.UserFollow;
 import com.jryyy.forum.service.FollowService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 /**
@@ -48,11 +47,13 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Response attention(int userId, int id) throws Exception {
-        User user = userMapper.findLoginById(id);
-        if (user == null)
+        User user = userMapper.findUserById(id);
+        if (user == null) {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
-        if (followMapper.findFriend(userId, id) != null)
+        }
+        if (followMapper.findFriend(userId, id) != null) {
             throw new GlobalException(GlobalStatus.alreadyConcerned);
+        }
         try {
             followMapper.insertUserFriend(UserFollow.builder().
                     userId(userId).friendId(id).build());
@@ -66,8 +67,9 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public Response takeOff(int userId, int id) throws Exception {
         UserFollow userFollow = followMapper.findFriendsBasedOnId(id);
-        if (userFollow == null || !userFollow.getUserId().equals(userId))
+        if (userFollow == null || !userFollow.getUserId().equals(userId)) {
             throw new GlobalException(GlobalStatus.noAttention);
+        }
         try {
             followMapper.unsubscribe(userId, id);
             return new Response();

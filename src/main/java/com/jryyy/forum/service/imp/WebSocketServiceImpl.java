@@ -1,7 +1,10 @@
 package com.jryyy.forum.service.imp;
 
+import com.alibaba.fastjson.TypeReference;
+import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RedisKey;
 import com.jryyy.forum.dao.UserMapper;
+import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Message;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.service.WebSocketService;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -58,24 +62,51 @@ public class WebSocketServiceImpl implements WebSocketService
     @Override
     public Response groupChat(Message message) throws Exception {
         log.info(message.toString());
-        messagingTemplate.convertAndSendToUser(message.getTo().toString(),
-                SUBSCRIBE_GROUP_CHAT_MESSAGE_URI, message);
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
-        redisUtils.rightPushHashList(RedisKey.GROUP_CHAT_MESSAGE_KEY,
-                RedisKey.groupMessageKey(message.getTo()),message);
+        if (inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getTo())) {
+            messagingTemplate.convertAndSendToUser(message.getTo().toString(),
+                    SUBSCRIBE_GROUP_CHAT_MESSAGE_URI, message);
+            redisUtils.rightPushHashList(RedisKey.GROUP_CHAT_MESSAGE_KEY,
+                    RedisKey.groupMessageKey(message.getTo()), message);
+        } else {
+            redisUtils.rightPushHashList(RedisKey.GROUP_CHAT_MESSAGE_KEY,
+                    RedisKey.userMessageKey(message.getFrom(), message.getTo()), message);
+            Map<Integer, Message> messageMap = redisUtils.getHashMap(
+                    RedisKey.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,
+                    message.getTo(), new TypeReference<Map<Integer, Message>>() {
+                    });
+            messageMap.put(message.getFrom(), message);
+            redisUtils.setHashMap(RedisKey.USER_GROUP_CHAT_OFFLINE_RECORD_KEY, message.getTo(), messageMap);
+        }
+
         return new Response();
 
     }
 
     @Override
     public Response singleChat(Message message) throws Exception {
-        log.info(message.toString());
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
-        if( inquire(RedisKey.ONLINE_USER_LIST_KEY,message.getTo())) {
+        if (inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getTo())) {
+            if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom()) {
+                throw new GlobalException(GlobalStatus);
+            }
+            if (userMapper.findUserById(message.getTo()) == null) {
+                throw new GlobalException(GlobalStatus.userDoesNotExist);
+            }
+            log.info(message.toString());
             messagingTemplate.convertAndSendToUser(message.getTo().toString(),
                     SUBSCRIBE_SINGLE_CHAT_MESSAGE_URI, message);
             redisUtils.rightPushHashList(RedisKey.SINGLE_CHAT_MESSAGE_KEY,
                     RedisKey.userMessageKey(message.getFrom(), message.getTo()), message);
+        } else {
+            redisUtils.rightPushHashList(RedisKey.SINGLE_CHAT_MESSAGE_KEY,
+                    RedisKey.userMessageKey(message.getFrom(), message.getTo()), message);
+            Map<Integer, Message> messageMap = redisUtils.getHashMap(
+                    RedisKey.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY,
+                    message.getTo(), new TypeReference<Map<Integer, Message>>() {
+                    });
+            messageMap.put(message.getFrom(), message);
+            redisUtils.setHashMap(RedisKey.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY, message.getTo(), messageMap);
         }
         return new Response();
     }

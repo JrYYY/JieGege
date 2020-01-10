@@ -8,7 +8,9 @@ public class RedisKey {
 
     public static final String ONLINE_USER_LIST_KEY = "Online_user_list";
 
-    public static final String USER_OFFLINE_RECORD_KEY = "User_offline_record";
+    public static final String USER_GROUP_CHAT_OFFLINE_RECORD_KEY = "User_croup_chat_offline_record";
+
+    public static final String USER_SINGLE_CHAT_OFFLINE_RECORD_KEY = "User_single_chat_offline_record";
 
     public static final String SINGLE_CHAT_MESSAGE_KEY = "single_chat_message";
 
