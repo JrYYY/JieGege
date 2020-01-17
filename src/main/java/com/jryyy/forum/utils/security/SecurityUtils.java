@@ -26,20 +26,7 @@ public class SecurityUtils {
     }
 
     private SecurityUtils(HandlerMethod handlerMethod){
-        Method method = handlerMethod.getMethod();
-        Class c = handlerMethod.getBeanType();
-        if (method.isAnnotationPresent(PassToken.class)) {
-            return;
-        }
-        //检查有没有需要用户权限的注解
-        if (method.isAnnotationPresent(UserLoginToken.class) ||
-                c.isAnnotationPresent(UserLoginToken.class)) {
-            if (method.isAnnotationPresent(UserLoginToken.class)) {
-                userLoginToken = method.getAnnotation(UserLoginToken.class);
-            }else {
-                userLoginToken = (UserLoginToken) c.getAnnotation(UserLoginToken.class);
-            }
-        }
+
     }
 
 
@@ -50,7 +37,7 @@ public class SecurityUtils {
      * @throws GlobalException {@link GlobalStatus}
      */
     public SecurityUtils authenticationToken(String token, TokenUtils tokenUtils) throws GlobalException {
-        if (userLoginToken != null) { user = tokenUtils.decodeJwtToken(token); }
+        if (userLoginToken != null) {  }
         return this;
     }
 
@@ -63,9 +50,7 @@ public class SecurityUtils {
      */
     public SecurityUtils validationUser(String userId) throws GlobalException {
 
-        if(userId != null && !userId.equals(user.getId().toString())) {
-            throw new GlobalException(GlobalStatus.unauthorizedAccess);
-        }
+
         return this;
     }
 
@@ -75,10 +60,7 @@ public class SecurityUtils {
      * @throws GlobalException {@link GlobalStatus}  accountHasBeenFrozen
      */
     public SecurityUtils validationLock(RedisTemplate redisTemplate)throws GlobalException{
-        if(user != null && !user.getStatus()) {
-            throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
-//            redisTemplate.opsForValue().get(RedisKey.lockKey())
-        }
+
         return this;
     }
 
@@ -87,9 +69,7 @@ public class SecurityUtils {
      * @throws GlobalException {@link GlobalStatus}
      */
     public void validationRole() throws GlobalException{
-        if(userLoginToken != null && userLoginToken.role().equals(user.getRole())) {
-            throw new GlobalException(GlobalStatus.insufficientPermissions);
-        }
+
     }
 
 

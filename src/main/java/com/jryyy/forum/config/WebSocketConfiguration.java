@@ -88,15 +88,17 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                 StompHeaderAccessor accessor = MessageHeaderAccessor.getAccessor(message, StompHeaderAccessor.class);
                 if(accessor != null ) {
                     StompCommand messageType = accessor.getCommand();
-                    if (messageType != null && messageType.equals(StompCommand.CONNECT)) {
-                       List<String> header = accessor.getNativeHeader(Constants.USER_TOKEN_STRING);
+                    log.info(accessor.toString());
+                    if (messageType != null && messageType.equals(StompCommand.SEND)) {
+                        List<String> header = accessor.getNativeHeader(Constants.USER_TOKEN_STRING);
                         String token = header.get(0);
                         try {
                             User user = tokenUtils.decodeJwtToken(token);
-                            log.info("login:"+user.getId());
+                            log.info("login:-----------"+user.getId());
                             redisTemplate.opsForHash().put(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId(),user.getId());
                             redisTemplate.opsForHash().put(RedisKey.ONLINE_USER_LIST_KEY,RedisKey.userKey(user.getId()),accessor.getSessionId());
-                        } catch (GlobalException e) {
+                        } catch (Exception e) {
+                            e.printStackTrace();
                             return message;
                         }
                     }

@@ -52,9 +52,9 @@ server:
 
 #图片临时路径
 file:
-  uploadFolder: D:/home/
+  uploadFolder: C:/home/
   staticAccessPath: /upload/**
-  url: http://192.168.19.59:9896/upload/
+  url: http://127.0.0.1:9896/upload/
 
 #token
 token:

@@ -40,11 +40,10 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     /**
      * @param status    状态
      * @param message   信息
-     * @return
+     * @return {@link ResponseEntity}
      */
     private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message) {
         Map<String, Object> responseBody = new HashMap<>();
-        responseBody.put("status", status.value());
         responseBody.put("message", message);
         return new ResponseEntity<>(responseBody, status);
     }

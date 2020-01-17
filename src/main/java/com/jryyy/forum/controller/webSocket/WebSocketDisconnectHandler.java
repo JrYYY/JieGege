@@ -38,7 +38,7 @@ public class WebSocketDisconnectHandler implements ApplicationListener<SessionDi
     @Override
     public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
-        log.info("logout:"+accessor.getSessionId());
+        log.info("logout:---------"+accessor.getSessionId());
         String userId =(String) redisTemplate.opsForHash().get(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId());
         redisTemplate.opsForHash().delete(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId());
         redisTemplate.opsForHash().delete(RedisKey.ONLINE_USER_LIST_KEY,RedisKey.userKey(userId));

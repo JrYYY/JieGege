@@ -23,7 +23,7 @@ public enum GlobalStatus {
     unauthorizedAccess("非法访问"),
 
     wrongPassword("密码错误"),
-    //    用户未登入
+    userNotLogin("用户未登入"),
     userDoesNotExist( "用户不存在"),
     unableToCreateToken( "无法创建令牌"),
     userAlreadyExists( "用户已存在"),
@@ -48,7 +48,9 @@ public enum GlobalStatus {
     noResourcesFound( "没有找到资源"),
     noContent("请填写上传内容"),
 
-    messageSendingFailed("消息发送失败");
+    messageSendingFailed("消息发送失败"),
+    userHasJoinedTheGroup("该用户已加入"),
+    userIsNotInAGroup("该用户不在群组");
 
 
 

@@ -1,7 +1,7 @@
 package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.dao.BindingMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
@@ -44,9 +44,9 @@ public class BindingServiceImpl implements BindingService {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
         String role1 = userMapper.findIdByRole(userId);
         String role2 = userMapper.findIdByRole(boundId);
-        if (!RoleCode.PARENT.equals(role1))
+        if (!UserRoleCode.PARENT.equals(role1))
             throw new GlobalException(GlobalStatus.insufficientPermissions);
-        if (!RoleCode.CHILD.equals(role2))
+        if (!UserRoleCode.CHILD.equals(role2))
             throw new GlobalException(GlobalStatus.unableToBind);
         if (bindingMapper.findIdByBinding(userId, boundId) != null)
             throw new GlobalException(GlobalStatus.alreadyBound);

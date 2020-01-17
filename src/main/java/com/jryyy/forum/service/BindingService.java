@@ -4,6 +4,7 @@ import com.jryyy.forum.model.Response;
 
 /**
  * 绑定 服务
+ * @author OU
  */
 public interface BindingService {
     /**

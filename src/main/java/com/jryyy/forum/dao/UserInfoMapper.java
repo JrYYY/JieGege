@@ -64,10 +64,11 @@ public interface UserInfoMapper {
      * 初始化创建用户信息
      *
      * @param id 用户id
+     * @param email 邮箱
      * @throws Exception
      */
-    @Insert("insert into user_info(userId) value (#{id})")
-    void insertUserInfo(int id) throws Exception;
+    @Insert("insert into user_info(userId,email) value (#{id},#{email})")
+    void insertUserInfo(int id,String email) throws Exception;
 
     /**
      * 添加用户信息

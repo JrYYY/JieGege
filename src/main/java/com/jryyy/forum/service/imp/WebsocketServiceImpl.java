@@ -3,20 +3,20 @@ package com.jryyy.forum.service.imp;
 import com.alibaba.fastjson.TypeReference;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.dao.GroupMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
+import com.jryyy.forum.model.GroupMember;
 import com.jryyy.forum.model.Message;
 import com.jryyy.forum.model.Response;
-import com.jryyy.forum.service.WebSocketService;
+import com.jryyy.forum.service.WebsocketService;
 import com.jryyy.forum.utils.RedisUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 
 /**
@@ -24,8 +24,7 @@ import java.util.Map;
  */
 @Slf4j
 @Service
-public class WebSocketServiceImpl implements WebSocketService
-{
+public class WebsocketServiceImpl implements WebsocketService {
 
     /**
      * 订阅组聊天消息地址
@@ -38,9 +37,14 @@ public class WebSocketServiceImpl implements WebSocketService
     private static final String SUBSCRIBE_SINGLE_CHAT_MESSAGE_URI = "/single/message";
 
     /**
-     * {@link UserMapper}
+     * 用户数据库处理
      */
     private final UserMapper userMapper;
+
+    /**
+     * 群组数据库处理成
+     */
+    private final GroupMapper groupMapper;
 
     /**
      * Simp消息传递模板
@@ -52,8 +56,9 @@ public class WebSocketServiceImpl implements WebSocketService
      */
     private final RedisTemplate<String,Object> redisTemplate;
 
-    public WebSocketServiceImpl(UserMapper userMapper, SimpMessagingTemplate messagingTemplate, RedisTemplate<String, Object> redisTemplate) {
+    public WebsocketServiceImpl(UserMapper userMapper, GroupMapper groupMapper, SimpMessagingTemplate messagingTemplate, RedisTemplate<String, Object> redisTemplate) {
         this.userMapper = userMapper;
+        this.groupMapper = groupMapper;
         this.messagingTemplate = messagingTemplate;
         this.redisTemplate = redisTemplate;
     }
@@ -61,11 +66,19 @@ public class WebSocketServiceImpl implements WebSocketService
 
     @Override
     public Response groupChat(Message message) throws Exception {
-        log.info(message.toString());
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
+        if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom())){
+            throw new GlobalException(GlobalStatus.userNotLogin);
+        }
+        if(userMapper.findUserById(message.getTo()) == null){
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
+        }
         if (inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getTo())) {
-            messagingTemplate.convertAndSendToUser(message.getTo().toString(),
-                    SUBSCRIBE_GROUP_CHAT_MESSAGE_URI, message);
+            log.info(message.toString());
+            List<GroupMember> groupMembers = groupMapper.findMemberByGroupId(message.getTo());
+            groupMembers.forEach(member -> messagingTemplate.convertAndSendToUser(
+                    member.getUserId().toString(),
+                    SUBSCRIBE_GROUP_CHAT_MESSAGE_URI, message));
             redisUtils.rightPushHashList(RedisKey.GROUP_CHAT_MESSAGE_KEY,
                     RedisKey.groupMessageKey(message.getTo()), message);
         } else {
@@ -73,10 +86,12 @@ public class WebSocketServiceImpl implements WebSocketService
                     RedisKey.userMessageKey(message.getFrom(), message.getTo()), message);
             Map<Integer, Message> messageMap = redisUtils.getHashMap(
                     RedisKey.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,
-                    message.getTo(), new TypeReference<Map<Integer, Message>>() {
-                    });
+                    RedisKey.userKey(message.getTo()),
+                    new TypeReference<Map<Integer, Message>>(){});
+            messageMap = messageMap == null ? new HashMap<>() : messageMap;
             messageMap.put(message.getFrom(), message);
-            redisUtils.setHashMap(RedisKey.USER_GROUP_CHAT_OFFLINE_RECORD_KEY, message.getTo(), messageMap);
+            redisUtils.setHashMap(RedisKey.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,
+                    RedisKey.userKey(message.getTo()), messageMap);
         }
 
         return new Response();
@@ -85,11 +100,15 @@ public class WebSocketServiceImpl implements WebSocketService
 
     @Override
     public Response singleChat(Message message) throws Exception {
+        log.info(message.toString());
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
+        if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom())){
+            throw new GlobalException(GlobalStatus.userNotLogin);
+        }
+        if(userMapper.findUserById(message.getTo()) == null){
+            throw new GlobalException(GlobalStatus.userDoesNotExist);
+        }
         if (inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getTo())) {
-            if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom()) {
-                throw new GlobalException(GlobalStatus);
-            }
             if (userMapper.findUserById(message.getTo()) == null) {
                 throw new GlobalException(GlobalStatus.userDoesNotExist);
             }
@@ -103,10 +122,12 @@ public class WebSocketServiceImpl implements WebSocketService
                     RedisKey.userMessageKey(message.getFrom(), message.getTo()), message);
             Map<Integer, Message> messageMap = redisUtils.getHashMap(
                     RedisKey.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY,
-                    message.getTo(), new TypeReference<Map<Integer, Message>>() {
-                    });
+                    RedisKey.userKey(message.getTo()),
+                    new TypeReference<Map<Integer, Message>>() {});
+            messageMap = messageMap == null ? new HashMap<>() : messageMap;
             messageMap.put(message.getFrom(), message);
-            redisUtils.setHashMap(RedisKey.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY, message.getTo(), messageMap);
+            redisUtils.setHashMap(RedisKey.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY,
+                    RedisKey.userKey(message.getTo()),messageMap);
         }
         return new Response();
     }
@@ -134,10 +155,22 @@ public class WebSocketServiceImpl implements WebSocketService
     }
 
     @Override
-    public Response onLine() throws Exception {
-//        redisTemplate.opsForHash().s
-        return new Response();
+    public Response userOfflineMessage(String status, Integer userId) throws Exception {
+        RedisUtils redisUtils = new RedisUtils(redisTemplate);
+        Map<Integer, Message> messageMap = redisUtils.getHashMap(
+                status, RedisKey.userKey(userId),
+                new TypeReference<Map<Integer, Message>>() {});
+        messageMap = messageMap == null ? new HashMap<>() : messageMap;
+        return new Response<>(messageMap);
     }
+
+    @Override
+    public Response onLine() throws Exception {
+        Long size = redisTemplate.opsForList().size(RedisKey.ONLINE_USER_LIST_KEY);
+        return new Response<>(size == null ? 0 : size / 2);
+    }
+
+
 
     @Override
     public Response onLine(Integer userId) throws Exception {
@@ -146,8 +179,14 @@ public class WebSocketServiceImpl implements WebSocketService
     }
 
     private Boolean inquire(String key,Integer userId)  {
-        Object id = redisTemplate.opsForHash().get(key,RedisKey.userKey(userId));
-        return id != null;
+        Object sessionId = redisTemplate.opsForHash().get(key,RedisKey.userKey(userId));
+        return sessionId != null;
     }
+
+    private void userStatus(Integer userId,Integer groupId)throws Exception{
+
+    }
+
+
 
 }

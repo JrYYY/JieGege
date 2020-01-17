@@ -8,6 +8,7 @@ import java.util.List;
 
 /**
  * 关注/被关注 列表操作
+ * @author OU
  */
 @Mapper
 public interface FollowMapper {
@@ -20,7 +21,7 @@ public interface FollowMapper {
      * @throws Exception
      */
     @Select("select count(*) from follow where friendId = #{friendId}")
-    int followersNumByUId(@Param("friendId") int friendId) throws Exception;
+    int followersQuantityByUserId(@Param("friendId") int friendId) throws Exception;
 
     /**
      * 关注数
@@ -30,7 +31,7 @@ public interface FollowMapper {
      * @throws Exception
      */
     @Select("select count(*) from follow where userId = #{userId}")
-    int followingTotalByFId(@Param("userId") int userId) throws Exception;
+    int followingQuantityByUserId(@Param("userId") int userId) throws Exception;
 
     /**
      * 查询关注列表
@@ -93,7 +94,7 @@ public interface FollowMapper {
      * 取消关注
      *
      * @param userId 用户id
-     * @param id
+     * @param id id
      * @throws Exception
      */
     @Delete("delete from follow where userId = #{userId} and id = #{id}")

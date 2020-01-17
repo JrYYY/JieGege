@@ -1,10 +1,10 @@
-package com.jryyy.forum.constant;
+package com.jryyy.forum.utils.security;
 
 /**
  * 权限管理枚举定义
  * @author JrYYY
  */
-public class RoleCode {
+public class UserRoleCode {
 
     /** 管理员 */
     public final static String ADMIN = "admin";

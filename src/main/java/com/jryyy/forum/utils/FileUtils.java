@@ -2,6 +2,8 @@ package com.jryyy.forum.utils;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -15,8 +17,13 @@ import java.util.Objects;
  * 文件操作工具实例
  * @author JrYYY
  */
+@Slf4j
 @Component
 public class FileUtils {
+
+    /** 基本路径 */
+    @Value("${file.uploadFolder}")
+    private String uploadFolder;
 
 
     /**
@@ -27,17 +34,14 @@ public class FileUtils {
      * @throws GlobalException  {@link GlobalStatus}
      */
     public String savePicture(String avatarPath, MultipartFile file) throws GlobalException {
-        if (isImageType(Objects.requireNonNull(file.getOriginalFilename()))){
-            throw new GlobalException(GlobalStatus.fileTypeIsIncorrect);
-        }
         try {
             String imgName = duplicateFileName("picture_",
                     interceptSuffix(file.getOriginalFilename()));
-            File imgUrl = new File(avatarPath);
+            File imgUrl = new File(uploadFolder+avatarPath);
             if (!imgUrl.exists()) {
                 imgUrl.mkdirs();
             }
-            file.transferTo(new File(avatarPath, imgName));
+            file.transferTo(new File(uploadFolder+avatarPath, imgName));
             return avatarPath + imgName;
         } catch (IOException e) {
             e.printStackTrace();

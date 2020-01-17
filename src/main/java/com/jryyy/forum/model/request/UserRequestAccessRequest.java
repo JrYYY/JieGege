@@ -2,7 +2,7 @@ package com.jryyy.forum.model.request;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RedisKey;
-import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.User;
@@ -59,7 +59,7 @@ public class UserRequestAccessRequest {
      * 请求访问权限检测
      */
     public void requestAccessPermissionDetection() throws Exception {
-        if (!this.role.equals(RoleCode.CHILD) && !this.role.equals(RoleCode.PARENT))
+        if (!this.role.equals(UserRoleCode.CHILD) && !this.role.equals(UserRoleCode.PARENT))
             throw new GlobalException(GlobalStatus.insufficientPermissions);
     }
 

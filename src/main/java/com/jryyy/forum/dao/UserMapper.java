@@ -25,13 +25,6 @@ public interface UserMapper {
 
 
     /**
-     * @param info
-     * @return
-     */
-    @Select("select * from user  where emailName like '%#{info}%' or id like '%#{info}%'")
-    List<User> findUser(String info);
-
-    /**
      * 查看所有用户
      *
      * @return {@link AdminFindUserResponse }

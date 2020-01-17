@@ -33,16 +33,16 @@ public class FollowController {
 
     @PostMapping("/follow/{id}")
     public Response addFollow(@PathVariable int id, @RequestParam Integer userId) throws Exception {
-        return followService.attention(userId, id);
+        return followService.attention(id, userId);
     }
 
-    @DeleteMapping("/follow/{id}")
-    public Response nuFollow(@PathVariable int id,@RequestParam Integer userId) throws Exception {
+    @DeleteMapping("/follow/{userId}")
+    public Response nuFollow(@PathVariable int userId,@RequestParam Integer id) throws Exception {
         return followService.takeOff(userId,id);
     }
 
-    @GetMapping("/judgment")
-    public Response judgment(@RequestParam String email,@RequestParam Integer userId) throws Exception {
+    @GetMapping("/judgment/{userId}")
+    public Response judgment(@RequestParam String email,@PathVariable Integer userId) throws Exception {
         return followService.judgedHasBeenConcerned(userId,email);
     }
 }

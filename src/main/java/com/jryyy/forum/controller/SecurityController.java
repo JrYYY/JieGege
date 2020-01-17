@@ -3,7 +3,7 @@ package com.jryyy.forum.controller;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.RedisKey;
 import com.jryyy.forum.constant.Template;
-import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.User;
@@ -50,7 +50,7 @@ public class SecurityController {
      * @return {@link Response}
      */
     @PostMapping("/signIn")
-    public Response signIn(@Valid @RequestBody UserRequest request) throws Exception {
+    public Response signIn(@Valid @ModelAttribute UserRequest request) throws Exception {
         return userService.userLogin(request);
     }
 
@@ -60,10 +60,10 @@ public class SecurityController {
      * @throws Exception
      */
     @PostMapping("/login")
-    public Response adminLogin(@RequestBody @Valid UserRequest request) throws Exception {
+    public Response adminLogin(@Valid @ModelAttribute UserRequest request) throws Exception {
         Response response = userService.userLogin(request);
         SecurityResponse securityResponse = (SecurityResponse) response.getData();
-        if (!securityResponse.getRole().equals(RoleCode.ADMIN)) {
+        if (!securityResponse.getRole().equals(UserRoleCode.ADMIN)) {
             throw new GlobalException(GlobalStatus.insufficientPermissions);
         }
         return response;
@@ -76,7 +76,7 @@ public class SecurityController {
      * @return {@link Response}
      */
     @PostMapping("/signUp")
-    public Response signUp(@Valid @RequestBody UserRequestAccessRequest request) throws Exception {
+    public Response signUp(@Valid @ModelAttribute UserRequestAccessRequest request) throws Exception {
         log.info(request.toString());
         return userService.userRegistration(request);
     }
@@ -115,8 +115,8 @@ public class SecurityController {
      * @return {@link Response}
      */
     @UserLoginToken
-    @DeleteMapping("/signOut")
-    public Response signOut(@RequestParam Integer userId) throws Exception {
+    @DeleteMapping("/signOut/{userId}")
+    public Response signOut(@PathVariable Integer userId) throws Exception {
         tokenUtils.deleteJwtToken(userId);
         log.info(userId + ": 注销成功");
         return new Response();
@@ -130,7 +130,7 @@ public class SecurityController {
      * @throws Exception
      */
     @PostMapping("/forgotPassword")
-    public Response changePassword(@Valid @RequestBody ForgotUsernamePasswordRequest request) throws Exception {
+    public Response changePassword(@Valid @ModelAttribute ForgotUsernamePasswordRequest request) throws Exception {
         return userService.changePassword(request);
     }
 

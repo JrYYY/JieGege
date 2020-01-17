@@ -1,20 +1,28 @@
 package com.jryyy.forum.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.util.Date;
+
 
 /**
  * @author OU
  */
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Group {
-
-    private Integer id;
+@EqualsAndHashCode(callSuper = true)
+@Builder
+public class Group extends IdentifiableEntity{
 
     private String name;
 
     private String slogan;
+
+    private Integer userId;
+
+    private String avatar;
+
+    private Date createDate;
 }

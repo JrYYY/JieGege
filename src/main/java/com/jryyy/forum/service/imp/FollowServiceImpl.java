@@ -55,8 +55,8 @@ public class FollowServiceImpl implements FollowService {
             throw new GlobalException(GlobalStatus.alreadyConcerned);
         }
         try {
-            followMapper.insertUserFriend(UserFollow.builder().
-                    userId(userId).friendId(id).build());
+            followMapper.insertUserFriend(UserFollow.builder()
+                    .userId(userId).friendId(id).build());
             return new Response();
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,6 +2,7 @@ package com.jryyy.forum;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
+import com.jryyy.forum.constant.RedisKey;
 import com.jryyy.forum.dao.UserZoneMapper;
 import com.jryyy.forum.model.ZoneImg;
 import org.junit.Test;
@@ -25,8 +26,9 @@ public class StringTest {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
+    @Test
     public void testRedis() throws Exception {
-
+        System.out.println(redisTemplate.opsForHash().get(RedisKey.ONLINE_USER_LIST_KEY,RedisKey.userKey(1040)));
     }
 
     @Test

@@ -113,7 +113,7 @@ public class TokenUtils {
     }
 
 
-    public void deleteJwtToken(Integer userId) throws Exception {
+    public void deleteJwtToken(Integer userId){
         template.delete(RedisKey.userTokenKey(userId));
     }
 }

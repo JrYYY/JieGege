@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         User user = request.toUser();
         try {
             userMapper.insertUser(user);
-            userInfoMapper.insertUserInfo(user.getId());
+            userInfoMapper.insertUserInfo(user.getId(),user.getEmailName());
             template.delete(RedisKey.registrationCodeKey(request.getName()));
             return new Response();
         } catch (Exception e) {

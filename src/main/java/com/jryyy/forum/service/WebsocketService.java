@@ -9,7 +9,7 @@ import java.util.List;
  *webSocket访问
  * @author OU
  */
-public interface WebSocketService {
+public interface WebsocketService {
 
     /**
      *  群聊
@@ -43,6 +43,15 @@ public interface WebSocketService {
      * @throws Exception
      */
     Response queryHistory(Integer id)throws Exception;
+
+    /**
+     * 查询用户离线记录
+     * @param status    群聊或者单聊
+     * @param userId    查询用户的id
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response userOfflineMessage(String status,Integer userId)throws Exception;
 
     /**
      * 在线人数

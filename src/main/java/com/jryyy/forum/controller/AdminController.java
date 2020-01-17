@@ -1,6 +1,6 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.constant.RoleCode;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.service.AdminService;
 import com.jryyy.forum.utils.security.UserLoginToken;
@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.*;
  */
 @RestController
 @RequestMapping("/admin")
-@UserLoginToken(role = RoleCode.ADMIN)
+@UserLoginToken(role = UserRoleCode.ADMIN)
 public class AdminController {
 
     @Autowired
@@ -47,7 +47,7 @@ public class AdminController {
      * @return {@link com.jryyy.forum.model.response.AdminFindUserResponse}
      * @throws Exception {}
      */
-    @UserLoginToken(role = RoleCode.ADMIN)
+    @UserLoginToken(role = UserRoleCode.ADMIN)
     @GetMapping("/users")
     public Response findAllUsers() throws Exception {
         return adminService.findAllUsers();
