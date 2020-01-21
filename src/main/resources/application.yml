@@ -54,7 +54,7 @@ server:
 file:
   uploadFolder: C:/home/
   staticAccessPath: /upload/**
-  url: http://127.0.0.1:9896/upload/
+  url: http://47.98.102.73:9896/upload/
 
 #token
 token:

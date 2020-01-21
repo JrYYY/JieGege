@@ -21,7 +21,7 @@ public class UserInfo {
     private String username;
 
     /** 图像 */
-    private Integer avatar;
+    private String avatar;
 
     /** 性别 */
     private String sex;

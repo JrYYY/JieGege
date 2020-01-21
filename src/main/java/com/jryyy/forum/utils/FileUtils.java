@@ -53,13 +53,14 @@ public class FileUtils {
         try {
             String imgName = duplicateFileName("zoneImg_",
                     interceptSuffix(Objects.requireNonNull(file.getOriginalFilename())));
-            File saveUrl = new File(avatarPath);
+            File saveUrl = new File(uploadFolder+avatarPath);
             if (!saveUrl.exists()) {
                 saveUrl.mkdirs();
             }
-            file.transferTo(new File(avatarPath, imgName));
+            file.transferTo(new File(uploadFolder+avatarPath, imgName));
             return avatarPath + imgName;
         } catch (IOException e) {
+            e.printStackTrace();
             throw new GlobalException(GlobalStatus.imageSaveFailed);
         }
     }

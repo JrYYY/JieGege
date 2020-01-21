@@ -6,6 +6,8 @@ package com.jryyy.forum.constant;
  */
 public class RedisKey {
 
+    public static final String unchecked_messages_key = "unchecked_messages_list";
+
     public static final String ONLINE_USER_LIST_KEY = "Online_user_list";
 
     public static final String USER_GROUP_CHAT_OFFLINE_RECORD_KEY = "User_croup_chat_offline_record";

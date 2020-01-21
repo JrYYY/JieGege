@@ -10,6 +10,9 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
+/**
+ * @author OU
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -24,17 +27,13 @@ public class UserInfoRequest {
     @Pattern(regexp = USERNAME_REGULAR, message = "用户名输入不规范")
     private String username;
 
-    @Min(value = 0, message = "头像导入错误")
-    @Max(value = 64, message = "头像导入错误")
-    private Integer avatar;
 
-    //@Pattern(regexp = SEX_REGULAR,message = "输入性别不规范")
     private String sex;
 
     @Min(value = 0, message = "年龄输入不规范")
     private Integer age;
 
-    /* 标签 */
+    /** 标签 */
     @Size(max = 191)
     private String bio;
 

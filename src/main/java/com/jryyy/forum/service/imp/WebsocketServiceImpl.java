@@ -16,6 +16,7 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.*;
 
 
@@ -66,6 +67,7 @@ public class WebsocketServiceImpl implements WebsocketService {
 
     @Override
     public Response groupChat(Message message) throws Exception {
+        message.setDate(LocalDateTime.now());
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
         if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom())){
             throw new GlobalException(GlobalStatus.userNotLogin);
@@ -100,6 +102,7 @@ public class WebsocketServiceImpl implements WebsocketService {
 
     @Override
     public Response singleChat(Message message) throws Exception {
+        message.setDate(LocalDateTime.now());
         log.info(message.toString());
         RedisUtils redisUtils = new RedisUtils(redisTemplate);
         if (!inquire(RedisKey.ONLINE_USER_LIST_KEY, message.getFrom())){

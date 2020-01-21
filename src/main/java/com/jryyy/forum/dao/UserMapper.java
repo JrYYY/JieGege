@@ -88,8 +88,7 @@ public interface UserMapper {
      * @throws Exception
      */
     @Update("update user set password = #{password} where emailName = #{name}")
-    void updatePassword(@Param("name") String name,
-                        @Param("password") String password) throws Exception;
+    void updatePassword(@Param("name") String name, @Param("password") String password) throws Exception;
 
     /**
      * 更具id查找权限
@@ -105,12 +104,12 @@ public interface UserMapper {
      * 写入最大尝试次数
      *
      * @param id           用户id
-     * @param AttemptCount 尝试次数
+     * @param attemptCount 尝试次数
      * @throws Exception
      */
-    @Update("update user set loginFailedAttemptCount = #{loginFailedAttemptCount} where id = #{id}")
+    @Update("update user set loginFailedAttemptCount = #{attemptCount} where id = #{id}")
     void updateLoginFailedAttemptCount(@Param("id") int id,
-                                       @Param("loginFailedAttemptCount") int AttemptCount) throws Exception;
+                                       @Param("attemptCount")int attemptCount) throws Exception;
 
     /**
      * 设置用户当前状态

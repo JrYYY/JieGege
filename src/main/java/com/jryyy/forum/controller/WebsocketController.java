@@ -78,4 +78,5 @@ public class WebsocketController {
     public Response handleUploadImage(@PathVariable Integer userId, MultipartFile image)throws Exception{
         return null;
     }
+    
 }

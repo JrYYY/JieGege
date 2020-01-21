@@ -75,6 +75,7 @@ public class UserServiceImpl implements UserService {
             template.delete(RedisKey.registrationCodeKey(request.getName()));
             return new Response();
         } catch (Exception e) {
+            e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
         }
     }
