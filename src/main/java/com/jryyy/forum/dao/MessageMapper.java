@@ -62,7 +62,7 @@ public interface MessageMapper {
      */
     @Select("select fromId,toId,message,type,date from message_record " +
             "where fromId = #{from} and toId = #{to} order by date limit 1")
-    @Results({@Result(property = "date", column = "date", jdbcType = JdbcType.TIMESTAMP)})
+    @Results({@Result(property = "date", column = "date", jdbcType = JdbcType.DATETIMEOFFSET)})
     MessageRecord findMessageByDate(Integer from, Integer to);
 
     /**

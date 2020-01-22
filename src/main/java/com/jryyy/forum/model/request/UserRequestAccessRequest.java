@@ -1,7 +1,7 @@
 package com.jryyy.forum.model.request;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.KayAndUrl;
 import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
@@ -64,7 +64,7 @@ public class UserRequestAccessRequest {
     }
 
     public void verifyVerificationCode(RedisTemplate redisTemplate) throws Exception {
-        String code = (String) redisTemplate.opsForValue().get(RedisKey.registrationCodeKey(this.name));
+        String code = (String) redisTemplate.opsForValue().get(KayAndUrl.registrationCodeKey(this.name));
         if (code == null) {
             throw new GlobalException(GlobalStatus.notApplyingForVerificationCode);
         } else if (!code.equals(this.code)) {

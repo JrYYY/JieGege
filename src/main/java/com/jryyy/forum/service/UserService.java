@@ -8,6 +8,7 @@ import com.jryyy.forum.model.response.SecurityResponse;
 
 /**
  * 用户操作 服务
+ * @author OU
  */
 public interface UserService {
     /**

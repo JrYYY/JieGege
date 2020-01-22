@@ -1,7 +1,7 @@
 package com.jryyy.forum.model.request;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.KayAndUrl;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import lombok.AllArgsConstructor;
@@ -56,7 +56,7 @@ public class ForgotUsernamePasswordRequest {
      * 验证 验证码
      */
     public void verifyVerificationCode(RedisTemplate template) throws GlobalException {
-        String code = (String) template.opsForValue().get(RedisKey.modifyPasswordCodeKey(this.name));
+        String code = (String) template.opsForValue().get(KayAndUrl.modifyPasswordCodeKey(this.name));
 
         if(code == null){
             throw new GlobalException(GlobalStatus.verificationCodeIsInvalid);

@@ -1,18 +1,14 @@
 package com.jryyy.forum.config;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.constant.RedisKey;
-import com.jryyy.forum.exception.GlobalException;
+import com.jryyy.forum.constant.KayAndUrl;
 import com.jryyy.forum.model.User;
 import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
-import org.omg.CORBA.OBJ_ADAPTER;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.Message;
 import org.springframework.messaging.MessageChannel;
-import org.springframework.messaging.simp.SimpMessageType;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.messaging.simp.stomp.StompCommand;
@@ -95,8 +91,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                         try {
                             User user = tokenUtils.decodeJwtToken(token);
                             log.info("login:-----------"+user.getId());
-                            redisTemplate.opsForHash().put(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId(),user.getId());
-                            redisTemplate.opsForHash().put(RedisKey.ONLINE_USER_LIST_KEY,RedisKey.userKey(user.getId()),accessor.getSessionId());
+                            redisTemplate.opsForHash().put(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId(),user.getId());
+                            redisTemplate.opsForHash().put(KayAndUrl.ONLINE_USER_LIST_KEY, KayAndUrl.userKey(user.getId()),accessor.getSessionId());
                         } catch (Exception e) {
                             e.printStackTrace();
                             return message;

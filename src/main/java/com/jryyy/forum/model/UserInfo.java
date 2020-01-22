@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDate;
 
 /**
  * 用户信息类
@@ -33,7 +34,7 @@ public class UserInfo {
     private int checkInDays;
 
     /** 最近签到时间 */
-    private Date checkInDate;
+    private LocalDate checkInDate;
 
     /** 标签 */
     private String bio;

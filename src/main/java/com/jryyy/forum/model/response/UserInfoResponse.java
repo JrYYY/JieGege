@@ -5,28 +5,36 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 
+/**
+ * @author OU
+ */
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class InfoListResponse {
+public class UserInfoResponse {
     /**
      * id
      */
-    int userId;
+    private int userId;
 
     /**
      * 用户名
      */
-    String username;
+    private String username;
 
     /**
      * 邮箱
      */
-    String email;
+    private String email;
 
     /**
      * bio
      */
-    String bio;
+    private String bio;
+
+    /**
+     * 头像
+     */
+    private String avatar;
 
 }

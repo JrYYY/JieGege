@@ -4,7 +4,7 @@ package com.jryyy.forum.utils.security;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.KayAndUrl;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.User;
 import io.jsonwebtoken.Claims;
@@ -71,7 +71,7 @@ public class TokenUtils {
         try {
             String token = Jwts.builder().claim(CLAIM_KEY, objectMapper.writeValueAsString(user)).setExpiration(expiration)
                     .signWith(SignatureAlgorithm.HS512, secret).compact();
-            template.opsForValue().set(RedisKey.userTokenKey(user.getId()), token, 10L, TimeUnit.DAYS);
+            template.opsForValue().set(KayAndUrl.userTokenKey(user.getId()), token, 10L, TimeUnit.DAYS);
             return token;
         } catch (JsonProcessingException ex) {
             throw new GlobalException(GlobalStatus.unableToCreateToken);
@@ -97,7 +97,7 @@ public class TokenUtils {
         String token = null;
         try {
             User user = objectMapper.readValue(payload, User.class);
-            token = template.opsForValue().get(RedisKey.userTokenKey(user.getId()));
+            token = template.opsForValue().get(KayAndUrl.userTokenKey(user.getId()));
             if (token == null || token.isEmpty() || !token.equals(jwtToken)) {
                 throw new GlobalException(GlobalStatus.invalidToken);
             }
@@ -114,7 +114,7 @@ public class TokenUtils {
 
 
     public void deleteJwtToken(Integer userId){
-        template.delete(RedisKey.userTokenKey(userId));
+        template.delete(KayAndUrl.userTokenKey(userId));
     }
 }
 

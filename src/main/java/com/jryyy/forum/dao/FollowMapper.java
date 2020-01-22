@@ -59,17 +59,6 @@ public interface FollowMapper {
             "where A.friendId = #{friendId}")
     List<FollowResponse> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
 
-
-    /**
-     * 验证
-     *
-     * @param id 编号
-     * @return {@link UserFollow}
-     * @throws Exception
-     */
-    @Select("select id,userId,friendId,createDate from follow where id = #{id}")
-    UserFollow findFriendsBasedOnId(@Param("id") int id) throws Exception;
-
     /**
      * 验证
      *
@@ -97,7 +86,7 @@ public interface FollowMapper {
      * @param id id
      * @throws Exception
      */
-    @Delete("delete from follow where userId = #{userId} and id = #{id}")
+    @Delete("delete from follow where userId = #{userId} and friendId = #{id}")
     void unsubscribe(@Param("userId") int userId, @Param("id") int id) throws Exception;
 
 }

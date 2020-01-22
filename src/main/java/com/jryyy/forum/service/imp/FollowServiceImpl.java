@@ -66,8 +66,7 @@ public class FollowServiceImpl implements FollowService {
 
     @Override
     public Response takeOff(int userId, int id) throws Exception {
-        UserFollow userFollow = followMapper.findFriendsBasedOnId(id);
-        if (userFollow == null || !userFollow.getUserId().equals(userId)) {
+        if (followMapper.findFriend(userId,id) == null) {
             throw new GlobalException(GlobalStatus.noAttention);
         }
         try {
@@ -80,12 +79,9 @@ public class FollowServiceImpl implements FollowService {
     }
 
     @Override
-    public Response judgedHasBeenConcerned(int userId, String email) throws Exception {
-        Integer followId = userMapper.findIdByName(email);
-        if (followId == null)
-            throw new GlobalException(GlobalStatus.userDoesNotExist);
+    public Response judgedHasBeenConcerned(int userId, Integer id) throws Exception {
         try {
-            boolean judged = followMapper.findFriend(userId, followId) != null;
+            boolean judged = followMapper.findFriend(userId, id) != null;
             return new Response<>(judged);
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);

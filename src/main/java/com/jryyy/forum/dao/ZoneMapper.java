@@ -12,7 +12,7 @@ import java.util.List;
  * 用户空间dao
  */
 @Mapper
-public interface UserZoneMapper {
+public interface ZoneMapper {
 
     /**
      * 统计所有

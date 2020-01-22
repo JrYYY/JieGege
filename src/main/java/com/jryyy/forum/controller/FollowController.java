@@ -31,9 +31,9 @@ public class FollowController {
         return followService.viewFanList(userId);
     }
 
-    @PostMapping("/follow/{id}")
-    public Response addFollow(@PathVariable int id, @RequestParam Integer userId) throws Exception {
-        return followService.attention(id, userId);
+    @PostMapping("/follow/{userId}")
+    public Response addFollow(@PathVariable int userId, @RequestParam Integer id) throws Exception {
+        return followService.attention(userId, id);
     }
 
     @DeleteMapping("/follow/{userId}")
@@ -42,7 +42,7 @@ public class FollowController {
     }
 
     @GetMapping("/judgment/{userId}")
-    public Response judgment(@RequestParam String email,@PathVariable Integer userId) throws Exception {
-        return followService.judgedHasBeenConcerned(userId,email);
+    public Response judgment(@PathVariable Integer userId,@RequestParam Integer id) throws Exception {
+        return followService.judgedHasBeenConcerned(userId,id);
     }
 }

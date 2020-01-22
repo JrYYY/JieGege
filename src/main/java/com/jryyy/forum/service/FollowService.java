@@ -50,23 +50,10 @@ public interface FollowService {
      * 判断已关注
      *
      * @param userId 用户id
-     * @param email  邮箱
+     * @param id  邮箱
      * @return true/false
      * @throws Exception
      */
-    Response judgedHasBeenConcerned(int userId, String email) throws Exception;
+    Response judgedHasBeenConcerned(int userId, Integer id) throws Exception;
 
-//    /**
-//     * 粉丝数
-//     * @return  {@link Response}
-//     * @throws Exception
-//     */
-//    public Response followersNumber(Integer userId) throws Exception;
-
-//    /**
-//     * 关注数
-//     * @return  {@link Response}
-//     * @throws Exception
-//     */
-//    Response followingNumber(Integer fanId)throws Exception;
 }

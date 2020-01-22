@@ -1,7 +1,7 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.KayAndUrl;
 import com.jryyy.forum.constant.Template;
 import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.exception.GlobalException;
@@ -147,7 +147,7 @@ public class SecurityController {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
         }
         String content = String.format(Template.MODIFY_PASSWORD_VERIFICATION_TEMPLATE,
-                captchaUtils.generateDigitalVerificationCode(RedisKey.modifyPasswordCodeKey(email)));
+                captchaUtils.generateDigitalVerificationCode(KayAndUrl.modifyPasswordCodeKey(email)));
         emailUtils.sendSimpleMail(email,"忘记密码验证码",content);
         return new Response<>(true);
     }
@@ -165,7 +165,7 @@ public class SecurityController {
             throw new GlobalException(GlobalStatus.userAlreadyExists);
         }
         String content = String.format(Template.REGISTRATION_VERIFICATION_TEMPLATE,
-                captchaUtils.generateDigitalVerificationCode(RedisKey.registrationCodeKey(email)));
+                captchaUtils.generateDigitalVerificationCode(KayAndUrl.registrationCodeKey(email)));
         emailUtils.sendSimpleMail(email,"注册验证码",content);
         return new Response<>(true);
     }

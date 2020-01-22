@@ -1,9 +1,8 @@
 package com.jryyy.forum.controller.webSocket;
 
 
-import com.jryyy.forum.constant.RedisKey;
+import com.jryyy.forum.constant.KayAndUrl;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -39,8 +38,8 @@ public class WebSocketDisconnectHandler implements ApplicationListener<SessionDi
     public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
         log.info("logout:---------"+accessor.getSessionId());
-        String userId =(String) redisTemplate.opsForHash().get(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId());
-        redisTemplate.opsForHash().delete(RedisKey.ONLINE_USER_LIST_KEY,accessor.getSessionId());
-        redisTemplate.opsForHash().delete(RedisKey.ONLINE_USER_LIST_KEY,RedisKey.userKey(userId));
+        String userId =(String) redisTemplate.opsForHash().get(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
+        redisTemplate.opsForHash().delete(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
+        redisTemplate.opsForHash().delete(KayAndUrl.ONLINE_USER_LIST_KEY, KayAndUrl.userKey(userId));
     }
 }

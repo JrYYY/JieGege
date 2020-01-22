@@ -1,7 +1,7 @@
 package com.jryyy.forum.model.response;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.dao.UserZoneMapper;
+import com.jryyy.forum.dao.ZoneMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.request.GetZoneRequest;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,6 @@ import java.util.List;
 @NoArgsConstructor
 @Builder
 public class ZonesResponse {
-
 
     /** 当前第几页 */
     private int curPageNumber;
@@ -45,8 +44,8 @@ public class ZonesResponse {
     private List<ZoneResponse> zones;
 
 
-    public static ZonesResponse create(UserZoneMapper userZoneMapper, GetZoneRequest request) throws Exception {
-        int totalNum = userZoneMapper.countZoneNum();
+    public static ZonesResponse create(ZoneMapper zoneMapper, GetZoneRequest request) throws Exception {
+        int totalNum = zoneMapper.countZoneNum();
         int totalPageNum = (int) Math.ceil((float) totalNum / request.getPageSize());
         if (!(request.getCurPage() > 0 && request.getCurPage() <= totalPageNum)) {
             throw new GlobalException(GlobalStatus.noSuchPage);
@@ -58,7 +57,6 @@ public class ZonesResponse {
                 .hasNext(request.getCurPage() != totalPageNum)
                 .hasPrev(request.getCurPage() != 1)
                 .build();
-
     }
 
 }

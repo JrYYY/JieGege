@@ -31,11 +31,11 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
     TokenUtils tokenUtils;
 
     @Autowired
-    RedisTemplate<String,Object> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
-     private static final String USER_ID_STRING = "userId";
+    private static final String USER_ID_STRING = "userId";
 
-     private static final String USER_ID_REGEX = "\\d+$";
+    private static final String USER_ID_REGEX = "\\d+$";
 
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
@@ -43,10 +43,12 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         if (!(handler instanceof HandlerMethod)) {
             return true;
         }
-        Method method = ((HandlerMethod)handler).getMethod();
-        Class c = ((HandlerMethod)handler).getBeanType();
+        Method method = ((HandlerMethod) handler).getMethod();
+        Class c = ((HandlerMethod) handler).getBeanType();
         //检查有没有需要用户权限的注解
-        try {
+
+        try{
+
             if (method.isAnnotationPresent(UserLoginToken.class) || c.isAnnotationPresent(UserLoginToken.class)) {
                 UserLoginToken userLoginToken;
                 if (method.isAnnotationPresent(UserLoginToken.class)) {
@@ -78,7 +80,7 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                 }
             }
         }catch (Exception e){
-            e.printStackTrace();
+            log.error(e.getMessage());
             throw e;
         }
         return true;

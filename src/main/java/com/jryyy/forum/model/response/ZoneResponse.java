@@ -1,7 +1,7 @@
 package com.jryyy.forum.model.response;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.dao.UserZoneMapper;
+import com.jryyy.forum.dao.ZoneMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.IdentifiableEntity;
 import com.jryyy.forum.model.ZoneImg;
@@ -67,11 +67,11 @@ public class ZoneResponse extends IdentifiableEntity {
 
     /**
      * 添加
-     * @param zoneMapper {@link UserZoneMapper}
+     * @param zoneMapper {@link ZoneMapper}
      * @param fileUrl 访问文件路径
      * @throws GlobalException 抛出信息{@link GlobalStatus}
      */
-    public void addZoneImage(UserZoneMapper zoneMapper, String fileUrl) throws GlobalException {
+    public void addZoneImage(ZoneMapper zoneMapper, String fileUrl) throws GlobalException {
         try {
             this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(super.getId());
             this.zoneImgList.forEach(zoneImg -> zoneImg.setImgUrl(fileUrl + zoneImg.getImgUrl()));

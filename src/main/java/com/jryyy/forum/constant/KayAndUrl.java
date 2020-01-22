@@ -4,7 +4,7 @@ package com.jryyy.forum.constant;
  *
  * @author OU
  */
-public class RedisKey {
+public class KayAndUrl {
 
     public static final String unchecked_messages_key = "unchecked_messages_list";
 
@@ -47,4 +47,8 @@ public class RedisKey {
     public static String userMessageKey(Integer toKey,Integer fromKey){return String.format("%d:%d",toKey,fromKey);}
 
     public static String groupMessageKey(Integer groupId){return String.format("Group:%d",groupId);}
+
+    public static String userAvatarUrl(Integer userId){return String.format("/user/%d/avatar/",userId);}
+
+    public static String userBgImgUrl(Integer userId){return String.format("/user/%d/bgImg/",userId);}
 }

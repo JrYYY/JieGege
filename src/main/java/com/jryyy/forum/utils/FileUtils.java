@@ -70,11 +70,11 @@ public class FileUtils {
             List<String> imgUrls = new ArrayList<>();
             for (MultipartFile file : files) {
                 String name = duplicateFileName(interceptSuffix(Objects.requireNonNull(file.getOriginalFilename())));
-                File saveUrl = new File(avatarPath);
+                File saveUrl = new File(uploadFolder+avatarPath);
                 if (!saveUrl.exists()) {
                     saveUrl.mkdirs();
                 }
-                file.transferTo(new File(avatarPath, name));
+                file.transferTo(new File(uploadFolder+avatarPath, name));
                 imgUrls.add(name);
             }
             return imgUrls;
