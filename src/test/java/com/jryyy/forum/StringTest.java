@@ -2,7 +2,7 @@ package com.jryyy.forum;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.dao.ZoneMapper;
 import com.jryyy.forum.model.ZoneImg;
 import org.junit.Test;
@@ -28,7 +28,7 @@ public class StringTest {
 
     @Test
     public void testRedis() throws Exception {
-        System.out.println(redisTemplate.opsForHash().get(KayAndUrl.ONLINE_USER_LIST_KEY, KayAndUrl.userKey(1040)));
+        System.out.println(redisTemplate.opsForHash().get(KayOrUrl.ONLINE_USER_LIST_KEY, KayOrUrl.userKey(1040)));
     }
 
     @Test

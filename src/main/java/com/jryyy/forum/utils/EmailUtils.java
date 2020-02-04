@@ -23,8 +23,11 @@ public class EmailUtils {
     @Value("${spring.mail.username}")
     private String from;
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
+
+    public EmailUtils(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
 
     /**

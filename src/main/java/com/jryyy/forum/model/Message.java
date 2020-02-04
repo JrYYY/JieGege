@@ -43,6 +43,9 @@ public class Message {
     private String type;
 
 
+    /**
+     * 消息
+     */
     private LocalDateTime date;
 }
 

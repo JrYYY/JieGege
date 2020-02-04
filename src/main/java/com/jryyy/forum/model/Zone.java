@@ -3,8 +3,9 @@ package com.jryyy.forum.model;
 import lombok.*;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
- /**
+/**
  * 用户空间类
   * @author JrYYY
  */
@@ -17,17 +18,18 @@ import java.sql.Date;
 public class Zone extends IdentifiableEntity{
 
     /** 用户id */
-    private int userId;
+     private int userId;
 
-    /** 内容 */
-    private String msg;
+     /** 内容 */
+     private String msg;
 
-    /** 创建时间 */
-    private Date createDate;
+     /** 创建时间 */
+     private LocalDateTime createDate;
 
-    /** 类型 */
-    private int msgType;
+     /** 类型 */
+     private int msgType;
 
-    /** 赞同数 */
-    private int approval;
+     /** 赞同数 */
+     private Integer favorite;
+
 }

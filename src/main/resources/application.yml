@@ -61,6 +61,14 @@ token:
   effectiveTime: 8640000
   secret: hjijfvbw859
 
+alipay:
+  appID: 2088102180418544
+  merchantPrivateKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlE0ynRLHjTPe6v+JHzyosMnav6sLq2Qew1mkLKjKsezwKV/Xxv3n2AV/yUOfEQEMzP2q6oAAgjfhmJHYrVmIUim6LnxQLY2vIuB7WVQ0Y2ENRqqZ2NFhfvcRp5DkVlreOxC7MDlbfN5+yGVDSX48cnEWzrcwUCD6WeGSfkhcvtXTfYVRw0iASCayIcRLDq86TUelt2qBVfous6iSPgDUBHzxidlYZDxB2f6lIn1I92ABnJfgrtIgbDhqF/NVlWCXj+ox79j/TR9gQvCMxsoOkzkJMqEl8jkEj3O/GrciQyw6VKAyUZNpfma7WaICFQFKeVHCO7z94xoElOygg0u3uwIDAQAB
+  alipayPublicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIgHnOn7LLILlKETd6BFRJ0GqgS2Y3mn1wMQmyh9zEyWlz5p1zrahRahbXAfCfSqshSNfqOmAQzSHRVjCqjsAw1jyqrXaPdKBmr90DIpIxmIyKXv4GGAkPyJ/6FTFY99uhpiq0qadD/uSzQsefWo0aTvP/65zi3eof7TcZ32oWpwIDAQAB
+  gatewayUrl: https://openapi.alipaydev.com/gateway.do
+  sysServiceProviderId: 1234
+  notifyUrl: http://XXXX.com
+
 # Logging
 logging:
   level:

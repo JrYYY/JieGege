@@ -6,10 +6,13 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 空间评论
+ *
  * @author JrYYY
  */
 
@@ -19,12 +22,25 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 public class ZoneCommentResponse extends IdentifiableEntity {
 
-    /** 邮箱 */
-    private String email;
+    /**
+     * 用户id
+     */
+    private Integer userId;
 
-    /** 评论 */
+    /**
+     * 用户信息
+     */
+    private UserInfoResponse userInfo;
+
+    /**
+     * 评论
+     */
     private String comment;
 
-    /** 时间 */
-    private Date date;
+
+    /**
+     * 时间
+     */
+    private LocalDateTime createDate;
+
 }

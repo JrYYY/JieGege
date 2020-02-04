@@ -1,7 +1,7 @@
 package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Check;
@@ -42,11 +42,20 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public Response viewUserInfo(Integer userId) throws Exception {
-        UserInfo userInfo = userInfoMapper.selectUserInfo(userId);
-        if(!userInfo.getAvatar().equals(DEFAULT)){ userInfo.setAvatar(fileUrl+userInfo.getAvatar()); }
-        if(!userInfo.getBgImg().equals(DEFAULT)){ userInfo.setBgImg(fileUrl+userInfo.getBgImg()); }
-        consecutiveCheckIn(userId);
-        return new Response<>(userInfo);
+        try {
+            UserInfo userInfo = userInfoMapper.selectUserInfo(userId);
+            if (!userInfo.getAvatar().equals(DEFAULT)) {
+                userInfo.setAvatar(fileUrl + userInfo.getAvatar());
+            }
+            if (!userInfo.getBgImg().equals(DEFAULT)) {
+                userInfo.setBgImg(fileUrl + userInfo.getBgImg());
+            }
+            consecutiveCheckIn(userId);
+            return new Response<>(userInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+            throw new GlobalException(GlobalStatus.serverError);
+        }
     }
 
     @Override
@@ -58,21 +67,19 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public Response searchUser(String info) throws Exception {
         List<UserInfoResponse> responses = userInfoMapper.findInfoByCondition(info);
-        responses.forEach(o->{if(!o.getAvatar().equals(DEFAULT)) {
-            o.setAvatar(fileUrl+o.getAvatar());
-        } });
+        responses.forEach(o->o.addAvatarUrl(fileUrl));
         return new Response<>(responses);
     }
 
     @Override
     public Response updateAvatar(Integer userId, MultipartFile avatar) throws Exception {
-        userInfoMapper.updateUserAvatar(userId, fileUtils.savePicture(KayAndUrl.userAvatarUrl(userId),avatar));
+        userInfoMapper.updateUserAvatar(userId, fileUtils.savePicture(KayOrUrl.userAvatarUrl(userId),avatar));
         return new Response();
     }
 
     @Override
     public Response updateBgImg(Integer userId, MultipartFile bgImg) throws Exception {
-        userInfoMapper.updateUserBgImg(userId,fileUtils.saveTalkImg(KayAndUrl.userBgImgUrl(userId),bgImg));
+        userInfoMapper.updateUserBgImg(userId,fileUtils.saveTalkImg(KayOrUrl.userBgImgUrl(userId),bgImg));
         return new Response();
     }
 
@@ -86,6 +93,12 @@ public class UserInfoServiceImpl implements UserInfoService {
         return new Response();
     }
 
+    @Override
+    public Response initializeImage(Integer userId) throws Exception {
+        userInfoMapper.updateUserAvatar(userId,DEFAULT);
+        return new Response();
+    }
+
     private void checkedIn(Integer userId)throws Exception{
         Check check = userInfoMapper.selectCheckIn(userId);
         if(check.getCheckInDate().equals(LocalDate.now())){
@@ -95,7 +108,7 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private void consecutiveCheckIn(Integer userId)throws Exception{
         Check check = userInfoMapper.selectCheckIn(userId);
-        if(!check.getCheckInDate().plusDays(1).equals(LocalDate.now())){
+        if(check.getCheckInDate() != null && !check.getCheckInDate().plusDays(1).equals(LocalDate.now())){
             userInfoMapper.modifyContinuousCheckIn(userId);
         }
     }

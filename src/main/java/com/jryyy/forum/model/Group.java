@@ -2,6 +2,7 @@ package com.jryyy.forum.model;
 
 import lombok.*;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 
 
@@ -24,5 +25,5 @@ public class Group extends IdentifiableEntity{
 
     private String avatar;
 
-    private Date createDate;
+    private LocalDateTime createDate;
 }

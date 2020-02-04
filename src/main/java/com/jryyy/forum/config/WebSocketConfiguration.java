@@ -1,7 +1,7 @@
 package com.jryyy.forum.config;
 
 import com.jryyy.forum.constant.Constants;
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.model.User;
 import com.jryyy.forum.utils.security.TokenUtils;
 import lombok.extern.slf4j.Slf4j;
@@ -91,8 +91,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                         try {
                             User user = tokenUtils.decodeJwtToken(token);
                             log.info("login:-----------"+user.getId());
-                            redisTemplate.opsForHash().put(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId(),user.getId());
-                            redisTemplate.opsForHash().put(KayAndUrl.ONLINE_USER_LIST_KEY, KayAndUrl.userKey(user.getId()),accessor.getSessionId());
+                            redisTemplate.opsForHash().put(KayOrUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId(),user.getId());
+                            redisTemplate.opsForHash().put(KayOrUrl.ONLINE_USER_LIST_KEY, KayOrUrl.userKey(user.getId()),accessor.getSessionId());
                         } catch (Exception e) {
                             e.printStackTrace();
                             return message;

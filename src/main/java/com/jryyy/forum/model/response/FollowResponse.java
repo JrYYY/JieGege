@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.sql.Date;
+import java.time.LocalDateTime;
 
 /**
  * 关注|关注者 响应类
@@ -32,8 +33,11 @@ public class FollowResponse {
     private String bio;
 
     /** 最近 */
-    private String recent;
+    private String recentState;
+
+    /** 最近登入时间 */
+    private LocalDateTime recentLoginDate;
 
     /** 好友添加时间 */
-    private Date date;
+    private Date addDate;
 }

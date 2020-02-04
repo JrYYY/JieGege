@@ -1,7 +1,7 @@
 package com.jryyy.forum.controller.webSocket;
 
 
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationListener;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -38,8 +38,8 @@ public class WebSocketDisconnectHandler implements ApplicationListener<SessionDi
     public void onApplicationEvent(SessionDisconnectEvent sessionDisconnectEvent) {
         StompHeaderAccessor accessor = StompHeaderAccessor.wrap(sessionDisconnectEvent.getMessage());
         log.info("logout:---------"+accessor.getSessionId());
-        String userId =(String) redisTemplate.opsForHash().get(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
-        redisTemplate.opsForHash().delete(KayAndUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
-        redisTemplate.opsForHash().delete(KayAndUrl.ONLINE_USER_LIST_KEY, KayAndUrl.userKey(userId));
+        String userId =(String) redisTemplate.opsForHash().get(KayOrUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
+        redisTemplate.opsForHash().delete(KayOrUrl.ONLINE_USER_LIST_KEY,accessor.getSessionId());
+        redisTemplate.opsForHash().delete(KayOrUrl.ONLINE_USER_LIST_KEY, KayOrUrl.userKey(userId));
     }
 }

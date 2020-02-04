@@ -59,4 +59,12 @@ public interface UserInfoService {
      * @throws Exception
      */
     Response checkIn(Integer userId)throws Exception;
+
+    /**
+     * 初始化图像
+     * @param userId    用户id
+     * @return  {@link Response}
+     * @throws Exception
+     */
+    Response initializeImage(Integer userId)throws Exception;
 }

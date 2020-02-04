@@ -1,14 +1,15 @@
 package com.jryyy.forum.model.response;
 
-import com.jryyy.forum.constant.GlobalStatus;
+
 import com.jryyy.forum.dao.ZoneMapper;
-import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.IdentifiableEntity;
+import com.jryyy.forum.model.Zone;
 import com.jryyy.forum.model.ZoneImg;
 import com.jryyy.forum.model.ZonePraise;
 import lombok.*;
 
-import java.util.Date;
+import java.sql.Date;
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
@@ -16,71 +17,69 @@ import java.util.List;
  * @author JrYYY
  */
 
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(callSuper = true)
 @Builder
-public class ZoneResponse extends IdentifiableEntity {
+public class ZoneResponse   {
 
-    /**
-     * 用户id
-     */
-    private int userId;
+    /** 标识*/
+    private Integer id;
 
-    /**
-     * 邮箱
-     */
-    private String email;
-
-    /**
-     * 内容
-     */
+    /** 内容 */
     private String msg;
 
-    /**
-     * 创建时间
-     */
-    private Date date;
+    /** 创建时间 */
+    private LocalDateTime createDate;
+
+    /** 类型 */
+    private Integer msgType;
+
+    /** 赞同数 */
+    private Integer favorite;
+
+    /** 评论数 */
+    private Integer comment;
 
     /**
-     *  类型
+     * 是否已评论
      */
-    private int msgType;
+    private Boolean isFavorite;
 
     /**
-     *  认可
+     *用户信息
      */
-    private int praise;
+    private UserInfoResponse userInfo;
 
     /**
      * 图片
      */
     private List<ZoneImg> zoneImgList;
 
-
     /**
      * 认可的用户
      */
-    private List<ZonePraise> praiseUsers;
+    private List<UserInfoResponse> favoriteUser;
 
+
+    public void setZone(Zone zone){
+        this.id = zone.getId();
+        this.msg = zone.getMsg();
+        this.createDate = zone.getCreateDate();
+        this.msgType = zone.getMsgType();
+        this.favorite = zone.getFavorite();
+    }
 
     /**
      * 添加
      * @param zoneMapper {@link ZoneMapper}
      * @param fileUrl 访问文件路径
-     * @throws GlobalException 抛出信息{@link GlobalStatus}
      */
-    public void addZoneImage(ZoneMapper zoneMapper, String fileUrl) throws GlobalException {
-        try {
-            this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(super.getId());
+    public void addZoneImage(ZoneMapper zoneMapper, String fileUrl) {
+            this.zoneImgList = zoneMapper.findAllZoneImgByZoneId(getId());
             this.zoneImgList.forEach(zoneImg -> zoneImg.setImgUrl(fileUrl + zoneImg.getImgUrl()));
-        } catch (Exception e) {
-            throw new GlobalException(GlobalStatus.serverError);
-        }
     }
-
-
 
 }
 

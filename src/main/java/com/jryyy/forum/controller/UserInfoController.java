@@ -47,6 +47,12 @@ public class UserInfoController {
     }
 
     @UserLoginToken
+    @DeleteMapping("/avatar/{userId}")
+    public Response initializeAvatar(@PathVariable Integer userId)throws Exception{
+        return userInfoService.initializeImage(userId);
+    }
+
+    @UserLoginToken
     @PutMapping("/background/{userId}")
     public Response updateUserBgImg(@PathVariable Integer userId,@ModelAttribute @RequestParam MultipartFile image)throws Exception{
         return userInfoService.updateBgImg(userId,image);

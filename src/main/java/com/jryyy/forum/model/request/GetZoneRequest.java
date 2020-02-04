@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
@@ -15,6 +16,11 @@ import javax.validation.constraints.NotNull;
 @NoArgsConstructor
 @AllArgsConstructor
 public class GetZoneRequest {
+    /**
+     * 用户id
+     */
+    private Integer id;
+
     /**
      * 总页数
      */
@@ -32,5 +38,8 @@ public class GetZoneRequest {
     /**
      * 模式
      */
-    private Integer mode = 0;
+    @Min(value = 1,message = "非法访问")
+    @Max(value = 2,message = "非法访问")
+    @NotNull(message = "模式不能为空")
+    private Integer mode;
 }

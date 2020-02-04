@@ -1,6 +1,6 @@
 package com.jryyy.forum.controller;
 
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.model.Message;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.service.WebsocketService;
@@ -63,14 +63,14 @@ public class WebsocketController {
     @GetMapping("/group/offlineMessage/{userId}")
     public Response groupChatOfflineHistory(@PathVariable Integer userId)throws Exception{
         return websocketService.userOfflineMessage
-                (KayAndUrl.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,userId);
+                (KayOrUrl.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,userId);
     }
 
     @UserLoginToken
     @GetMapping("/single/offlineMessage/{userId}")
     public Response singleChatOfflineHistory(@PathVariable Integer userId)throws Exception{
         return websocketService.userOfflineMessage(
-                KayAndUrl.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY,userId);
+                KayOrUrl.USER_SINGLE_CHAT_OFFLINE_RECORD_KEY,userId);
     }
 
     @UserLoginToken

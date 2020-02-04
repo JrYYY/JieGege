@@ -23,14 +23,17 @@ import java.util.List;
 @Service("AdminService")
 public class AdminServiceImpl implements AdminService {
 
-    @Autowired
-    UserMapper userMapper;
+    private final UserMapper userMapper;
 
-    @Autowired
-    UserInfoMapper userInfoMapper;
+    private final UserInfoMapper userInfoMapper;
 
-    @Autowired
-    RedisTemplate<String, Object> redisTemplate;
+    private final RedisTemplate<String, Object> redisTemplate;
+
+    public AdminServiceImpl(UserMapper userMapper, UserInfoMapper userInfoMapper, RedisTemplate<String, Object> redisTemplate) {
+        this.userMapper = userMapper;
+        this.userInfoMapper = userInfoMapper;
+        this.redisTemplate = redisTemplate;
+    }
 
     @Override
     public Response findAllUsers() throws Exception {

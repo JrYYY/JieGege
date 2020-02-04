@@ -1,7 +1,7 @@
 package com.jryyy.forum.controller;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.constant.Template;
 import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.exception.GlobalException;
@@ -103,8 +103,8 @@ public class SecurityController {
     public Response putJwt(@RequestParam String token) throws Exception {
         User user = tokenUtils.decodeJwtToken(token);
         Response response = new Response<>(SecurityResponse.builder()
-                .token(tokenUtils.createJwtToken(user))
-                .role(user.getRole()).userId(user.getId()).build());
+                .token(tokenUtils.createJwtToken(user)).role(user.getRole())
+                .userId(user.getId()).build());
         log.info(user.toString() + "---更新token");
         return response;
     }
@@ -144,10 +144,9 @@ public class SecurityController {
     public Response passwordCode(@RequestParam String email)throws Exception{
         Response response = userService.verifyUser(email);
         if (!(Boolean) response.getData()) {
-            throw new GlobalException(GlobalStatus.userDoesNotExist);
-        }
+            throw new GlobalException(GlobalStatus.userDoesNotExist); }
         String content = String.format(Template.MODIFY_PASSWORD_VERIFICATION_TEMPLATE,
-                captchaUtils.generateDigitalVerificationCode(KayAndUrl.modifyPasswordCodeKey(email)));
+                captchaUtils.generateDigitalVerificationCode(KayOrUrl.modifyPasswordCodeKey(email)));
         emailUtils.sendSimpleMail(email,"忘记密码验证码",content);
         return new Response<>(true);
     }
@@ -162,10 +161,9 @@ public class SecurityController {
     public Response generateVerificationCode(@RequestParam String email) throws Exception {
         Response response = userService.verifyUser(email);
         if ((Boolean) response.getData()) {
-            throw new GlobalException(GlobalStatus.userAlreadyExists);
-        }
+            throw new GlobalException(GlobalStatus.userAlreadyExists); }
         String content = String.format(Template.REGISTRATION_VERIFICATION_TEMPLATE,
-                captchaUtils.generateDigitalVerificationCode(KayAndUrl.registrationCodeKey(email)));
+                captchaUtils.generateDigitalVerificationCode(KayOrUrl.registrationCodeKey(email)));
         emailUtils.sendSimpleMail(email,"注册验证码",content);
         return new Response<>(true);
     }

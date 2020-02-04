@@ -70,9 +70,7 @@ public class MessageServiceImpl implements MessageService {
             List<MessageResponse> responseList = new ArrayList<>();
             uncheckedUserIdList.forEach(from ->{
                 UserInfoResponse response =  userInfoMapper.findInfoByUserId(from);
-                if(!response.getAvatar().equals(DEFAULT)){
-                    response.setAvatar(fileUrl+response.getAvatar());
-                }
+                if(!response.getAvatar().equals(DEFAULT)){ response.setAvatar(fileUrl+response.getAvatar()); }
                 responseList.add(MessageResponse.builder().message(messageMapper.findMessageByDate(from,userId))
                         .number(messageMapper.findNumberByFromIdAndToId(from,userId))
                         .userInfo(response)

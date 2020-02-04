@@ -57,7 +57,7 @@ public class GroupController {
 
     @UserLoginToken
     @DeleteMapping("/member/admin/{userId}")
-    @GroupPermissions(notAllowed = GroupRoleCode.MEMBER)
+    @GroupPermissions(notAllowed =GroupRoleCode.MEMBER)
     public Response kickUser(@PathVariable Integer userId, @RequestParam Integer groupId, @RequestParam Integer memberId) throws Exception {
         return groupService.kickOutGroup(groupId, memberId);
     }

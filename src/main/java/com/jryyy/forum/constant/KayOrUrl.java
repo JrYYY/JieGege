@@ -4,7 +4,7 @@ package com.jryyy.forum.constant;
  *
  * @author OU
  */
-public class KayAndUrl {
+public class KayOrUrl {
 
     public static final String unchecked_messages_key = "unchecked_messages_list";
 
@@ -51,4 +51,6 @@ public class KayAndUrl {
     public static String userAvatarUrl(Integer userId){return String.format("/user/%d/avatar/",userId);}
 
     public static String userBgImgUrl(Integer userId){return String.format("/user/%d/bgImg/",userId);}
+
+public static String zoneImageUrl(Integer userId){return String.format("zone/image/%d/",userId);}
 }

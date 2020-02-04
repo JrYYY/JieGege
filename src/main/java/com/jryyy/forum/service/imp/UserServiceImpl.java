@@ -1,7 +1,7 @@
 package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.constant.KayAndUrl;
+import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
@@ -71,7 +71,7 @@ public class UserServiceImpl implements UserService {
         try {
             userMapper.insertUser(user);
             userInfoMapper.insertUserInfo(user.getId(),user.getEmailName());
-            template.delete(KayAndUrl.registrationCodeKey(request.getName()));
+            template.delete(KayOrUrl.registrationCodeKey(request.getName()));
             return new Response();
         } catch (Exception e) {
             e.printStackTrace();
@@ -90,7 +90,7 @@ public class UserServiceImpl implements UserService {
         request.userDoesNotExist(userMapper).verifyVerificationCode(template);
         try {
             userMapper.updatePassword(request.getName(), request.getPwd());
-            template.delete(KayAndUrl.modifyPasswordCodeKey(request.getName()));
+            template.delete(KayOrUrl.modifyPasswordCodeKey(request.getName()));
             return new Response();
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);

@@ -7,10 +7,12 @@ import com.jryyy.forum.model.response.UserInfoResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 /**
  * 用户信息Mapper
+ *
  * @author JrYYY
  */
 @Mapper
@@ -18,11 +20,42 @@ public interface UserInfoMapper {
 
     /**
      * 清除用户信息
-     * @param userId    用户id
+     *
+     * @param userId 用户id
      * @throws Exception
      */
     @Delete("delete from user_info where userId = #{userId}")
     void deleteUserInfo(int userId) throws Exception;
+
+    /**
+     * 修改积分
+     *
+     * @param userId   用户id
+     * @param integral 积分
+     * @return 修改数目
+     * @throws Exception
+     */
+    @Update("update user_info set integral = #{integral} where userId = #{userId}")
+    int updateIntegral(Integer userId, Integer integral) throws Exception;
+
+    /**
+     * 查看用户积分
+     *
+     * @param userId 用户id
+     * @return 积分
+     * @throws Exception
+     */
+    @Select("select integral from user_info where userId = #{userId}")
+    int findIntegralByUserId(Integer userId) throws Exception;
+
+    /**
+     * 更改最近的登入
+     *
+     * @param dateTime 时间
+     * @param userId   用户id
+     */
+    @Update("update user_info set recentLoginDate = #{dateTime} where userId = #{userId}")
+    void updateRecentLoginDate(LocalDateTime dateTime, Integer userId);
 
     /**
      * 查询用户信息
@@ -32,8 +65,7 @@ public interface UserInfoMapper {
      * @throws Exception
      */
     @Select("select userId,email,username,avatar,sex,age," +
-            "checkInDays,checkInDate,bio," +
-            "continuousCheckInDays continuousDays,bgImg " +
+            "checkInDays,checkInDate,bio,continuousCheckInDays continuousDays,bgImg,integral " +
             "from user_info where userId = #{id}")
     UserInfo selectUserInfo(@Param("id") int id) throws Exception;
 
@@ -52,8 +84,9 @@ public interface UserInfoMapper {
 
     /**
      * 查询用户简约信息
-     * @param userId    用id
-     * @return  {@link UserInfoResponse}
+     *
+     * @param userId 用id
+     * @return {@link UserInfoResponse}
      * @throws Exception
      */
     @Select("select userId,username,email,bio,avatar from user_info where userId = #{userId}")
@@ -66,8 +99,8 @@ public interface UserInfoMapper {
      * @param email 邮箱
      * @throws Exception
      */
-    @Insert("insert into user_info(userId,email) value (#{id},#{email})")
-    void insertUserInfo(int id,String email) throws Exception;
+    @Insert("insert into user_info(userId,email,recentLoginDate) value (#{id},#{email},now())")
+    void insertUserInfo(int id, String email) throws Exception;
 
     /**
      * 设置背景图片
@@ -83,11 +116,12 @@ public interface UserInfoMapper {
      * 设置背景图片
      *
      * @param userId 用户id
-     * @param avatar  用户头像
+     * @param avatar 用户头像
      * @throws Exception
      */
     @Update("update user_info set avatar = #{avatar} where userId = #{userId}")
     void updateUserAvatar(int userId, String avatar) throws Exception;
+
 
     /**
      * 查询签到日期和最近签到数据
@@ -103,8 +137,8 @@ public interface UserInfoMapper {
     /**
      * 签到
      *
-     * @param checkInDays 签到天数
-     * @param userId      用户id
+     * @param checkInDays    签到天数
+     * @param userId         用户id
      * @param continuousDays 连续签到
      * @throws Exception
      */
@@ -116,6 +150,7 @@ public interface UserInfoMapper {
 
     /**
      * 没有连续签到至0
+     *
      * @param userId userId
      * @throws Exception
      */
@@ -134,6 +169,7 @@ public interface UserInfoMapper {
 
     /**
      * 更新用户信息
+     *
      * @param userInfo {@link UserInfoRequest}
      * @throws Exception
      */
@@ -141,19 +177,21 @@ public interface UserInfoMapper {
     void updateUserInfo(UserInfoRequest userInfo) throws Exception;
 
 
-    /** sql构造器构造动态sql */
+    /**
+     * sql构造器构造动态sql
+     */
     class SqlProvider {
         public String updatePersonSql(UserInfoRequest userInfo) {
             return new SQL() {{
                 UPDATE("user_info");
-                if (userInfo.getUsername() != null)
-                    SET("username = #{username}");
-                if (userInfo.getSex() != null)
-                    SET("sex = #{sex}");
-                if (userInfo.getAge() != null)
-                    SET("age = #{age}");
-                if (userInfo.getBio() != null)
-                    SET("bio = #{bio}");
+                if (userInfo.getUsername() != null) {
+                    SET("username = #{username}"); }
+                if (userInfo.getSex() != null){
+                    SET("sex = #{sex}");}
+                if (userInfo.getAge() != null){
+                    SET("age = #{age}");}
+                if (userInfo.getBio() != null){
+                    SET("bio = #{bio}");}
                 WHERE("userId = #{userId}");
             }}.toString();
         }

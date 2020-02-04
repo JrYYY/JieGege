@@ -8,6 +8,9 @@ import org.apache.ibatis.annotations.Select;
 
 import java.util.List;
 
+/**
+ * @author OU
+ */
 @Mapper
 public interface ZonePraiseMapper {
 
@@ -19,14 +22,15 @@ public interface ZonePraiseMapper {
      * @throws Exception
      */
     @Delete("delete from zone_praise where userId = #{userId} and zoneId = #{zoneId}")
-    void deleteZonePraise(int userId, int zoneId) throws Exception;
+    int deleteZonePraise(int userId, int zoneId) throws Exception;
 
     /**
+     * 删除空间所有赞
      * @param zoneId 空间id
      * @throws Exception
      */
     @Delete("delete from zone_praise where zoneId = #{zoneId}")
-    void deleteAllZonePraise(int zoneId) throws Exception;
+    void deleteAllZonePraise(Integer zoneId) throws Exception;
 
     /**
      * 点赞
@@ -45,18 +49,8 @@ public interface ZonePraiseMapper {
      * @return {@link ZonePraise}
      * @throws Exception
      */
-    @Select("select B.username,C.emailName email from (zone_praise A join userinfo B on A.userId = B.userId) join user C on A.userId = C.id where A.zoneId = #{zoneId}")
-    List<ZonePraise> selectZonePraise(int zoneId) throws Exception;
-
-    /**
-     *  验证是否点赞
-     * @param userId    用户id
-     * @param zoneId    空间id
-     * @return userId
-     * @throws Exception
-     */
-    @Select("select userId from zone_praise where userId = #{userId} and zoneId = #{zoneId}")
-    Integer findPraiseByUser(int userId, int zoneId) throws Exception;
+    @Select("select userId from zone_praise where zoneId = #{zoneId}")
+    List<Integer> selectZonePraise(int zoneId);
 
     /**
      * 统计
@@ -67,4 +61,13 @@ public interface ZonePraiseMapper {
      */
     @Select("select count(*) from zone_praise where zoneId = #{zoneId}")
     int countZonePraise(int zoneId) throws Exception;
+
+    /**
+     * 是否点赞
+     * @param userId    用户id
+     * @param zoneId    空间id
+     * @return 是否点赞
+     */
+    @Select("select userId from zone_praise where userId = #{userId} and zoneId = #{zoneId}")
+    Integer isFavorite(int userId, int zoneId);
 }

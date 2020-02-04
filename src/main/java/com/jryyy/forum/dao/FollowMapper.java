@@ -40,7 +40,7 @@ public interface FollowMapper {
      * @return {@link FollowResponse}
      * @throws Exception
      */
-    @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate date " +
+    @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate addDate,B.recentLoginDate " +
             "from follow A join user_info B " +
             "on A.friendId = B.userId " +
             "where A.userId = #{userId}")
@@ -53,7 +53,7 @@ public interface FollowMapper {
      * @return {@link FollowResponse}
      * @throws Exception
      */
-    @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate date " +
+    @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate addDate,B.recentLoginDate " +
             "from follow A join user_info B " +
             "on A.userId = B.userId " +
             "where A.friendId = #{friendId}")

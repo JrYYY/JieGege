@@ -8,6 +8,9 @@ import lombok.NoArgsConstructor;
 
 import java.sql.Date;
 
+/**
+ * @author OU
+ */
 @Getter
 @Builder
 @NoArgsConstructor

@@ -2,14 +2,17 @@ package com.jryyy.forum.dao;
 
 import com.jryyy.forum.model.Zone;
 import com.jryyy.forum.model.ZoneImg;
+import com.jryyy.forum.model.request.GetZoneRequest;
 import com.jryyy.forum.model.response.ZoneResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.lang.reflect.Field;
 import java.util.List;
 
 /**
  * 用户空间dao
+ * @author OU
  */
 @Mapper
 public interface ZoneMapper {
@@ -22,6 +25,7 @@ public interface ZoneMapper {
      */
     @Select("select count(*) from user_zone")
     Integer countZoneNum() throws Exception;
+
 
     /**
      * 更具用户id统计
@@ -49,21 +53,18 @@ public interface ZoneMapper {
      * @return  {@link ZoneResponse}
      * @throws Exception
      */
-    @Select("select " +
-            "A.id,A.userId,B.emailName email,A.msg," +
-            "A.createDate date,A.msgType,A.praise " +
-            "from user_zone A join user B on A.userId = B.id where A.id = #{id}")
-    ZoneResponse findZoneById(@Param("id") int id) throws Exception;
+    @Select("select id,userId,msg,createDate date,msgType,praise from user_zone where id = #{id}")
+    Zone findZoneById(@Param("id") int id) throws Exception;
 
     /**
      * 写说说
      *
-     * @param userZone {@link Zone}
+     * @param zone {@link Zone}
      * @throws Exception
      */
     @Options(useGeneratedKeys = true, keyProperty = "id", keyColumn = "id")
     @Insert("insert into user_zone(userId,msg,msgType)values(#{userId},#{msg},#{msgType})")
-    void insertZone(Zone userZone) throws Exception;
+    void insertZone(Zone zone) throws Exception;
 
     /**
      * @param count  总数
@@ -75,12 +76,13 @@ public interface ZoneMapper {
 
     /**
      * 删除
-     *
+     * @param userId    用户id
      * @param id id
+     * @return 删除行数
      * @throws Exception
      */
-    @Delete("delete from user_zone where id = #{id}")
-    void deleteZone(@Param("id") int id) throws Exception;
+    @Delete("delete from user_zone where id = #{id} and userId = #{userId}")
+    int deleteZone(@Param("userId") Integer userId,@Param("id") int id) throws Exception;
 
     /**
      * 删除单个空间所有图片
@@ -105,10 +107,9 @@ public interface ZoneMapper {
      *
      * @param zoneId 空间id
      * @return {@link ZoneImg}
-     * @throws Exception
      */
     @Select("select id,zoneId,imgUrl,width,height,dominantColor from zone_img where zoneId = #{zoneId}")
-    List<ZoneImg> findAllZoneImgByZoneId(@Param("zoneId") int zoneId) throws Exception;
+    List<ZoneImg> findAllZoneImgByZoneId(@Param("zoneId") int zoneId);
 
     /**
      * 添加图片
@@ -117,61 +118,30 @@ public interface ZoneMapper {
      * @throws Exception
      */
     @Insert("insert into zone_img(zoneId,imgUrl,width,height,dominantColor) values (#{zoneId},#{imgUrl},#{width},#{height},#{dominantColor})")
-    void insertZoneImg(ZoneImg zoneImg) throws Exception;
+    void insertZoneImg(ZoneImg zoneImg);
 
-    /**
-     * 查询所有
-     *
-     * @param currIndex 起始
-     * @param pageSize  多少
-     * @param mode      模式
-     * @return {@link ZoneResponse}
-     * @throws Exception
-     */
-    @SelectProvider(type = SqlProvider.class, method = "selectAllZonePersonSql")
-    List<ZoneResponse> findAllZone(Integer currIndex, int pageSize, Integer mode) throws Exception;
 
     /**
      * 查询用户所有
      *
-     * @param currIndex 起始
-     * @param pageSize  多少
-     * @param userId    用户id
-     * @param mode      模式
-     * @return {@link ZoneResponse}
+     * @param request {@link GetZoneRequest}
+     * @return {@link Zone}
      * @throws Exception
      */
-    @SelectProvider(type = SqlProvider.class, method = "selectUserZonePersonSql")
-    List<ZoneResponse> findZoneByUser(Integer currIndex, Integer pageSize, Integer userId, Integer mode) throws Exception;
+    @SelectProvider(type = SqlProvider.class, method = "selectUserZoneSql")
+    List<Zone> findZone(GetZoneRequest request) throws Exception;
 
     class SqlProvider {
-        public String selectAllZonePersonSql(Integer mode) {
+        public String selectUserZoneSql(GetZoneRequest request) {
             return new SQL() {{
-                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType");
-                FROM("user_zone A").JOIN("user B on A.userId = B.id");
-                if (mode == 0)
-                    ORDER_BY("A.createDate DESC,A.praise DESC limit #{currIndex},#{pageSize}");
-                else if (mode == 1)
-                    ORDER_BY("A.createDate DESC limit #{currIndex},#{pageSize}");
-                else if (mode == 2)
-                    ORDER_BY("A.praise DESC limit #{currIndex},#{pageSize}");
+                SELECT("id", "userId", "msg", "createDate", "msgType","praise favorite").
+                        FROM("user_zone");
+                if(request.getId() != null) { WHERE("userId = #{id}"); }
+                if (request.getMode() == 1) {
+                    ORDER_BY("createDate DESC limit #{curPage},#{pageSize}"); }
+                if (request.getMode() == 2) {
+                    ORDER_BY("praise DESC limit #{curPage},#{pageSize}"); }
             }}.toString();
         }
-
-        public String selectUserZonePersonSql(Integer mode) {
-            return new SQL() {{
-                SELECT("A.id", "A.userId", "B.emailName email", "A.msg", "A.createDate date", "A.msgType").
-                        FROM("user_zone A").JOIN("user B on A.userId = B.id").WHERE("A.userId = #{userId}");
-                if (mode == 0)
-                    ORDER_BY("A.createDate DESC,praise DESC limit #{currIndex},#{pageSize}");
-                else if (mode == 1)
-                    ORDER_BY("A.createDate DESC limit #{currIndex},#{pageSize}");
-                else if (mode == 2)
-                    ORDER_BY("A.praise DESC limit #{currIndex},#{pageSize}");
-            }}.toString();
-        }
-
-//        private Boolean
-
     }
 }
