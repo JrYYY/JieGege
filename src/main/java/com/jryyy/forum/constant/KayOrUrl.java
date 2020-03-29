@@ -1,10 +1,12 @@
 package com.jryyy.forum.constant;
 
 /**
- *
  * @author OU
  */
 public class KayOrUrl {
+    public static String username(Integer userId) {
+        return String.format("DOU%d", userId);
+    }
 
     public static final String unchecked_messages_key = "unchecked_messages_list";
 
@@ -18,39 +20,68 @@ public class KayOrUrl {
 
     public static final String GROUP_CHAT_MESSAGE_KEY = "group_chat_message";
 
-    public static String userKey(Integer key){ return String.format("key:%d",key); }
-
-    public static String userKey(String key){ return String.format("key:%s",key); }
-
-    public static String userTokenKey(Integer key){
-        return String.format("%d_token_key",key);
+    public static String userKey(Integer key) {
+        return String.format("key:%d", key);
     }
 
-    public static String userTokenKey(String key){
-        return String.format("%s_token_key",key);
+    public static String userKey(String key) {
+        return String.format("key:%s", key);
     }
 
-    public static String modifyPasswordCodeKey(String key){
-        return String.format("%s_password_key",key);
+    public static String userTokenKey(Integer key) {
+        return String.format("%d_token_key", key);
     }
 
-    public static String lockKey(String key){
-        return String.format("%s_lock_key",key);
+    public static String userTokenKey(String key) {
+        return String.format("%s_token_key", key);
     }
 
-    public static String lockKey(Integer key){
-        return String.format("%d_lock_key",key);
+    public static String modifyPasswordCodeKey(String key) {
+        return String.format("%s_password_key", key);
     }
 
-    public static String registrationCodeKey(String key){return String.format("%s_registration_key",key); }
+    public static String lockKey(String key) {
+        return String.format("%s_lock_key", key);
+    }
 
-    public static String userMessageKey(Integer toKey,Integer fromKey){return String.format("%d:%d",toKey,fromKey);}
+    public static String lockKey(Integer key) {
+        return String.format("%d_lock_key", key);
+    }
 
-    public static String groupMessageKey(Integer groupId){return String.format("Group:%d",groupId);}
+    public static String registrationCodeKey(String key) {
+        return String.format("%s_registration_key", key);
+    }
 
-    public static String userAvatarUrl(Integer userId){return String.format("/user/%d/avatar/",userId);}
+    public static String userMessageKey(Integer toKey, Integer fromKey) {
+        return String.format("%d:%d", toKey, fromKey);
+    }
 
-    public static String userBgImgUrl(Integer userId){return String.format("/user/%d/bgImg/",userId);}
+    public static String groupMessageKey(Integer groupId) {
+        return String.format("Group:%d", groupId);
+    }
 
-public static String zoneImageUrl(Integer userId){return String.format("zone/image/%d/",userId);}
+    public static String unrecordedWordsKey(Integer userId) {
+        return String.format("unrecordedWordsKey:%d", userId);
+    }
+
+    public static String memorizingWordsKey(Integer userId) {
+        return String.format("memorizingWordsKey:%d", userId);
+    }
+
+    public static String memorizedWordsKey(Integer userId) {
+        return String.format("memorizedWords:%d", userId);
+    }
+
+    public static String userAvatarUrl(Integer userId) {
+        return String.format("/user/%d/avatar/", userId);
+    }
+
+    public static String userBgImgUrl(Integer userId) {
+        return String.format("/user/%d/bgImg/", userId);
+    }
+
+    public static String zoneImageUrl(Integer userId) {
+        return String.format("zone/image/%d/", userId);
+    }
+
 }

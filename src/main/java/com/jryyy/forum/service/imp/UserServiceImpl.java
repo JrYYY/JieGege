@@ -70,9 +70,10 @@ public class UserServiceImpl implements UserService {
         User user = request.toUser();
         try {
             userMapper.insertUser(user);
-            userInfoMapper.insertUserInfo(user.getId(),user.getEmailName());
+            userInfoMapper.insertUserInfo(user.getId(), user.getEmailName(),
+                    KayOrUrl.username(user.getId()));
             template.delete(KayOrUrl.registrationCodeKey(request.getName()));
-            return new Response();
+            return new Response<>(KayOrUrl.username(user.getId()));
         } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);

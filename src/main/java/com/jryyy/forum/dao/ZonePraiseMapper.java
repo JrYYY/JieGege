@@ -63,6 +63,16 @@ public interface ZonePraiseMapper {
     int countZonePraise(int zoneId) throws Exception;
 
     /**
+     * 更具用户id统计
+     *
+     * @param userId 用户id
+     * @return 统计数量
+     * @throws Exception
+     */
+    @Select("select count(*) from zone_praise where userId = #{userId}")
+    int countByUserId(Integer userId) throws Exception;
+
+    /**
      * 是否点赞
      * @param userId    用户id
      * @param zoneId    空间id

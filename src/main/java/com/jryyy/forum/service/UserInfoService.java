@@ -2,7 +2,6 @@ package com.jryyy.forum.service;
 
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.request.UserInfoRequest;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -44,13 +43,23 @@ public interface UserInfoService {
     Response updateAvatar(Integer userId, MultipartFile avatar)throws Exception;
 
     /**
-     *
-     * @param userId
-     * @param bgImg
-     * @return
+     *修改用户背景
+     * @param userId    用户id
+     * @param bgImg     头像
+     * @return   {@link Response}
      * @throws Exception
      */
     Response updateBgImg(Integer userId,MultipartFile bgImg)throws Exception;
+
+    /**
+     * 修改用户背景（只能修改一次）
+     *
+     * @param userId   用户id
+     * @param username 用户名称
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response updateUsername(Integer userId, String username) throws Exception;
 
     /**
      * 签到

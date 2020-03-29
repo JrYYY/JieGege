@@ -24,6 +24,7 @@ public interface UserMapper {
     void deleteUser(int id) throws Exception;
 
 
+
     /**
      * 查看所有用户
      *
@@ -55,9 +56,11 @@ public interface UserMapper {
      * @return {@link User}
      * @throws Exception
      */
-    @Select("select id,emailName,password,role,status,loginFailedAttemptCount from user where emailName = #{name}")
+    @Select("select A.id,A.emailName,A.password,A.role,A.status,A.loginFailedAttemptCount " +
+            "from user A join user_info B on A.id = B.userId " +
+            "where A.emailName = #{name} or B.username = #{name}")
     @Results({@Result(property = "status", column = "status", jdbcType = JdbcType.BIT)})
-    User findLoginByName(@Param("name") String name) throws Exception;
+    User findUserByName(@Param("name") String name) throws Exception;
 
     /**
      * 根据name查询id

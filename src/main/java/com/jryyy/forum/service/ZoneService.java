@@ -24,7 +24,14 @@ public interface ZoneService {
      * @return  {@link com.jryyy.forum.model.response.ZoneResponse}
      * @throws Exception
      */
-    Response getZone(Integer userId,GetZoneRequest request)throws Exception;
+    Response viewSpace(Integer userId, GetZoneRequest request) throws Exception;
+
+    /**
+     * @param id id
+     * @return {@link com.jryyy.forum.model.response.ZoneResponse}
+     * @throws Exception
+     */
+    Response viewUpdateSpace(Integer id) throws Exception;
 
     /**
      * 删除空间

@@ -1,7 +1,6 @@
 package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
-import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.dao.BindingMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
@@ -9,22 +8,27 @@ import com.jryyy.forum.model.Binding;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.response.BindingResponse;
 import com.jryyy.forum.service.BindingService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 
 /**
+ * @author OU
  * @see com.jryyy.forum.service.BindingService
  */
 @Service("BindingService")
 public class BindingServiceImpl implements BindingService {
-    @Autowired
-    BindingMapper bindingMapper;
 
-    @Autowired
-    UserMapper userMapper;
+    private final BindingMapper bindingMapper;
+
+    private final UserMapper userMapper;
+
+    public BindingServiceImpl(BindingMapper bindingMapper, UserMapper userMapper) {
+        this.bindingMapper = bindingMapper;
+        this.userMapper = userMapper;
+    }
 
     @Override
     public Response queryAllAssociatedUsers(int userId) throws Exception {

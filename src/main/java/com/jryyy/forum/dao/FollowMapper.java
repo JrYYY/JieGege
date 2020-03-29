@@ -40,11 +40,8 @@ public interface FollowMapper {
      * @return {@link FollowResponse}
      * @throws Exception
      */
-    @Select("select A.id,A.friendId userId,B.username,B.avatar,B.bio,A.createDate addDate,B.recentLoginDate " +
-            "from follow A join user_info B " +
-            "on A.friendId = B.userId " +
-            "where A.userId = #{userId}")
-    List<FollowResponse> findAttentionBasedOnId(@Param("userId") Integer userId) throws Exception;
+    @Select("select friendId from follow where userId = #{userId}")
+    List<Integer> findAttentionBasedOnId(@Param("userId") Integer userId) throws Exception;
 
     /**
      * 查询粉丝列表
@@ -53,11 +50,8 @@ public interface FollowMapper {
      * @return {@link FollowResponse}
      * @throws Exception
      */
-    @Select("select A.id,A.userId,B.username,B.avatar,B.bio,A.createDate addDate,B.recentLoginDate " +
-            "from follow A join user_info B " +
-            "on A.userId = B.userId " +
-            "where A.friendId = #{friendId}")
-    List<FollowResponse> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
+    @Select("select userId from follow where friendId = #{friendId}")
+    List<Integer> findFansBasedOnId(@Param("friendId") Integer friendId) throws Exception;
 
     /**
      * 验证

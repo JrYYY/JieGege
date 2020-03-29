@@ -6,8 +6,9 @@ import com.jryyy.forum.model.request.ZoneRequest;
 import com.jryyy.forum.service.ZoneService;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import org.springframework.web.bind.annotation.*;
+
 import javax.validation.Valid;
-import java.sql.ResultSet;
+
 
 /**
  * @author OU
@@ -46,7 +47,7 @@ public class ZoneController {
     @UserLoginToken
     @GetMapping("/{userId}")
     public Response getUserZone(@PathVariable Integer userId,@ModelAttribute @Valid GetZoneRequest request)throws Exception{
-        return zoneService.getZone(userId,request);
+        return zoneService.viewSpace(userId, request);
     }
 
     /**

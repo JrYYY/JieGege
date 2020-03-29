@@ -6,7 +6,9 @@ import com.jryyy.forum.dao.ZoneCommentMapper;
 import com.jryyy.forum.dao.ZoneMapper;
 import com.jryyy.forum.dao.ZonePraiseMapper;
 import com.jryyy.forum.exception.GlobalException;
-import com.jryyy.forum.model.*;
+import com.jryyy.forum.model.Response;
+import com.jryyy.forum.model.Zone;
+import com.jryyy.forum.model.ZoneImg;
 import com.jryyy.forum.model.request.GetZoneRequest;
 import com.jryyy.forum.model.request.ZoneRequest;
 import com.jryyy.forum.model.response.PaginationResponse;
@@ -63,15 +65,18 @@ public class ZoneServiceImpl implements ZoneService {
 
     @Override
     public Response insertZone(ZoneRequest request) throws Exception {
+        log.info(request.toString());
         Zone zone = request.getZone();
         zoneMapper.insertZone(zone);
-        List<ZoneImg> zoneImgList = request.saveImage(zone.getId(), uploadFolder, fileUtils, imageUtils);
-        zoneImgList.forEach(zoneMapper::insertZoneImg);
+        if (request.getFiles() != null) {
+            List<ZoneImg> zoneImgList = request.saveImage(zone.getId(), uploadFolder, fileUtils, imageUtils);
+            zoneImgList.forEach(zoneMapper::insertZoneImg);
+        }
         return new Response();
     }
 
     @Override
-    public Response getZone(Integer userId,GetZoneRequest request) throws Exception {
+    public Response viewSpace(Integer userId, GetZoneRequest request) throws Exception {
         log.info(request.toString());
         List<ZoneResponse> responses = new ArrayList<>();
         int curPage = request.getCurPage();
@@ -81,11 +86,7 @@ public class ZoneServiceImpl implements ZoneService {
             UserInfoResponse userInfo = userInfoMapper.findInfoByUserId(zone.getUserId());
             List<Integer> praise = zonePraiseMapper.selectZonePraise(zone.getId());
             List<UserInfoResponse> favoriteUser = new ArrayList<>();
-            praise.forEach(o-> {
-                UserInfoResponse response = userInfoMapper.findInfoByUserId(o);
-                response.addAvatarUrl(fileUrl);
-                favoriteUser.add(response);
-            });
+            praise.forEach(o -> favoriteUser.add(UserInfoResponse.userInfoResponse(userInfoMapper, o, fileUrl)));
             userInfo.addAvatarUrl(fileUrl);
             ZoneResponse response = ZoneResponse.builder().comment(zoneCommentMapper.count(zone.getId()))
                     .userInfo(userInfo).favoriteUser(favoriteUser).build();
@@ -98,6 +99,11 @@ public class ZoneServiceImpl implements ZoneService {
                 zoneMapper.countZoneNumByUserId(request.getId());
         return new Response<>(new PaginationResponse<>(responses,count,
                 curPage, request.getPageSize()));
+    }
+
+    @Override
+    public Response viewUpdateSpace(Integer id) throws Exception {
+        return null;
     }
 
     @Override

@@ -2,7 +2,6 @@ package com.jryyy.forum.utils;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -32,10 +31,10 @@ public class EmailUtils {
 
     /**
      * 不带附件放送email
-     * @param to        发送到
-     * @param title     标题
-     * @param content   内容
-     * @throws Exception 异常
+     * @param to            发送到
+     * @param title         标题
+     * @param content       内容
+     * @throws Exception    异常
      */
     public void sendSimpleMail(String to, String title, String content) throws Exception {
         SimpleMailMessage message = new SimpleMailMessage();
@@ -72,6 +71,5 @@ public class EmailUtils {
             throw new GlobalException(GlobalStatus.mailDeliveryFailed);
         }
     }
-
 }
 

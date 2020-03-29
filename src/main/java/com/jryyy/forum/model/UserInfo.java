@@ -1,12 +1,11 @@
 package com.jryyy.forum.model;
 
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.sql.Date;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 /**
  * 用户信息类
@@ -28,6 +27,11 @@ public class UserInfo {
     private String username;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
      * 图像
      */
     private String avatar;
@@ -43,12 +47,17 @@ public class UserInfo {
     private Integer age;
 
     /**
+     * 邮箱
+     */
+    private String email;
+
+    /**
      * 签到天数
      */
     private int checkInDays;
 
     /**
-     * 最近签到时间
+     * 最近签到日期
      */
     private LocalDate checkInDate;
 
@@ -56,6 +65,17 @@ public class UserInfo {
      * 标签
      */
     private String bio;
+
+    /**
+     * 最近登入时间
+     */
+    private LocalDateTime recentLogin;
+
+    /**
+     * 最近状态
+     */
+    private String recentState;
+
 
     /**
      * 联系签到天数
@@ -70,5 +90,20 @@ public class UserInfo {
     /**
      * 积分
      */
-    private Integer integral;
+    private Integer credit;
+
+    /**
+     * 追随者数量
+     */
+    private Integer followers;
+
+    /**
+     * 关注数量
+     */
+    private Integer following;
+
+    /**
+     * 喜欢的动态数量
+     */
+    private Integer likes;
 }

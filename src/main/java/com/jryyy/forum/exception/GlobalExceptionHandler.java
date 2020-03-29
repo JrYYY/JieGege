@@ -2,6 +2,7 @@ package com.jryyy.forum.exception;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.jryyy.forum.constant.GlobalStatus;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.http.HttpHeaders;
@@ -27,7 +28,9 @@ import java.util.Map;
 
 /**
  * 将异常解析为json
+ * @author JrYYY
  */
+@Slf4j
 @RestControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
@@ -45,6 +48,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static ResponseEntity<Object> buildErrorResponse(HttpStatus status, String message) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("message", message);
+        log.error(message);
         return new ResponseEntity<>(responseBody, status);
     }
 
@@ -56,6 +60,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     private static ResponseEntity<Object> buildErrorResponse(GlobalStatus s) {
         Map<String, Object> responseBody = new HashMap<>();
         responseBody.put("message", s.getMsg());
+        log.error(s.getMsg());
         return new ResponseEntity<>(responseBody, HttpStatus.BAD_REQUEST);
     }
 
@@ -72,7 +77,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
      * @return {@link ResponseEntity}
      */
     @ExceptionHandler(IllegalArgumentException.class)
-    public Object IllegalArgumentException(IllegalArgumentException e) {
+    public Object illegalArgumentException(IllegalArgumentException e) {
         return buildErrorResponse(HttpStatus.BAD_REQUEST, e.getMessage());
     }
 

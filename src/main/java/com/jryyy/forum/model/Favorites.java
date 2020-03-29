@@ -1,8 +1,12 @@
 package com.jryyy.forum.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 /**
  * 收藏
@@ -20,10 +24,40 @@ public class Favorites {
     /**
      * 用户id
      */
+    @JsonIgnore
     private Integer userId;
 
+    @NotNull(message = "来源用户id不能为空")
+    private Integer fromUserId;
+
     /**
-     * 动态id
+     * 标题
      */
-    private Integer zoneId;
+    private String title;
+
+    /**
+     * 类容
+     */
+    @NotNull(message = "内容不能为空")
+    private String content;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createDate;
+
+    /**
+     * 更改时间
+     */
+    private LocalDateTime modifiedDate;
+
+    /**
+     * 路由
+     */
+    private String route;
+
+    /**
+     * 配置信息
+     */
+    private String extra;
 }

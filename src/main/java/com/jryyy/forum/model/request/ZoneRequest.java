@@ -5,11 +5,12 @@ import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Zone;
 import com.jryyy.forum.model.ZoneImg;
-import com.jryyy.forum.utils.ImageUtils;
 import com.jryyy.forum.utils.FileUtils;
+import com.jryyy.forum.utils.ImageUtils;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
@@ -22,12 +23,14 @@ import java.util.List;
 
 /**
  * 空间请求类
+ *
  * @author JrYYY
  */
+@Slf4j
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class ZoneRequest  {
+public class ZoneRequest {
 
     /**
      * 用户id
@@ -46,7 +49,7 @@ public class ZoneRequest  {
     private MultipartFile[] files;
 
 
-    public Zone getZone() throws Exception{
+    public Zone getZone() throws Exception {
         int msgType = 0;
         if (this.msg != null && this.files == null) {
             msgType = 1;
@@ -54,7 +57,7 @@ public class ZoneRequest  {
         if (this.files != null && this.msg == null) {
             msgType = 2;
         }
-        if(this.files == null && this.msg == null) {
+        if (this.files == null && this.msg == null) {
             throw new GlobalException(GlobalStatus.noContent);
         }
         return Zone.builder().userId(this.userId).msg(this.msg).msgType(msgType).build();

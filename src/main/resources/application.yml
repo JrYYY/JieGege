@@ -2,10 +2,11 @@ spring:
   # 配置数据库
   datasource:
     driver-class-name: com.mysql.jdbc.Driver
-    url: jdbc:mysql://127.0.0.1:3306/forum?characterEncoding=utf8&zeroDateTimeBehavior=convertToNull
+    url: jdbc:mysql://127.0.0.1:3306/forum?useSSL=false&allowMultiQueries=true
     username: root
     password: 10086
-
+    hikari:
+      connection-init-sql: SET NAMES utf8mb4 COLLATE utf8mb4_unicode_ci
   #配置redis缓存
   redis:
     host: 127.0.0.1
@@ -61,13 +62,13 @@ token:
   effectiveTime: 8640000
   secret: hjijfvbw859
 
+
 alipay:
   appID: 2088102180418544
-  merchantPrivateKey: MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAlE0ynRLHjTPe6v+JHzyosMnav6sLq2Qew1mkLKjKsezwKV/Xxv3n2AV/yUOfEQEMzP2q6oAAgjfhmJHYrVmIUim6LnxQLY2vIuB7WVQ0Y2ENRqqZ2NFhfvcRp5DkVlreOxC7MDlbfN5+yGVDSX48cnEWzrcwUCD6WeGSfkhcvtXTfYVRw0iASCayIcRLDq86TUelt2qBVfous6iSPgDUBHzxidlYZDxB2f6lIn1I92ABnJfgrtIgbDhqF/NVlWCXj+ox79j/TR9gQvCMxsoOkzkJMqEl8jkEj3O/GrciQyw6VKAyUZNpfma7WaICFQFKeVHCO7z94xoElOygg0u3uwIDAQAB
+  merchantPrivateKey: MIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQCUTTKdEseNM97q/4kfPKiwydq/qwurZB7DWaQsqMqx7PApX9fG/efYBX/JQ58RAQzM/arqgACCN+GYkditWYhSKboufFAtja8i4HtZVDRjYQ1GqpnY0WF+9xGnkORWWt47ELswOVt83n7IZUNJfjxycRbOtzBQIPpZ4ZJ+SFy+1dN9hVHDSIBIJrIhxEsOrzpNR6W3aoFV+i6zqJI+ANQEfPGJ2VhkPEHZ/qUifUj3YAGcl+Cu0iBsOGoX81WVYJeP6jHv2P9NH2BC8IzGyg6TOQkyoSXyOQSPc78atyJDLDpUoDJRk2l+ZrtZogIVAUp5UcI7vP3jGgSU7KCDS7e7AgMBAAECggEADLXlHaNLaSXF+Fw4c23ug2B5mC3fzSvCmzmmoZFB9if5mYI2az69zT0Da8uY6Ysufq9LI9geswp5EmuFp63hyjD7XRqYgJ8BILset1RJPS9HRQRANV4Uvh4M7FC10VTucR+I+6Qe3D/xm9laAAWKxsA8lTEMOgHpkySLOrmXAWAOsmd5aHQkvdhoe3KwIbAedY426KNbmDrUKSe+Dswz9F8xp0ci2YdGZX4RtttdWGScpay5Lef+VkgLTYwRCjv7ubItmAUxXU1HgB2YgMwv2A15WgvNsRISILoHp6b3QKerecaJAQfn2imyW0m1ttXDXJF6JdZxK68whD5tjGegqQKBgQDXxQKRbNr+FKhkFC4oW9/G1q5+Upp6+qxikSJFfkv/scaiyztdxHG54bW8JP/8mKxuI/XQjVtR7XtG5IRLFFYJzDUSaVJqY+Vq1WJw/7LBKlYvUIn7EIhfWDlCUdIFeZwCrGzZ0OMNsaiEWHEB2XZN/tTmtZ+db/jVU0PmSAdNvQKBgQCv89fCTPfp7rZk2Pvs/i54Ws/S5xoe5TKGczLLhDfHw3XRBlFQgSiOxXJInKMSUTaDjVpsnwSVDo8f8CWXaT/hIzGIP/vgaGZEe/PlnZXiEUZTLr38w7Y9/tgGqpqw+NRBnixh9OlhIQiSM+oVrIyp4TklBgT+Rf43/MA1YqMG1wKBgH/pD6usT2peTrD9cZuFU3RpognK6D9NSVIpXZq600ziU7IALtJYeV7LWlQNzx8sVtP4R2n50pAP64vMPkzP4m1ufGvMugnN7JvXocMBIjP26B6mbRXD6EQ1ZcRWAt4yCHVhSCob9e4RSqgiUePZyZNVJVsbgmLvlSDJerASNRo1AoGAK0X3TGwNlNUGuqq62sBwwVzkO+Rmgi6wTGzMk00DQvgJY8z/9qKtTN+2ibEsUfbzR0teb9R0Fgysmpg/Rou2EDLNncrOsZQ7gqBRjalCEYVaHF8kjqO7kGe6zXjr7pZj7XdvRvAq7Z5oMzzdV1NGjQk9OqPOWpLwQOjChN6rZaUCgYEAumX3c48ULXPZbzeMnFvioujPbCzXUCIbNA/+E3jkrRyzpJCYZ72gGjKuAunm+Hpoii+0p1j7YCA3er0mLnjLqWH8TX2G16HhTh1ihherR6ffwZ+wTwdo0X3ZN+k1qoOdGP1tkGgbaxo3PzSPJvv0gGhOMoGeNKI0sMNrSq1zXTs=
   alipayPublicKey: MIGfMA0GCSqGSIb3DQEBAQUAA4GNADCBiQKBgQDIgHnOn7LLILlKETd6BFRJ0GqgS2Y3mn1wMQmyh9zEyWlz5p1zrahRahbXAfCfSqshSNfqOmAQzSHRVjCqjsAw1jyqrXaPdKBmr90DIpIxmIyKXv4GGAkPyJ/6FTFY99uhpiq0qadD/uSzQsefWo0aTvP/65zi3eof7TcZ32oWpwIDAQAB
   gatewayUrl: https://openapi.alipaydev.com/gateway.do
-  sysServiceProviderId: 1234
-  notifyUrl: http://XXXX.com
+  notifyUrl: http://xxxxx
 
 # Logging
 logging:

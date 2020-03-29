@@ -1,9 +1,11 @@
 package com.jryyy.forum.utils.sql.generation;
 
 import com.jryyy.forum.utils.sql.condition.Id;
+
 import java.lang.reflect.Field;
 
 /**
+ * 未启用
  * @author OU
  */
 public class SqlGenerator {

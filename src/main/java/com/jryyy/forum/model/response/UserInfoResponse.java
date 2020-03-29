@@ -1,11 +1,12 @@
 package com.jryyy.forum.model.response;
 
 import com.jryyy.forum.constant.Constants;
+import com.jryyy.forum.dao.UserInfoMapper;
 import lombok.AllArgsConstructor;
 import lombok.Data;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.experimental.Accessors;
+
+import java.time.LocalDateTime;
 
 
 /**
@@ -26,6 +27,11 @@ public class UserInfoResponse {
     private String username;
 
     /**
+     * 昵称
+     */
+    private String nickname;
+
+    /**
      * 邮箱
      */
     private String email;
@@ -40,11 +46,27 @@ public class UserInfoResponse {
      */
     private String avatar;
 
+    /**
+     * 最近登入时间
+     */
+    private LocalDateTime recentLogin;
+
+    /**
+     * 最近状态
+     */
+    private String recentState;
+
 
     public void addAvatarUrl(String url){
         if(!this.avatar.equals(Constants.DEFAULT)) {
             this.avatar = url + this.avatar;
         }
+    }
+
+    public static UserInfoResponse userInfoResponse(UserInfoMapper userInfoMapper, Integer userId, String fileUrl) {
+        UserInfoResponse userInfo = userInfoMapper.findInfoByUserId(userId);
+        userInfo.addAvatarUrl(fileUrl);
+        return userInfo;
     }
 
 }

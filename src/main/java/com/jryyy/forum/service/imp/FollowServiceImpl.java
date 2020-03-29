@@ -2,16 +2,18 @@ package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.FollowMapper;
+import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.User;
 import com.jryyy.forum.model.UserFollow;
-import com.jryyy.forum.model.response.FollowResponse;
+import com.jryyy.forum.model.response.UserInfoResponse;
 import com.jryyy.forum.service.FollowService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -25,21 +27,25 @@ public class FollowServiceImpl implements FollowService {
 
     private final UserMapper userMapper;
 
+    private final UserInfoMapper userInfoMapper;
+
     private static  final String DEFAULT = "0";
 
     @Value("${file.url}")
     private String fileUrl;
 
-    public FollowServiceImpl(FollowMapper followMapper, UserMapper userMapper) {
+    public FollowServiceImpl(FollowMapper followMapper, UserMapper userMapper, UserInfoMapper userInfoMapper) {
         this.followMapper = followMapper;
+        this.userInfoMapper = userInfoMapper;
         this.userMapper = userMapper;
     }
 
     @Override
     public Response viewWatchlist(int userId) throws Exception {
         try {
-            List<FollowResponse>  responses = followMapper.findAttentionBasedOnId(userId);
-            responses.forEach(o-> {if(!o.getAvatar().equals(DEFAULT)){o.setAvatar(fileUrl + o.getAvatar());}});
+            List<UserInfoResponse> responses = new ArrayList<>();
+            List<Integer> follow = followMapper.findAttentionBasedOnId(userId);
+            follow.forEach(o -> responses.add(UserInfoResponse.userInfoResponse(userInfoMapper, o, fileUrl)));
             return new Response<>(responses);
         } catch (Exception e) {
             e.printStackTrace();
@@ -50,8 +56,9 @@ public class FollowServiceImpl implements FollowService {
     @Override
     public Response viewFanList(int fenId) throws Exception {
         try {
-            List<FollowResponse>  responses = followMapper.findFansBasedOnId(fenId);
-            responses.forEach(o-> {if(!o.getAvatar().equals(DEFAULT)){o.setAvatar(fileUrl + o.getAvatar());}});
+            List<UserInfoResponse> responses = new ArrayList<>();
+            List<Integer> follow = followMapper.findFansBasedOnId(fenId);
+            follow.forEach(o -> responses.add(UserInfoResponse.userInfoResponse(userInfoMapper, o, fileUrl)));
             return new Response<>(responses);
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);

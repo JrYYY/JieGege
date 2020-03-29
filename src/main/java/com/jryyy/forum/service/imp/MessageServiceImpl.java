@@ -27,12 +27,12 @@ public class MessageServiceImpl implements MessageService {
 
     private final UserInfoMapper userInfoMapper;
 
-    private static  final String DEFAULT = "0";
+    private static final String DEFAULT = "0";
 
     @Value("${file.url}")
     private String fileUrl;
 
-    public MessageServiceImpl(MessageMapper messageMapper,UserInfoMapper userInfoMapper){
+    public MessageServiceImpl(MessageMapper messageMapper, UserInfoMapper userInfoMapper) {
         this.messageMapper = messageMapper;
         this.userInfoMapper = userInfoMapper;
     }
@@ -42,7 +42,7 @@ public class MessageServiceImpl implements MessageService {
         try {
             messageMapper.insertMessage(message);
             return new Response();
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
         }
@@ -51,13 +51,13 @@ public class MessageServiceImpl implements MessageService {
     @Override
     public Response readMessage(Integer to, Integer from) throws Exception {
         try {
-            List<MessageRecord> messages = messageMapper.findMessageByFromIdAndToId(from,to);
-            List<MessageRecord> messageList = messageMapper.findMessageByFromIdAndToId(to,from);
+            List<MessageRecord> messages = messageMapper.findMessageByFromIdAndToId(from, to);
+            List<MessageRecord> messageList = messageMapper.findMessageByFromIdAndToId(to, from);
             messages.addAll(messageList);
             messages.sort(Comparator.comparing(MessageRecord::getDate));
-            messageMapper.updateMessageStatus(from,to);
+            messageMapper.updateMessageStatus(from, to);
             return new Response<>(messages);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
         }
@@ -68,16 +68,17 @@ public class MessageServiceImpl implements MessageService {
         try {
             List<Integer> uncheckedUserIdList = messageMapper.findFromByTo(userId);
             List<MessageResponse> responseList = new ArrayList<>();
-            uncheckedUserIdList.forEach(from ->{
-                UserInfoResponse response =  userInfoMapper.findInfoByUserId(from);
-                if(!response.getAvatar().equals(DEFAULT)){ response.setAvatar(fileUrl+response.getAvatar()); }
-                responseList.add(MessageResponse.builder().message(messageMapper.findMessageByDate(from,userId))
-                        .number(messageMapper.findNumberByFromIdAndToId(from,userId))
-                        .userInfo(response)
-                        .build());
-        });
+            uncheckedUserIdList.forEach(from -> {
+                UserInfoResponse response = userInfoMapper.findInfoByUserId(from);
+                if (!response.getAvatar().equals(DEFAULT)) {
+                    response.setAvatar(fileUrl + response.getAvatar());
+                }
+                responseList.add(MessageResponse.builder().message(messageMapper.findMessageByDate(from, userId))
+                        .number(messageMapper.findNumberByFromIdAndToId(from, userId))
+                        .userInfo(response).build());
+            });
             return new Response<>(responseList);
-        }catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
         }

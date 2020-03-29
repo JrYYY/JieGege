@@ -19,6 +19,16 @@ import java.util.List;
 public interface UserInfoMapper {
 
     /**
+     * 修改用户名（只能修改一次）
+     *
+     * @param userId   用户id
+     * @param username 用户名
+     * @return 修改数量
+     */
+    @Update("update user_info set username = #{username} where userId = #{userId}")
+    int updateUsername(Integer userId, String username);
+
+    /**
      * 清除用户信息
      *
      * @param userId 用户id
@@ -31,12 +41,12 @@ public interface UserInfoMapper {
      * 修改积分
      *
      * @param userId   用户id
-     * @param integral 积分
+     * @param credit 积分
      * @return 修改数目
      * @throws Exception
      */
-    @Update("update user_info set integral = #{integral} where userId = #{userId}")
-    int updateIntegral(Integer userId, Integer integral) throws Exception;
+    @Update("update user_info set credit = #{credit} where userId = #{userId}")
+    int updateCredit(Integer userId, Integer credit) throws Exception;
 
     /**
      * 查看用户积分
@@ -45,8 +55,8 @@ public interface UserInfoMapper {
      * @return 积分
      * @throws Exception
      */
-    @Select("select integral from user_info where userId = #{userId}")
-    int findIntegralByUserId(Integer userId) throws Exception;
+    @Select("select credit from user_info where userId = #{userId}")
+    int findCreditByUserId(Integer userId) throws Exception;
 
     /**
      * 更改最近的登入
@@ -54,7 +64,7 @@ public interface UserInfoMapper {
      * @param dateTime 时间
      * @param userId   用户id
      */
-    @Update("update user_info set recentLoginDate = #{dateTime} where userId = #{userId}")
+    @Update("update user_info set recentLogin = #{dateTime} where userId = #{userId}")
     void updateRecentLoginDate(LocalDateTime dateTime, Integer userId);
 
     /**
@@ -64,8 +74,9 @@ public interface UserInfoMapper {
      * @return {@link UserInfo}
      * @throws Exception
      */
-    @Select("select userId,email,username,avatar,sex,age," +
-            "checkInDays,checkInDate,bio,continuousCheckInDays continuousDays,bgImg,integral " +
+    @Select("select userId,email,username,nickname,avatar,sex,age,email," +
+            "checkInDays,checkInDate,bio,continuousCheckInDays continuousDays," +
+            "bgImg,credit,recentLogin,recentState " +
             "from user_info where userId = #{id}")
     UserInfo selectUserInfo(@Param("id") int id) throws Exception;
 
@@ -76,10 +87,10 @@ public interface UserInfoMapper {
      * @return {@link UserInfoResponse}
      * @throws Exception
      */
-    @Select("select userId,username,email,bio,avatar from user_info " +
-            "where username like concat('%', #{value}, '%') " +
-            "or email like concat('%', #{value}, '%')" +
-            "or userId like concat('%', #{value}, '%')")
+    @Select("select userId,username,nickname,email,bio,avatar,recentLogin,recentState " +
+            "from user_info where username like concat('%', #{value}, '%') " +
+            "or email like concat('%', #{value}, '%') " +
+            "or nickname like concat('%', #{value}, '%')")
     List<UserInfoResponse> findInfoByCondition(String value) throws Exception;
 
     /**
@@ -89,7 +100,8 @@ public interface UserInfoMapper {
      * @return {@link UserInfoResponse}
      * @throws Exception
      */
-    @Select("select userId,username,email,bio,avatar from user_info where userId = #{userId}")
+    @Select("select userId,username,nickname,email,bio,avatar,recentLogin,recentState " +
+            "from user_info where userId = #{userId}")
     UserInfoResponse findInfoByUserId(Integer userId);
 
     /**
@@ -97,10 +109,11 @@ public interface UserInfoMapper {
      *
      * @param id    用户id
      * @param email 邮箱
+     * @param username 用户名称唯一键
      * @throws Exception
      */
-    @Insert("insert into user_info(userId,email,recentLoginDate) value (#{id},#{email},now())")
-    void insertUserInfo(int id, String email) throws Exception;
+    @Insert("insert into user_info(userId,nickname,username,email,checkInDate,recentLogin) value (#{id},'无名氏',#{username},#{email},now(),now())")
+    void insertUserInfo(int id, String username, String email) throws Exception;
 
     /**
      * 设置背景图片
@@ -130,9 +143,9 @@ public interface UserInfoMapper {
      * @return {@link Check}
      * @throws Exception
      */
-    @Select("select checkInDays,checkInDate,continuousCheckInDays continuousDays from user_info where userId = #{id}")
+    @Select("select checkInDays,checkInDate,continuousCheckInDays continuousDays " +
+            "from user_info where userId = #{id}")
     Check selectCheckIn(@Param("id") int id) throws Exception;
-
 
     /**
      * 签到
@@ -158,16 +171,6 @@ public interface UserInfoMapper {
     void modifyContinuousCheckIn(int userId) throws Exception;
 
     /**
-     * 删除（test）
-     *
-     * @param userId 用户id
-     * @throws Exception
-     */
-    @Update("update user_info set checkInDate = null where userId =#{userId}")
-    void deleteCheckInDate(@Param("userId") int userId) throws Exception;
-
-
-    /**
      * 更新用户信息
      *
      * @param userInfo {@link UserInfoRequest}
@@ -176,7 +179,6 @@ public interface UserInfoMapper {
     @UpdateProvider(type = SqlProvider.class, method = "updatePersonSql")
     void updateUserInfo(UserInfoRequest userInfo) throws Exception;
 
-
     /**
      * sql构造器构造动态sql
      */
@@ -184,8 +186,8 @@ public interface UserInfoMapper {
         public String updatePersonSql(UserInfoRequest userInfo) {
             return new SQL() {{
                 UPDATE("user_info");
-                if (userInfo.getUsername() != null) {
-                    SET("username = #{username}"); }
+                if (userInfo.getNickname() != null) {
+                    SET("nickname = #{nickname}"); }
                 if (userInfo.getSex() != null){
                     SET("sex = #{sex}");}
                 if (userInfo.getAge() != null){

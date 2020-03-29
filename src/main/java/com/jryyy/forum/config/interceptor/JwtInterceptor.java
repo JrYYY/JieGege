@@ -4,10 +4,7 @@ import com.jryyy.forum.constant.Constants;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.User;
-import com.jryyy.forum.utils.security.PassToken;
-import com.jryyy.forum.utils.security.SecurityUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
-
 import com.jryyy.forum.utils.security.UserLoginToken;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

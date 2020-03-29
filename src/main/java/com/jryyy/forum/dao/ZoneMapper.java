@@ -7,7 +7,6 @@ import com.jryyy.forum.model.response.ZoneResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
-import java.lang.reflect.Field;
 import java.util.List;
 
 /**
@@ -57,6 +56,17 @@ public interface ZoneMapper {
     Zone findZoneById(@Param("id") int id) throws Exception;
 
     /**
+     * 单独查询
+     *
+     * @param id id
+     * @return {@link ZoneResponse}
+     * @throws Exception
+     */
+    @Select("select id,userId,msg,createDate date,msgType,praise from user_zone where id > #{id}")
+    List<Zone> findNewZone(@Param("id") int id) throws Exception;
+
+
+    /**
      * 写说说
      *
      * @param zone {@link Zone}
@@ -95,12 +105,12 @@ public interface ZoneMapper {
 
     /**
      * 删除单个图片
-     *
+     * @param userId  用户id
      * @param id    id
      * @throws Exception
      */
-    @Delete("delete from zone_img where id = #{id}")
-    void deleteZoneImgById(@Param("id") Integer id) throws Exception;
+    @Delete("delete from zone_img where id = #{id} and userId = #{userId}")
+    int deleteZoneImgById(Integer userId, @Param("id") Integer id) throws Exception;
 
     /**
      * 查询单个空间所有图片
@@ -115,7 +125,6 @@ public interface ZoneMapper {
      * 添加图片
      *
      * @param zoneImg   {@link ZoneImg}
-     * @throws Exception
      */
     @Insert("insert into zone_img(zoneId,imgUrl,width,height,dominantColor) values (#{zoneId},#{imgUrl},#{width},#{height},#{dominantColor})")
     void insertZoneImg(ZoneImg zoneImg);

@@ -46,7 +46,7 @@ public class ForgotUsernamePasswordRequest {
      * @param userMapper {@link UserMapper}
      */
     public ForgotUsernamePasswordRequest userDoesNotExist(UserMapper userMapper) throws Exception {
-        if (userMapper.findLoginByName(this.name) == null) {
+        if (userMapper.findUserByName(this.name) == null) {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
         }
         return this;

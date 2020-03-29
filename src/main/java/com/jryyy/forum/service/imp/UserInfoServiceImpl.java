@@ -2,7 +2,9 @@ package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.KayOrUrl;
+import com.jryyy.forum.dao.FollowMapper;
 import com.jryyy.forum.dao.UserInfoMapper;
+import com.jryyy.forum.dao.ZonePraiseMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Check;
 import com.jryyy.forum.model.Response;
@@ -28,15 +30,24 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     private final UserInfoMapper userInfoMapper;
 
+    private static final String username_regular = "";
+    private final FollowMapper followMapper;
+
     private final FileUtils fileUtils;
 
     private static  final String DEFAULT = "0";
+    private final ZonePraiseMapper zonePraiseMapper;
 
     @Value("${file.url}")
     private String fileUrl;
 
-    public UserInfoServiceImpl(UserInfoMapper userInfoMapper,FileUtils fileUtils) {
+    public UserInfoServiceImpl(UserInfoMapper userInfoMapper,
+                               FollowMapper followMapper,
+                               ZonePraiseMapper zonePraiseMapper,
+                               FileUtils fileUtils) {
         this.userInfoMapper = userInfoMapper;
+        this.followMapper = followMapper;
+        this.zonePraiseMapper = zonePraiseMapper;
         this.fileUtils = fileUtils;
     }
 
@@ -50,6 +61,9 @@ public class UserInfoServiceImpl implements UserInfoService {
             if (!userInfo.getBgImg().equals(DEFAULT)) {
                 userInfo.setBgImg(fileUrl + userInfo.getBgImg());
             }
+            userInfo.setFollowers(followMapper.followersQuantityByUserId(userId));
+            userInfo.setFollowing(followMapper.followingQuantityByUserId(userId));
+            userInfo.setLikes(zonePraiseMapper.countByUserId(userId));
             consecutiveCheckIn(userId);
             return new Response<>(userInfo);
         }catch (Exception e){
@@ -60,7 +74,13 @@ public class UserInfoServiceImpl implements UserInfoService {
 
     @Override
     public Response changeUserInfo(UserInfoRequest request) throws Exception {
-        userInfoMapper.updateUserInfo(request);
+        log.info(request.toString());
+        try {
+            userInfoMapper.updateUserInfo(request);
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw e;
+        }
         return new Response();
     }
 
@@ -81,6 +101,11 @@ public class UserInfoServiceImpl implements UserInfoService {
     public Response updateBgImg(Integer userId, MultipartFile bgImg) throws Exception {
         userInfoMapper.updateUserBgImg(userId,fileUtils.saveTalkImg(KayOrUrl.userBgImgUrl(userId),bgImg));
         return new Response();
+    }
+
+    @Override
+    public Response updateUsername(Integer userId, String username) throws Exception {
+        return null;
     }
 
     @Override

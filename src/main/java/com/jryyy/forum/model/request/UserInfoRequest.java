@@ -5,9 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.Pattern;
 import javax.validation.constraints.Size;
 
 /**
@@ -24,9 +22,7 @@ public class UserInfoRequest {
 
     private Integer userId;
 
-    @Pattern(regexp = USERNAME_REGULAR, message = "用户名输入不规范")
-    private String username;
-
+    private String nickname;
 
     private String sex;
 

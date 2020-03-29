@@ -50,7 +50,9 @@ public enum GlobalStatus {
 
     messageSendingFailed("消息发送失败"),
     userHasJoinedTheGroup("该用户已加入"),
-    userIsNotInAGroup("该用户不在群组");
+    userIsNotInAGroup("该用户不在群组"),
+
+    thesaurusIsNotApplied("未申请词库");
 
 
 
