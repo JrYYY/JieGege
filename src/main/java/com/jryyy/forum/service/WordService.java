@@ -45,4 +45,23 @@ public interface WordService {
      * @throws Exception
      */
     Response remove(Integer userId) throws Exception;
+
+    /**
+     * 进度
+     *
+     * @param userId 用户id
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response progress(Integer userId) throws Exception;
+
+    /**
+     * 修改任务量
+     *
+     * @param userId    用户id
+     * @param dailyDuty 当前任务
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response dailyDuty(Integer userId, Integer dailyDuty) throws Exception;
 }

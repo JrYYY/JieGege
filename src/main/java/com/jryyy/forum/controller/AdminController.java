@@ -27,7 +27,8 @@ public class AdminController {
      * @param id 用户id
      */
     @PutMapping("/{id}/unlock")
-    public Response unlock(@PathVariable("id") long id) {
+    public Response unlock(@PathVariable("id") int id) throws Exception {
+        adminService.unlock(id);
         return new Response();
     }
 
@@ -37,8 +38,8 @@ public class AdminController {
      * @param id 用户id
      */
     @PutMapping("/{id}/lock/{day}")
-    public Response lock(@PathVariable("id") long id, @PathVariable("day") int day) {
-        // userService.lock(id);
+    public Response lock(@PathVariable("id") int id, @PathVariable("day") int day) throws Exception {
+        adminService.lock(id, day);
         return new Response();
     }
 

@@ -197,5 +197,6 @@ public interface UserInfoMapper {
                 WHERE("userId = #{userId}");
             }}.toString();
         }
+
     }
 }

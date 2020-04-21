@@ -34,5 +34,14 @@ public class WordController {
         return wordService.remove(userId);
     }
 
+    @GetMapping("/progress/{userId}")
+    public Response progress(@PathVariable Integer userId) throws Exception {
+        return wordService.progress(userId);
+    }
+
+    @PutMapping("/dailyDuty/{userId}")
+    public Response dailyDuty(@PathVariable Integer userId, @RequestParam Integer dailyDuty) throws Exception {
+        return wordService.dailyDuty(userId, dailyDuty);
+    }
 
 }
