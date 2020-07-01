@@ -31,6 +31,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     private final UserInfoMapper userInfoMapper;
 
     private static final String username_regular = "";
+
     private final FollowMapper followMapper;
 
     private final FileUtils fileUtils;
@@ -41,10 +42,8 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Value("${file.url}")
     private String fileUrl;
 
-    public UserInfoServiceImpl(UserInfoMapper userInfoMapper,
-                               FollowMapper followMapper,
-                               ZonePraiseMapper zonePraiseMapper,
-                               FileUtils fileUtils) {
+    public UserInfoServiceImpl(UserInfoMapper userInfoMapper, FollowMapper followMapper,
+                               ZonePraiseMapper zonePraiseMapper, FileUtils fileUtils) {
         this.userInfoMapper = userInfoMapper;
         this.followMapper = followMapper;
         this.zonePraiseMapper = zonePraiseMapper;
@@ -54,6 +53,7 @@ public class UserInfoServiceImpl implements UserInfoService {
     @Override
     public Response viewUserInfo(Integer userId) throws Exception {
         try {
+            consecutiveCheckIn(userId);
             UserInfo userInfo = userInfoMapper.selectUserInfo(userId);
             if (!userInfo.getAvatar().equals(DEFAULT)) {
                 userInfo.setAvatar(fileUrl + userInfo.getAvatar());
@@ -64,7 +64,6 @@ public class UserInfoServiceImpl implements UserInfoService {
             userInfo.setFollowers(followMapper.followersQuantityByUserId(userId));
             userInfo.setFollowing(followMapper.followingQuantityByUserId(userId));
             userInfo.setLikes(zonePraiseMapper.countByUserId(userId));
-            consecutiveCheckIn(userId);
             return new Response<>(userInfo);
         }catch (Exception e){
             e.printStackTrace();
@@ -115,7 +114,7 @@ public class UserInfoServiceImpl implements UserInfoService {
         Check check = userInfoMapper.selectCheckIn(userId);
         userInfoMapper.checkIn(userId,check.getCheckInDays()+1,check.getContinuousDays()+1);
         log.info(userId+": 签到成功");
-        return new Response();
+        return new Response<>("签到获得" + signCredit(userId) + "积分");
     }
 
     @Override
@@ -127,15 +126,24 @@ public class UserInfoServiceImpl implements UserInfoService {
     private void checkedIn(Integer userId)throws Exception{
         Check check = userInfoMapper.selectCheckIn(userId);
         if(check.getCheckInDate().equals(LocalDate.now())){
+            log.info(check.getCheckInDate().plusDays(1).toString());
             throw new GlobalException(GlobalStatus.alreadySignedIn);
         }
     }
 
     private void consecutiveCheckIn(Integer userId)throws Exception{
         Check check = userInfoMapper.selectCheckIn(userId);
-        if(check.getCheckInDate() != null && !check.getCheckInDate().plusDays(1).equals(LocalDate.now())){
+        if (check.getCheckInDate() != null && check.getCheckInDate().plusDays(1).isBefore(LocalDate.now())) {
+            log.info(check.getCheckInDate().plusDays(1).toString());
             userInfoMapper.modifyContinuousCheckIn(userId);
         }
+    }
+
+    private int signCredit(Integer userId) throws Exception {
+        Check check = userInfoMapper.selectCheckIn(userId);
+        int credit = check.getContinuousDays() < 3 ? check.getContinuousDays() : 3;
+        userInfoMapper.updateCredit(userId, userInfoMapper.findCreditByUserId(userId) + credit);
+        return credit;
     }
 
 }

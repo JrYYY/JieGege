@@ -15,8 +15,10 @@ import java.sql.Date;
 @AllArgsConstructor
 public class AdminFindUserResponse {
 
-    /**用户id*/
-    private int id;
+    /**
+     * 用户id
+     */
+    private int Id;
 
     /** 邮箱 */
     private String email;
@@ -26,6 +28,11 @@ public class AdminFindUserResponse {
 
     /** 密码 */
     private String pass;
+
+    /**
+     * 状态
+     */
+    private Boolean status;
 
     /** 创建时间 */
     private Date createDate;

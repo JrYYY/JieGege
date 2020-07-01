@@ -18,10 +18,7 @@ public interface BindingMapper {
      * @param userId 用户id
      * @return {@link BindingResponse} 返回关联列表
      */
-    @Select("select A.id,B.username,B.avatar,A.createDate date " +
-            "from binding A join user_info B " +
-            "on A.boundId = B.userId " +
-            "where A.userId = #{userId} and status = 1")
+    @Select("select id,boundId userId,createDate date from binding where userId = #{userId}")
     List<BindingResponse> selectBindingUserInfo(@Param("userId") Integer userId) throws Exception;
 
     /**

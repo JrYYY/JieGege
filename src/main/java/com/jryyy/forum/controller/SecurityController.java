@@ -3,7 +3,6 @@ package com.jryyy.forum.controller;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.KayOrUrl;
 import com.jryyy.forum.constant.Template;
-import com.jryyy.forum.utils.security.UserRoleCode;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.User;
@@ -16,8 +15,8 @@ import com.jryyy.forum.utils.CaptchaUtils;
 import com.jryyy.forum.utils.EmailUtils;
 import com.jryyy.forum.utils.security.TokenUtils;
 import com.jryyy.forum.utils.security.UserLoginToken;
+import com.jryyy.forum.utils.security.UserRoleCode;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -31,17 +30,17 @@ import javax.validation.Valid;
 @RequestMapping("/security")
 public class SecurityController {
 
-    @Autowired
-    UserService userService;
+    private final UserService userService;
+    private final TokenUtils tokenUtils;
+    private final EmailUtils emailUtils;
+    private final CaptchaUtils captchaUtils;
 
-    @Autowired
-    TokenUtils tokenUtils;
-
-    @Autowired
-    EmailUtils emailUtils;
-
-    @Autowired
-    CaptchaUtils captchaUtils;
+    public SecurityController(UserService userService, TokenUtils tokenUtils, EmailUtils emailUtils, CaptchaUtils captchaUtils) {
+        this.userService = userService;
+        this.tokenUtils = tokenUtils;
+        this.emailUtils = emailUtils;
+        this.captchaUtils = captchaUtils;
+    }
 
 
     /**
@@ -164,6 +163,7 @@ public class SecurityController {
             throw new GlobalException(GlobalStatus.userAlreadyExists); }
         String content = String.format(Template.REGISTRATION_VERIFICATION_TEMPLATE,
                 captchaUtils.generateDigitalVerificationCode(KayOrUrl.registrationCodeKey(email)));
+        log.info(content);
         emailUtils.sendSimpleMail(email,"注册验证码",content);
         return new Response<>(true);
     }

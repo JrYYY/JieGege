@@ -47,6 +47,11 @@ public class UserInfoResponse {
     private String avatar;
 
     /**
+     * 状态
+     */
+    private Boolean status;
+
+    /**
      * 最近登入时间
      */
     private LocalDateTime recentLogin;

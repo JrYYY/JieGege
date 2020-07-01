@@ -9,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
@@ -19,6 +20,7 @@ import javax.validation.constraints.Size;
  * @author JrYYY
  */
 @Data
+@Slf4j
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
@@ -56,7 +58,8 @@ public class UserRequest {
      * @param userMapper {@link UserMapper}
      */
     public void userDoesNotExist(UserMapper userMapper) throws Exception {
-        if (userMapper.findUserByName(this.name) == null)
+        log.info(this.name);
+        if (userMapper.findUserByName(this.name.trim()) == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);
     }
 

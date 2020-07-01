@@ -11,10 +11,10 @@ import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-
 import javax.validation.Valid;
 
 /**
+ * 停止使用
  * @author OU
  */
 @Slf4j

@@ -7,6 +7,7 @@ import com.jryyy.forum.model.response.UserInfoResponse;
 import org.apache.ibatis.annotations.*;
 import org.apache.ibatis.jdbc.SQL;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -100,8 +101,8 @@ public interface UserInfoMapper {
      * @return {@link UserInfoResponse}
      * @throws Exception
      */
-    @Select("select userId,username,nickname,email,bio,avatar,recentLogin,recentState " +
-            "from user_info where userId = #{userId}")
+    @Select("select A.userId,A.username,A.nickname,A.email,A.bio,A.avatar,B.status,A.recentLogin,A.recentState " +
+            "from user_info A join user B on A.userId = B.id where userId = #{userId}")
     UserInfoResponse findInfoByUserId(Integer userId);
 
     /**
@@ -112,8 +113,9 @@ public interface UserInfoMapper {
      * @param username 用户名称唯一键
      * @throws Exception
      */
-    @Insert("insert into user_info(userId,nickname,username,email,checkInDate,recentLogin) value (#{id},'无名氏',#{username},#{email},now(),now())")
-    void insertUserInfo(int id, String username, String email) throws Exception;
+    @Insert("insert into user_info(userId,nickname,username,email,checkInDate,recentLogin) " +
+            "value (#{id},'无名氏',#{username},#{email},#{checkInDate},now())")
+    void insertUserInfo(int id, String email, String username, LocalDate checkInDate) throws Exception;
 
     /**
      * 设置背景图片
@@ -134,7 +136,6 @@ public interface UserInfoMapper {
      */
     @Update("update user_info set avatar = #{avatar} where userId = #{userId}")
     void updateUserAvatar(int userId, String avatar) throws Exception;
-
 
     /**
      * 查询签到日期和最近签到数据
@@ -197,6 +198,5 @@ public interface UserInfoMapper {
                 WHERE("userId = #{userId}");
             }}.toString();
         }
-
     }
 }

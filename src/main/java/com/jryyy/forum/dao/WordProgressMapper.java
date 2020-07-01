@@ -34,7 +34,7 @@ public interface WordProgressMapper {
      * @throws Exception
      */
     @Update("update word_progress set dailyDuty = #{dailyDuty} where userId = #{userId}")
-    void updateDailyDuty(Integer userId, Integer dailyDuty) throws Exception;
+    int updateDailyDuty(Integer userId, Integer dailyDuty) throws Exception;
 
     /**
      * @param userId

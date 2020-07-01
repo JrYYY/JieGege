@@ -2,13 +2,17 @@ package com.jryyy.forum.service.imp;
 
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.BindingMapper;
+import com.jryyy.forum.dao.UserInfoMapper;
 import com.jryyy.forum.dao.UserMapper;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Binding;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.response.BindingResponse;
+import com.jryyy.forum.model.response.UserInfoResponse;
 import com.jryyy.forum.service.BindingService;
 import com.jryyy.forum.utils.security.UserRoleCode;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -18,15 +22,20 @@ import java.util.List;
  * @author OU
  * @see com.jryyy.forum.service.BindingService
  */
+@Slf4j
 @Service("BindingService")
 public class BindingServiceImpl implements BindingService {
 
     private final BindingMapper bindingMapper;
-
+    private final UserInfoMapper userInfoMapper;
     private final UserMapper userMapper;
 
-    public BindingServiceImpl(BindingMapper bindingMapper, UserMapper userMapper) {
+    @Value("${file.url}")
+    private String fileUrl;
+
+    public BindingServiceImpl(BindingMapper bindingMapper, UserInfoMapper userInfoMapper, UserMapper userMapper) {
         this.bindingMapper = bindingMapper;
+        this.userInfoMapper = userInfoMapper;
         this.userMapper = userMapper;
     }
 
@@ -34,6 +43,10 @@ public class BindingServiceImpl implements BindingService {
     public Response queryAllAssociatedUsers(int userId) throws Exception {
         try {
             List<BindingResponse> bindings = bindingMapper.selectBindingUserInfo(userId);
+            bindings.forEach(o -> {
+                o.setUserInfo(UserInfoResponse.
+                        userInfoResponse(userInfoMapper, o.getUserId(), fileUrl));
+            });
             return new Response<>(bindings);
         } catch (Exception e) {
             e.printStackTrace();
@@ -43,6 +56,7 @@ public class BindingServiceImpl implements BindingService {
 
     @Override
     public Response addAssociatedUsers(int userId, String email) throws Exception {
+        log.info(email);
         Integer boundId = userMapper.findIdByName(email);
         if (boundId == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);
@@ -55,10 +69,9 @@ public class BindingServiceImpl implements BindingService {
         if (bindingMapper.findIdByBinding(userId, boundId) != null)
             throw new GlobalException(GlobalStatus.alreadyBound);
         try {
-            bindingMapper.insertBinding(Binding.builder().
-                    userId(userId).boundId(boundId).
-                    build());
-            return new Response();
+            bindingMapper.insertBinding(Binding.builder().userId(userId).
+                    boundId(boundId).build());
+            return new Response<>("绑定成功");
         } catch (Exception e) {
             e.printStackTrace();
             throw new GlobalException(GlobalStatus.serverError);
@@ -69,7 +82,7 @@ public class BindingServiceImpl implements BindingService {
     public Response deleteAssociatedUsers(int userId, int id) throws Exception {
         try {
             bindingMapper.deleteBinding(userId, id);
-            return new Response();
+            return new Response<>("删除成功");
         } catch (Exception e) {
             throw new GlobalException(GlobalStatus.serverError);
         }

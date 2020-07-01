@@ -4,6 +4,7 @@ import com.jryyy.forum.model.Response;
 
 /**
  * 管理员服务
+ * @author OU
  */
 public interface AdminService {
 
@@ -14,6 +15,16 @@ public interface AdminService {
      * @throws Exception
      */
     Response findAllUsers() throws Exception;
+
+    /**
+     * 查询所有评论
+     *
+     * @return {@link Response}
+     * @throws Exception
+     */
+    Response findComment(int currIndex, int pageSize) throws Exception;
+
+    Response findCommentByUserId(Integer userId, int currIndex, int pageSize) throws Exception;
 
     /**
      * 注销用户
@@ -29,7 +40,7 @@ public interface AdminService {
      * @return {@link Response}
      * @throws Exception
      */
-    Response unlock(int id) throws Exception;
+    Response unlock(Integer id) throws Exception;
 
     /**
      * 冻结
@@ -38,6 +49,8 @@ public interface AdminService {
      * @return {@link Response}
      * @throws Exception
      */
-    Response lock(int id, int day) throws Exception;
+    Response lock(Integer id, Integer day) throws Exception;
+
+
 
 }

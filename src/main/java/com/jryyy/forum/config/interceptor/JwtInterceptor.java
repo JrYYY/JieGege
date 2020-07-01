@@ -43,7 +43,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         Method method = ((HandlerMethod) handler).getMethod();
         Class c = ((HandlerMethod) handler).getBeanType();
         //检查有没有需要用户权限的注解
-
         try{
 
             if (method.isAnnotationPresent(UserLoginToken.class) || c.isAnnotationPresent(UserLoginToken.class)) {
@@ -58,7 +57,8 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
 
                 //从路由中提取id
                 String userId = request.getParameter(USER_ID_STRING);
-                Matcher matcher = Pattern.compile(USER_ID_REGEX).matcher(request.getRequestURI());
+                Matcher matcher = Pattern.compile(USER_ID_REGEX).
+                        matcher(request.getRequestURI());
                 if (matcher.find()) {
                     userId = matcher.group();
                 }
@@ -72,7 +72,9 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
                     throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
                 }
 
-                if (user != null && userLoginToken.role().equals(user.getRole())) {
+                if (user != null && !userLoginToken.role().equals(user.getRole()) &&
+                        !userLoginToken.role().equals("all")) {
+                    log.info(user.getRole());
                     throw new GlobalException(GlobalStatus.insufficientPermissions);
                 }
             }

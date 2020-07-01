@@ -3,7 +3,6 @@ package com.jryyy.forum.config.interceptor;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.dao.GroupMapper;
 import com.jryyy.forum.exception.GlobalException;
-import com.jryyy.forum.model.GroupMember;
 import com.jryyy.forum.utils.group.GroupPermissions;
 import com.jryyy.forum.utils.group.GroupRoleCode;
 import lombok.extern.slf4j.Slf4j;

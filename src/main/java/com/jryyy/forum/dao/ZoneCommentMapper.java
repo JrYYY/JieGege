@@ -22,6 +22,23 @@ public interface ZoneCommentMapper {
     int count(@Param("id") int id);
 
     /**
+     * 更据用户id查看评论数量
+     *
+     * @param userId 用户id
+     * @return
+     */
+    @Select("select count(*) from zone_comment where userId = #{userId} ")
+    int countByUserId(int userId);
+
+    /**
+     * 查看所有评论
+     *
+     * @return
+     */
+    @Select("select count(*) from zone_comment")
+    int countAll();
+
+    /**
      * 更具id查找用户id
      *
      * @param pId) id
@@ -65,6 +82,32 @@ public interface ZoneCommentMapper {
     List<ZoneCommentResponse> findCommentByZoneId(int zoneId, int currIndex, int pageSize) throws Exception;
 
     /**
+     * 查询所有评论
+     *
+     * @param currIndex 起始页
+     * @param pageSize  多少
+     * @return {@link ZoneCommentResponse}
+     * @throws Exception
+     */
+    @Select("select A.id,A.userId,B.username,A.msg comment,A.createDate from zone_comment A " +
+            "join user_info B on A.userId = B.userId " +
+            "order By A.createDate DESC limit #{currIndex},#{pageSize}")
+    List<ZoneCommentResponse> findComment(int currIndex, int pageSize) throws Exception;
+
+    /**
+     * 查询所有评论
+     *
+     * @param userId    用户id
+     * @param currIndex 起始页
+     * @param pageSize  多少
+     * @return {@link ZoneCommentResponse}
+     * @throws Exception
+     */
+    @Select("select A.id,A.userId,B.username,A.msg comment,A.createDate from zone_comment A " +
+            "join user_info B on A.userId = B.userId where A.userId = #{userId} " +
+            "order By A.createDate DESC ")
+    List<ZoneCommentResponse> findCommentByUserId(Integer userId, int currIndex, int pageSize) throws Exception;
+    /**
      * 回复
      * @param pId   关联id
      * @return  {@link ZoneCommentResponse}
@@ -91,6 +134,7 @@ public interface ZoneCommentMapper {
      */
     @Delete("delete from zone_comment where zoneId = #{zoneId}")
     void removeAllComment(Integer zoneId)throws Exception;
+
 
 
 }

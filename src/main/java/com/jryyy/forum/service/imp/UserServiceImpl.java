@@ -18,6 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 /**
  * @see com.jryyy.forum.service.UserService
  * @author JrYYY
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserService {
     public Response userLogin(UserRequest request) throws Exception {
         request.userDoesNotExist(userMapper);
         User user = request.verifyUserLogin(userMapper);
+        if (!user.getStatus()) {
+            throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
+        }
         try {
             userMapper.updateLoginFailedAttemptCount(user.getId(), 0);
             log.info("用户：" + user.getId() + " 登入成功");
@@ -70,8 +75,7 @@ public class UserServiceImpl implements UserService {
         User user = request.toUser();
         try {
             userMapper.insertUser(user);
-            userInfoMapper.insertUserInfo(user.getId(), user.getEmailName(),
-                    KayOrUrl.username(user.getId()));
+            userInfoMapper.insertUserInfo(user.getId(), user.getEmailName(), KayOrUrl.username(user.getId()), LocalDate.of(1970, 1, 1));
             template.delete(KayOrUrl.registrationCodeKey(request.getName()));
             return new Response<>(KayOrUrl.username(user.getId()));
         } catch (Exception e) {

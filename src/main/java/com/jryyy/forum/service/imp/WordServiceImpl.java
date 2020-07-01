@@ -118,8 +118,10 @@ public class WordServiceImpl implements WordService {
 
     @Override
     public Response dailyDuty(Integer userId, Integer dailyDuty) throws Exception {
-        wordProgressMapper.updateDailyDuty(userId, dailyDuty);
-        return new Response<>("更改每日任務量成功");
+        if (wordProgressMapper.updateDailyDuty(userId, dailyDuty) == 0) {
+            throw new GlobalException(GlobalStatus.thesaurusIsNotApplied);
+        }
+        return new Response<>("更改每日任务量成功");
     }
 
     /**

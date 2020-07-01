@@ -4,13 +4,14 @@ import com.jryyy.forum.model.Response;
 import com.jryyy.forum.service.AdminService;
 import com.jryyy.forum.utils.security.UserLoginToken;
 import com.jryyy.forum.utils.security.UserRoleCode;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 
 /**
  * 管理员控制层
  * @author JrYYY
  */
-
+@Slf4j
 @RestController
 @RequestMapping("/admin")
 @UserLoginToken(role = UserRoleCode.ADMIN)
@@ -26,8 +27,8 @@ public class AdminController {
      * 解锁用户
      * @param id 用户id
      */
-    @PutMapping("/{id}/unlock")
-    public Response unlock(@PathVariable("id") int id) throws Exception {
+    @PutMapping("/unlock")
+    public Response unlock(@RequestParam Integer id) throws Exception {
         adminService.unlock(id);
         return new Response();
     }
@@ -37,8 +38,9 @@ public class AdminController {
      *
      * @param id 用户id
      */
-    @PutMapping("/{id}/lock/{day}")
-    public Response lock(@PathVariable("id") int id, @PathVariable("day") int day) throws Exception {
+    @PutMapping("/lock")
+    public Response lock(@RequestParam Integer id, @RequestParam Integer day) throws Exception {
+        log.info(id + " " + day);
         adminService.lock(id, day);
         return new Response();
     }
@@ -49,10 +51,21 @@ public class AdminController {
      * @return {@link com.jryyy.forum.model.response.AdminFindUserResponse}
      * @throws Exception {}
      */
-    @UserLoginToken(role = UserRoleCode.ADMIN)
     @GetMapping("/users")
     public Response findAllUsers() throws Exception {
         return adminService.findAllUsers();
+    }
+
+    @GetMapping("/comment")
+    public Response findComment(@RequestParam int currIndex, @RequestParam int pageSize) throws Exception {
+        return adminService.findComment(currIndex, pageSize);
+    }
+
+    @GetMapping("/comment/user")
+    public Response findCommentByUserId(@RequestParam Integer id,
+                                        @RequestParam int currIndex,
+                                        @RequestParam int pageSize) throws Exception {
+        return adminService.findCommentByUserId(id, currIndex, pageSize);
     }
 
 }

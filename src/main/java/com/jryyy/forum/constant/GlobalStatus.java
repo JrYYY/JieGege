@@ -52,7 +52,8 @@ public enum GlobalStatus {
     userHasJoinedTheGroup("该用户已加入"),
     userIsNotInAGroup("该用户不在群组"),
 
-    thesaurusIsNotApplied("未申请词库");
+    thesaurusIsNotApplied("未申请词库"),
+    insufficientCredit("积分不足");
 
 
 
