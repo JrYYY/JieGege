@@ -26,7 +26,6 @@ import javax.validation.constraints.Size;
 @Builder
 public class UserRequest {
 
-
     @NotBlank(message = "用户名不能为空")
     private String name;
 
@@ -59,8 +58,9 @@ public class UserRequest {
      */
     public void userDoesNotExist(UserMapper userMapper) throws Exception {
         log.info(this.name);
-        if (userMapper.findUserByName(this.name.trim()) == null)
+        if (userMapper.findUserByName(this.name.trim()) == null) {
             throw new GlobalException(GlobalStatus.userDoesNotExist);
+        }
     }
 
 

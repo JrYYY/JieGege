@@ -8,6 +8,7 @@ import lombok.ToString;
  * 异常返回类型
  * @author JrYYY
  */
+
 @Getter
 @ToString
 @AllArgsConstructor

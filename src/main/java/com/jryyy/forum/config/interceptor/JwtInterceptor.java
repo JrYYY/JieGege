@@ -44,7 +44,6 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         Class c = ((HandlerMethod) handler).getBeanType();
         //检查有没有需要用户权限的注解
         try{
-
             if (method.isAnnotationPresent(UserLoginToken.class) || c.isAnnotationPresent(UserLoginToken.class)) {
                 UserLoginToken userLoginToken;
                 if (method.isAnnotationPresent(UserLoginToken.class)) {

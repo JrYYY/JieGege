@@ -30,7 +30,7 @@ public class AdminController {
     @PutMapping("/unlock")
     public Response unlock(@RequestParam Integer id) throws Exception {
         adminService.unlock(id);
-        return new Response();
+        return new Response<>(true);
     }
 
     /**
@@ -42,7 +42,7 @@ public class AdminController {
     public Response lock(@RequestParam Integer id, @RequestParam Integer day) throws Exception {
         log.info(id + " " + day);
         adminService.lock(id, day);
-        return new Response();
+        return new Response<>(true);
     }
 
     /**

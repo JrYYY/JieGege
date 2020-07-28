@@ -6,6 +6,7 @@ import com.jryyy.forum.constant.GlobalStatus;
  * @author OU
  */
 public class GlobalException extends Exception {
+
     GlobalStatus status;
 
     public GlobalException(GlobalStatus status) {
