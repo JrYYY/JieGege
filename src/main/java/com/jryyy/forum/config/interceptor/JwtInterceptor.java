@@ -43,43 +43,37 @@ public class JwtInterceptor extends HandlerInterceptorAdapter {
         Method method = ((HandlerMethod) handler).getMethod();
         Class c = ((HandlerMethod) handler).getBeanType();
         //检查有没有需要用户权限的注解
-        try{
-            if (method.isAnnotationPresent(UserLoginToken.class) || c.isAnnotationPresent(UserLoginToken.class)) {
-                UserLoginToken userLoginToken;
-                if (method.isAnnotationPresent(UserLoginToken.class)) {
-                    userLoginToken = method.getAnnotation(UserLoginToken.class);
-                } else {
-                    userLoginToken = (UserLoginToken) c.getAnnotation(UserLoginToken.class);
-                }
-                // 从 http 请求头中取出 token
-                String token = request.getHeader(Constants.USER_TOKEN_STRING);
-
-                //从路由中提取id
-                String userId = request.getParameter(USER_ID_STRING);
-                Matcher matcher = Pattern.compile(USER_ID_REGEX).
-                        matcher(request.getRequestURI());
-                if (matcher.find()) {
-                    userId = matcher.group();
-                }
-
-                User user = tokenUtils.decodeJwtToken(token);
-                if (userId != null && !userId.equals(user.getId().toString())) {
-                    throw new GlobalException(GlobalStatus.unauthorizedAccess);
-                }
-
-                if (user != null && !user.getStatus()) {
-                    throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
-                }
-
-                if (user != null && !userLoginToken.role().equals(user.getRole()) &&
-                        !userLoginToken.role().equals("all")) {
-                    log.info(user.getRole());
-                    throw new GlobalException(GlobalStatus.insufficientPermissions);
-                }
+        if (method.isAnnotationPresent(UserLoginToken.class) || c.isAnnotationPresent(UserLoginToken.class)) {
+            UserLoginToken userLoginToken;
+            if (method.isAnnotationPresent(UserLoginToken.class)) {
+                userLoginToken = method.getAnnotation(UserLoginToken.class);
+            } else {
+                userLoginToken = (UserLoginToken) c.getAnnotation(UserLoginToken.class);
             }
-        }catch (Exception e){
-            log.error(e.getMessage());
-            throw e;
+            // 从 http 请求头中取出 token
+            String token = request.getHeader(Constants.USER_TOKEN_STRING);
+
+            //从路由中提取id
+            String userId = request.getParameter(USER_ID_STRING);
+            Matcher matcher = Pattern.compile(USER_ID_REGEX).
+                    matcher(request.getRequestURI());
+            if (matcher.find()) {
+                userId = matcher.group();
+            }
+
+            User user = tokenUtils.decodeJwtToken(token);
+            if (userId != null && !userId.equals(user.getId().toString())) {
+                throw new GlobalException(GlobalStatus.unauthorizedAccess);
+            }
+
+            if (user != null && !user.getStatus()) {
+                throw new GlobalException(GlobalStatus.accountHasBeenFrozen);
+            }
+
+            if (user != null && !userLoginToken.role().equals(user.getRole()) &&
+                    !userLoginToken.role().equals("all")) {
+                throw new GlobalException(GlobalStatus.insufficientPermissions);
+            }
         }
         return true;
     }
