@@ -1,12 +1,12 @@
 package com.jryyy.forum.config;
- 
+
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Component;
 
 import java.io.FileWriter;
 import java.io.IOException;
- 
+
 /**
  * @author OU
  */
@@ -22,21 +22,22 @@ public class AliPayConfiguration {
     /**
      * 应用ID,您的APPID，收款账号既是您的APPID对应支付宝账号
      */
-        private String appID;
-    /**例：2016082600317257
-     *商户私钥，您的PKCS8格式RSA2私钥
+    private String appID;
+    /**
+     * 例：2016082600317257
+     * 商户私钥，您的PKCS8格式RSA2私钥
      */
     private String merchantPrivateKey;
     /**
      * 支付宝公钥,查看地址：https://openhome.alipay.com/platform/keyManage.htm
      * 对应APPID下的支付宝公钥。
      */
-    private String alipayPublicKey ;
-        /**
-         * 服务器异步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
-         * 返回的时候此页面不会返回到用户页面，只会执行你写到控制器里的地址
-         */
-        private String notifyUrl;
+    private String alipayPublicKey;
+    /**
+     * 服务器异步通知页面路径 需http://格式的完整路径，不能加?id=123这类自定义参数，必须外网可以正常访问
+     * 返回的时候此页面不会返回到用户页面，只会执行你写到控制器里的地址
+     */
+    private String notifyUrl;
     /**
      * 签名方式
      */
@@ -54,8 +55,7 @@ public class AliPayConfiguration {
     /**
      * 写日志，方便测试（看网站需求，也可以改成把记录存入数据库）
      *
-     * @param sWord
-     * 要写入日志里的文本内容
+     * @param sWord 要写入日志里的文本内容
      */
     public static void logResult(String sWord) {
         FileWriter writer = null;
@@ -73,7 +73,7 @@ public class AliPayConfiguration {
                     e.printStackTrace();
                 }
             }
-                }
         }
+    }
 
 }

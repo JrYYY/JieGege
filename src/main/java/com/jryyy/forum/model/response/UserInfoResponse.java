@@ -74,4 +74,8 @@ public class UserInfoResponse {
         return userInfo;
     }
 
+    public static UserInfoResponse userInfoResponse(UserInfoMapper userInfoMapper, Integer userId) {
+        return userInfoMapper.findInfoByUserId(userId);
+    }
+
 }

@@ -15,7 +15,9 @@ import org.springframework.messaging.simp.stomp.StompCommand;
 import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.messaging.support.MessageHeaderAccessor;
-import org.springframework.web.socket.config.annotation.*;
+import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
+import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
+import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.support.HttpSessionHandshakeInterceptor;
 
 import java.util.List;
@@ -87,6 +89,7 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                     log.info(accessor.toString());
                     if (messageType != null && messageType.equals(StompCommand.SEND)) {
                         List<String> header = accessor.getNativeHeader(Constants.USER_TOKEN_STRING);
+                        assert header != null;
                         String token = header.get(0);
                         try {
                             User user = tokenUtils.decodeJwtToken(token);

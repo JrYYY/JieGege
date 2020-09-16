@@ -1,12 +1,12 @@
 package com.jryyy.forum.service;
 
-import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.Message;
+import com.jryyy.forum.model.Response;
 
 import java.util.List;
 
 /**
- *webSocket访问
+ *webSocket访问 （启用）
  * @author OU
  */
 public interface WebsocketService {

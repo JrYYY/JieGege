@@ -1,6 +1,6 @@
 package com.jryyy.forum.utils.sql.generation;
 
-import com.jryyy.forum.utils.sql.condition.Id;
+import com.jryyy.forum.utils.sql.condition.ID;
 
 import java.lang.reflect.Field;
 
@@ -8,12 +8,12 @@ import java.lang.reflect.Field;
  * 未启用
  * @author OU
  */
-public class SqlGenerator {
+public class SqlGenerator<T> {
 
-    public String findById(Object condition){
-        Class c = condition.getClass();
+    public String findById(T date) {
+        Class c = date.getClass();
         for (Field field : c.getDeclaredFields()) {
-            if(field.isAnnotationPresent(Id.class)){
+            if (field.isAnnotationPresent(ID.class)) {
 
             }
         }

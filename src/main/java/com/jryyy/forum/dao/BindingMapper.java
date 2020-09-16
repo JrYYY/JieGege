@@ -39,7 +39,7 @@ public interface BindingMapper {
      * @param id      绑定id
      * @return
      */
-    @Select("select Id from binding where boundId = #{boundId} and id = #{id} and status = 0")
+    @Select("select ID from binding where boundId = #{boundId} and id = #{id} and status = 0")
     Integer confirmUser(@Param("boundId") int boundId, @Param("id") int id);
 
     /**

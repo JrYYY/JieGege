@@ -4,7 +4,7 @@ package com.jryyy.forum.constant;
  * 邮箱发送模板
  * @author JrYYY
  */
-public class Template {
+public class EmailTemplate {
     /**
      * 注册验证码模板
      */

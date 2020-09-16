@@ -8,6 +8,7 @@ import com.jryyy.forum.model.request.GroupMemberRoleRequest;
 import com.jryyy.forum.model.request.GroupRequest;
 
 /**
+ * 聊天群创建（弃用）
  * @author OU
  */
 

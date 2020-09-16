@@ -56,7 +56,6 @@ public class BindingServiceImpl implements BindingService {
 
     @Override
     public Response addAssociatedUsers(int userId, String email) throws Exception {
-        log.info(email);
         Integer boundId = userMapper.findIdByName(email);
         if (boundId == null)
             throw new GlobalException(GlobalStatus.userDoesNotExist);

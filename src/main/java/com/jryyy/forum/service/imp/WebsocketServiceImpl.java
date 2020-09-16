@@ -17,7 +17,10 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 
 /**
@@ -95,9 +98,7 @@ public class WebsocketServiceImpl implements WebsocketService {
             redisUtils.setHashMap(KayOrUrl.USER_GROUP_CHAT_OFFLINE_RECORD_KEY,
                     KayOrUrl.userKey(message.getTo()), messageMap);
         }
-
         return new Response();
-
     }
 
     @Override
@@ -115,7 +116,6 @@ public class WebsocketServiceImpl implements WebsocketService {
             if (userMapper.findUserById(message.getTo()) == null) {
                 throw new GlobalException(GlobalStatus.userDoesNotExist);
             }
-            log.info(message.toString());
             messagingTemplate.convertAndSendToUser(message.getTo().toString(),
                     SUBSCRIBE_SINGLE_CHAT_MESSAGE_URI, message);
             redisUtils.rightPushHashList(KayOrUrl.SINGLE_CHAT_MESSAGE_KEY,
@@ -172,8 +172,6 @@ public class WebsocketServiceImpl implements WebsocketService {
         Long size = redisTemplate.opsForList().size(KayOrUrl.ONLINE_USER_LIST_KEY);
         return new Response<>(size == null ? 0 : size / 2);
     }
-
-
 
     @Override
     public Response onLine(Integer userId) throws Exception {

@@ -1,8 +1,8 @@
 package com.jryyy.forum.controller;
 
+import com.jryyy.forum.constant.EmailTemplate;
 import com.jryyy.forum.constant.GlobalStatus;
 import com.jryyy.forum.constant.KayOrUrl;
-import com.jryyy.forum.constant.Template;
 import com.jryyy.forum.exception.GlobalException;
 import com.jryyy.forum.model.Response;
 import com.jryyy.forum.model.User;
@@ -35,7 +35,8 @@ public class SecurityController {
     private final EmailUtils emailUtils;
     private final CaptchaUtils captchaUtils;
 
-    public SecurityController(UserService userService, TokenUtils tokenUtils, EmailUtils emailUtils, CaptchaUtils captchaUtils) {
+    public SecurityController(UserService userService, TokenUtils tokenUtils,
+                              EmailUtils emailUtils, CaptchaUtils captchaUtils) {
         this.userService = userService;
         this.tokenUtils = tokenUtils;
         this.emailUtils = emailUtils;
@@ -144,7 +145,7 @@ public class SecurityController {
         Response response = userService.verifyUser(email);
         if (!(Boolean) response.getData()) {
             throw new GlobalException(GlobalStatus.userDoesNotExist); }
-        String content = String.format(Template.MODIFY_PASSWORD_VERIFICATION_TEMPLATE,
+        String content = String.format(EmailTemplate.MODIFY_PASSWORD_VERIFICATION_TEMPLATE,
                 captchaUtils.generateDigitalVerificationCode(KayOrUrl.modifyPasswordCodeKey(email)));
         emailUtils.sendSimpleMail(email,"忘记密码验证码",content);
         return new Response<>(true);
@@ -161,7 +162,7 @@ public class SecurityController {
         Response response = userService.verifyUser(email);
         if ((Boolean) response.getData()) {
             throw new GlobalException(GlobalStatus.userAlreadyExists); }
-        String content = String.format(Template.REGISTRATION_VERIFICATION_TEMPLATE,
+        String content = String.format(EmailTemplate.REGISTRATION_VERIFICATION_TEMPLATE,
                 captchaUtils.generateDigitalVerificationCode(KayOrUrl.registrationCodeKey(email)));
         log.info(content);
         emailUtils.sendSimpleMail(email,"注册验证码",content);

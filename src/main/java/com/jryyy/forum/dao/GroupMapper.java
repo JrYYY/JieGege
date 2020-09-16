@@ -31,7 +31,7 @@ public interface GroupMapper {
      * @return {@link Group}
      * @throws Exception
      */
-    @Select("select A.id,name,slogan,createDate,A.userId,avatar from group_info A join group_member B on A.id = B.Id where B.userId = #{id}")
+    @Select("select A.id,name,slogan,createDate,A.userId,avatar from group_info A join group_member B on A.id = B.ID where B.userId = #{id}")
     @Results({@Result(property = "createDate", column = "createDate", jdbcType = JdbcType.TIMESTAMP)})
     List<Group> findGroupById(@Param("id") Integer id) throws Exception;
 
@@ -147,7 +147,7 @@ public interface GroupMapper {
     /**
      * 冻结
      * @param groupId   群组id
-     * @param id        member Id
+     * @param id        member ID
      * @param dateTime  冻结到的时间
      * @return          是否修改成功
      * @throws Exception
