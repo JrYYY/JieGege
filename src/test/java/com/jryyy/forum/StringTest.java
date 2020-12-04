@@ -3,6 +3,9 @@ package com.jryyy.forum;
 import com.jryyy.forum.dao.ZoneMapper;
 import com.jryyy.forum.service.UserInfoService;
 import com.jryyy.forum.service.WordService;
+import com.jryyy.forum.utils.sql.model.BaseModel;
+import com.jryyy.forum.utils.sql.test.TestMapper;
+import com.jryyy.forum.utils.sql.test.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +29,13 @@ public class StringTest {
     @Autowired
     RedisTemplate<String, Object> redisTemplate;
 
-    @Test
-    public void test1() {
+    @Autowired
+    TestMapper testMapper;
 
+    @Test
+    public void test1() throws Exception {
+        User user = User.builder().username("DOU1010").build();
+        testMapper.findById(new BaseModel<>(user)).forEach(System.out::println);
     }
 
 //    @Test
