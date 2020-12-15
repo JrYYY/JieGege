@@ -17,9 +17,7 @@ public @interface Condition {
      *
      * @return 运算关系
      */
-    OperationStatusEnum operation() default OperationStatusEnum.EQUAL;
-
-    String relation() default "";
+    OperationEnum operation() default OperationEnum.DEFAULT;
 
     /**
      * 是否不能为空

@@ -2,10 +2,9 @@ package com.jryyy.forum.utils.sql.bind;
 
 /**
  * 表连接信息
- *
  * @author OU
  */
-public class JoinTableInfo {
+public class JoinTable {
 
     /**
      * join sql information
@@ -13,19 +12,19 @@ public class JoinTableInfo {
     private String join;
 
     /**
-     * join type 连接类型
+     *  join type 连接类型
      */
     private JoinTypeEnum joinType;
 
-    public JoinTableInfo(String join, JoinTypeEnum joinType) {
+    public JoinTable(String join, JoinTypeEnum joinType) {
         this.join = join;
         this.joinType = joinType;
     }
 
-    public JoinTableInfo() {
+    public JoinTable() {
     }
 
-    public static JoinTableInfoBuilder joinTableInfoBuilder() {
+    public static JoinTableInfoBuilder Builder() {
         return new JoinTableInfoBuilder();
     }
 
@@ -59,8 +58,8 @@ public class JoinTableInfo {
             return this;
         }
 
-        public JoinTableInfo build() {
-            return new JoinTableInfo(join, joinType);
+        public JoinTable build() {
+            return new JoinTable(join, joinType);
         }
     }
 
